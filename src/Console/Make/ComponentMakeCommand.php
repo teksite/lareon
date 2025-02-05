@@ -73,7 +73,7 @@ class ComponentMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        return $this->setNamespace($name , '\\App\\View');
+        return $this->setNamespace($name , '\\App\\View\\Components');
     }
 
 

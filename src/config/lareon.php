@@ -1,17 +1,19 @@
 <?php
 
 return [
-    "main_path"=>'Lareon',
+    "main_path" => 'Lareon',
 
-    "cms_directory"=>'CMS',
+    "cms_directory" => 'CMS',
 
-    "namespace"=>'Lareon\\CMS',
+    "lang_path" => "lang",
 
-    'database'=>[
-        'path'=>'Database',
-        'migration_path'=>'Database/Migrations',
-        'factory_path'=>'Database/Factories',
-        'seeder_path'=>'Database/Seeders',
+    "namespace" => 'Lareon\\CMS',
+
+    'database' => [
+        'path' => 'Database',
+        'migration_path' => 'Database/Migrations',
+        'factory_path' => 'Database/Factories',
+        'seeder_path' => 'Database/Seeders',
     ]
 
 ];

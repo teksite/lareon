@@ -57,6 +57,9 @@ class InstallerCommand extends Command
             'resources/js',
             'resources/css',
             'routes',
+            'routes/admin',
+            'routes/panel',
+            'routes/auth',
             'Tests',
             'Tests/Feature',
             'Tests/Unit',
@@ -88,16 +91,17 @@ class InstallerCommand extends Command
 
         /* Register ServiceProvider file  */
         $this->generateFile(
-            'basic/provider-service.stub',
+            'basic/cms-service-provider.stub',
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers",
-                '{{ class }}' => "LareonServiceProvider",
+                '{{ class }}' => "CmsServiceProvider",
             ],
-            "{$path}/App/Providers/LareonServiceProvider.php"
+            "{$path}/App/Providers/CmsServiceProvider.php"
         );
+
         /* Register ServiceProvider of modules  */
         $this->generateFile(
-            'basic/provider-module-manager.stub',
+            'basic/module-manager-service-provider.stub',
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers\\Modules",
                 '{{ class }}' => "ModulesManagerServiceProvider",
@@ -108,7 +112,7 @@ class InstallerCommand extends Command
         /* Register ServiceProvider of routes of modules  */
         $this->generateFile(
 
-            'basic/provider-modules-routes-manager.stub',
+            'basic/modules-routes-manager-service-provider.stub',
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers\\Modules",
                 '{{ class }}' => "RoutesManagerServiceProvider",
@@ -144,7 +148,7 @@ class InstallerCommand extends Command
         );
         /* Register config file  */
         $this->generateFile(
-            'basic/config.stub',
+            'basic/cms-config.stub',
             [],
             "{$path}/config/cms.php"
         );
@@ -167,11 +171,6 @@ class InstallerCommand extends Command
             "{$path}/resources/views/master.blade.php"
         );
         /* Register web route file  */
-        $this->generateFile(
-            'basic/route-web.stub',
-            [],
-            "{$path}/routes/web.php"
-        );
 
         /* Register Seeder file file  */
         $this->generateFile(
@@ -183,6 +182,15 @@ class InstallerCommand extends Command
             ],
             "{$path}/Database/Seeders/CmsDatabaseSeeder.php"
         );
+
+
+       foreach ($this->routes() as $route)
+           // Routes
+           $this->generateFile(
+               'basic/route.stub',
+               [],
+               "{$path}/routes/$route"
+           );
     }
 
     private function generateFile(string $stub, array $replacements, string $destination): void
@@ -199,6 +207,23 @@ class InstallerCommand extends Command
         Process::path(base_path())
             ->command('composer dump-autoload')
             ->run()->output();
+
+    }
+
+    private function routes()
+    {
+        return [
+            'admin/web.php', 'admin/ajax.php', 'admin/api.php',
+
+            'panel/web.php', 'admin/ajax.php', 'admin/api.php',
+
+            'auth/web.php', 'auth/ajax.php', 'auth/api.php',
+
+            'web.php', 'ajax.php', 'api.php',
+
+
+        ];
+
 
     }
 

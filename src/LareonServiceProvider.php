@@ -50,9 +50,8 @@ class LareonServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootCommands();
-        $this->publish();
         $this->bootTranslations();
-
+        $this->publish();
     }
 
     public function registerConfig(): void
@@ -61,11 +60,6 @@ class LareonServiceProvider extends ServiceProvider
         $configPath = config_path('lareon.php'); // Path to the published file
         $this->mergeConfigFrom(
             file_exists($configPath) ? $configPath : __DIR__ . '/config/lareon.php', 'lareon');
-
-        //Modules Priority
-        $modulesConfigPath = config_path('cms.php'); // Path to the published file
-        $this->mergeConfigFrom(
-            file_exists($modulesConfigPath) ? $modulesConfigPath : __DIR__ . '/config/cms.php', 'cms');
     }
 
     public function registerFacades()
@@ -77,8 +71,9 @@ class LareonServiceProvider extends ServiceProvider
 
     public function registerProviders(): void
     {
-     //  $this->app->register(ModulesManagerServiceProvider::class);
-     //   $this->app->register(RoutesManagerServiceProvider::class);
+        if (file_exists(base_path('Lareon\CMS\App\Providers\CmsServiceProvider.php')) && class_exists('\Lareon\CMS\App\Providers\CmsServiceProvider')) {
+            $this->app->register(\Lareon\CMS\App\Providers\CmsServiceProvider::class);
+        }
     }
 
     public function registerStubPath(): void
@@ -86,7 +81,6 @@ class LareonServiceProvider extends ServiceProvider
         $this->app->bind('cms.stubs', function () {
             return __DIR__ . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR;
         });
-
     }
 
     public function bootCommands(): void
@@ -128,14 +122,10 @@ class LareonServiceProvider extends ServiceProvider
         ]);
     }
 
-    public function publish(): void
-    {
-        $this->publishes([
-            __DIR__ . '/config/lareon.php' => config_path('lareon.php')
-        ], 'lareon');
 
-    }
-
+    /**
+     * @return void
+     */
     public function bootTranslations(): void
     {
         $langPath = __DIR__ . '/lang/';
@@ -144,5 +134,15 @@ class LareonServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($langPath, 'lareon');
             $this->loadJsonTranslationsFrom($langPath);
         }
+    }
+
+
+    /**
+     * @return void
+     */
+    public function publish(): void
+    {
+        $this->publishes([
+            __DIR__ . '/config/lareon.php' => config_path('lareon.php')], 'lareon');
     }
 }

@@ -15,14 +15,15 @@ class {{ class }} extends ServiceProvider
     public function register(): void
     {
         $this->registerModules();
+        $this->registerConfigs();
+        $this->registerViews();
         $this->app->register(RoutesManagerServiceProvider::class);
+        $this->app->register(ModulesManagerServiceProvider::class);
     }
 
     public function boot(): void
     {
-        $this->registerConfigs();
-        $this->registerTranslations();
-        $this->registerViews();
+        $this->bootTranslations();
         $this->loadModuleMigrations();
         $this->loadModuleSeeders();
     }
@@ -44,7 +45,6 @@ class {{ class }} extends ServiceProvider
     private function registerConfigs(): void
     {
         $modules = config('modules.modules', []);
-
         $configsFromConfig = config('cms.modules.configs', []);
 
         foreach ($modules as $module => $provider) {
@@ -54,20 +54,6 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    /**
-     * Determines if the module provider is of type 'self'.
-     *
-     * @param string $provider
-     * @return bool
-     */
-    private function isSelfProvider(string $provider): bool
-    {
-        return defined("$provider::TYPE") && $provider::TYPE === 'self';
-    }
-
-    /**
-     * Processes the configuration files for a given module.
-     */
     private function processConfigs(string $module, array $configs): void
     {
         $lowerModuleName = strtolower($module);
@@ -76,13 +62,9 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    /**
-     * Publishes and merges a configuration file.
-     */
     private function publishAndMergeConfig(string $module, string $config, string $lowerModuleName): void
     {
         $suggestedConfigPath = module_path($module, "config/$config");
-
         $configName = str_replace('.php', '', $config);
 
         if (file_exists($suggestedConfigPath)) {
@@ -94,7 +76,7 @@ class {{ class }} extends ServiceProvider
     /**
      * Registers translations for modules.
      */
-    public function registerTranslations(): void
+    private function bootTranslations(): void
     {
         $modules = config('modules.modules', []);
 
@@ -105,9 +87,6 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    /**
-     * Processes translation files for a given module.
-     */
     private function processTranslations(string $module): void
     {
         $lowerModuleName = strtolower($module);
@@ -121,7 +100,7 @@ class {{ class }} extends ServiceProvider
     /**
      * Registers views for modules.
      */
-    public function registerViews(): void
+    private function registerViews(): void
     {
         $modules = config('modules.modules', []);
 
@@ -132,9 +111,6 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    /**
-     * Processes views for a given module.
-     */
     private function processViews(string $module): void
     {
         $lowerModuleName = strtolower($module);
@@ -149,18 +125,12 @@ class {{ class }} extends ServiceProvider
         $this->registerBladeComponents($module, $lowerModuleName);
     }
 
-    /**
-     * Registers Blade components for the module.
-     */
     private function registerBladeComponents(string $module, string $lowerModuleName): void
     {
         $componentNamespace = module_namespace($module, module_path($module, 'App/View/Components'));
         Blade::componentNamespace($componentNamespace, $lowerModuleName);
     }
 
-    /**
-     * Returns an array of publishable view paths for a given module.
-     */
     private function getPublishableViewPaths(string $lowerModuleName): array
     {
         return array_filter(config('view.paths'), fn($path) => is_dir($path . '/modules/' . $lowerModuleName));
@@ -180,9 +150,6 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    /**
-     * Loads migrations for a specific module.
-     */
     private function loadMigrationsForModule(string $module): void
     {
         $migrationPath = Module::modulePath($module, config('moduleconfigs.module.database.migration_path', 'Database/Migrations'));
@@ -199,9 +166,6 @@ class {{ class }} extends ServiceProvider
         Event::listen(MigrationsEnded::class, fn() => $this->runModuleSeeders());
     }
 
-    /**
-     * Runs the seeders for all modules after migrations.
-     */
     private function runModuleSeeders(): void
     {
         $commands = $_SERVER['argv'] ?? [];
@@ -210,9 +174,6 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    /**
-     * Seeds all modules that have seeders defined.
-     */
     private function seedModules(): void
     {
         $modules = config('modules.modules', []);
@@ -223,9 +184,6 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    /**
-     * Runs the seeder for a specific module.
-     */
     private function runSeederForModule(string $module): void
     {
         $fullClassName = "Lareon\\Modules\\{$module}\\Database\\Seeders\\{$module}DatabaseSeeder";
@@ -234,5 +192,10 @@ class {{ class }} extends ServiceProvider
         if (file_exists($mainSeederPath) && class_exists($fullClassName)) {
             Artisan::call('db:seed', ['--class' => $fullClassName]);
         }
+    }
+
+    private function isSelfProvider($provider)
+    {
+        return defined("$provider::TYPE") && $provider::TYPE === 'self';
     }
 }
