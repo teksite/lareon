@@ -14,7 +14,7 @@ class ObserverMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-observer {name}
+    protected $signature = 'lareon:make-observer {name}
         {--f|force : Create the class even if the cast already exists }
         {--m|model= : Generate a resource controller for the given model}
     ';

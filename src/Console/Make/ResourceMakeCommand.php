@@ -11,7 +11,7 @@ class ResourceMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-resource {name}
+    protected $signature = 'lareon:make-resource {name}
      {--f|force : Create the class even if the resource already exists },
      {--c|collection : Create a resource collection },
     ';

@@ -12,7 +12,7 @@ class JobMiddlewareMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'cms:make-job-middleware {name}
+    protected $signature = 'lareon:make-job-middleware {name}
     ';
 
     protected $description = 'Create a new middleware for jobs in the cms';

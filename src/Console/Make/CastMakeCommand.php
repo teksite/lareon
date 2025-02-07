@@ -11,7 +11,7 @@ class CastMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-cast {name}
+    protected $signature = 'lareon:make-cast {name}
          {--f|force : Create the class even if the cast already exists }
          {--inbound : Generate an inbound cast class }
         ';

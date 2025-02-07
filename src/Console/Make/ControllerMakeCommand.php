@@ -18,7 +18,7 @@ class ControllerMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-controller {name}
+    protected $signature = 'lareon:make-controller {name}
      {--A|api : Exclude the create and edit methods from the controller,}
      {--type= : Manually specify the controller stub file to use}
      {--i|invokable : Generate a single method, invokable controller class}
@@ -144,7 +144,7 @@ class ControllerMakeCommand extends GeneratorCommand
         $parentModelClass = $this->parseModel($this->option('parent'));
         if (!class_exists($parentModelClass) &&
             confirm("A {$parentModelClass} model does not exist. Do you want to generate it?", default: true)) {
-            $this->call('cms:make-model', ['name' => $parentModelClass]);
+            $this->call('lareon:make-model', ['name' => $parentModelClass]);
         }
 
         return [
@@ -171,7 +171,7 @@ class ControllerMakeCommand extends GeneratorCommand
         $modelClass = $this->parseModel($this->option('model'));
 
         if (!class_exists($modelClass) && confirm("A {$modelClass} model does not exist. Do you want to generate it?", default: true)) {
-            $this->call('cms:make-model', ['name' => $modelClass]);
+            $this->call('lareon:make-model', ['name' => $modelClass]);
         }
 
         $replace = $this->buildFormRequestReplacements($replace, $modelClass);
@@ -257,13 +257,13 @@ class ControllerMakeCommand extends GeneratorCommand
     protected function generateFormRequests($modelClass, $storeRequestClass, $updateRequestClass)
     {
         $storeRequestClass = 'Store' . class_basename($modelClass) . 'Request';
-        $this->call('cms:make-request', [
+        $this->call('lareon:make-request', [
             'name' => $storeRequestClass,
         ]);
 
         $updateRequestClass = 'Update' . class_basename($modelClass) . 'Request';
 
-        $this->call('cms:make-request', [
+        $this->call('lareon:make-request', [
             'name' => $updateRequestClass,
         ]);
 

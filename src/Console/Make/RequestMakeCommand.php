@@ -10,7 +10,7 @@ class RequestMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-request {name}
+    protected $signature = 'lareon:make-request {name}
          {--f|force : Create the class even if the cast already exists }
          {--api : return json } ';
 

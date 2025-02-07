@@ -10,8 +10,8 @@ class FactoryMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-factory {name}
-        {--model= : The name of the model}
+    protected $signature = 'lareon:make-factory {name}
+        {--model= : The name of the model }
     ';
 
     protected $description = 'Create a new factory class in the cms';

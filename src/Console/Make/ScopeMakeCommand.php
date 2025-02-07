@@ -11,7 +11,7 @@ class ScopeMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-scope {name}
+    protected $signature = 'lareon:make-scope {name}
      {--f|force : Create the class even if the resource already exists },
     ';
 

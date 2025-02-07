@@ -18,7 +18,7 @@ class ViewMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-view {name}
+    protected $signature = 'lareon:make-view {name}
          {--f|force : Create the test even if the view already exists }
          {--extension=blade.php : The extension of the generated view }
 

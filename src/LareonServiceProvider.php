@@ -5,6 +5,7 @@ namespace Teksite\Lareon;
 use Illuminate\Support\ServiceProvider;
 use Teksite\Lareon\Console\Install\InstallerCommand;
 use Teksite\Lareon\Console\Make\CastMakeCommand;
+use Teksite\Lareon\Console\Migrate\SeedCommand;
 use Teksite\Lareon\Services\LareonServices;
 use Teksite\Lareon\Console\Make\ChannelMakeCommand;
 use Teksite\Lareon\Console\Make\ClassMakeCommand;
@@ -119,6 +120,9 @@ class LareonServiceProvider extends ServiceProvider
             TestMakeCommand::class,
             TraitMakeCommand::class,
             ViewMakeCommand::class,
+
+            SeedCommand::class
+
         ]);
     }
 

@@ -14,7 +14,7 @@ class TestMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-test {name}
+    protected $signature = 'lareon:make-test {name}
          {--f|force : Create the test even if the test already exists }
          {--u|unit : Create a unit test }
          {--pest : Create a Pest test }

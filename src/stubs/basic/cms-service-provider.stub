@@ -15,7 +15,6 @@ class {{ class }} extends ServiceProvider
     {
         $this->mergeConfigurations();
         $this->registerProviders();
-        $this->registerViews();
     }
 
     /**
@@ -23,6 +22,7 @@ class {{ class }} extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->bootViews();
         $this->bootTranslations();
         $this->bootCommands();
         $this->bootCommandSchedules();
@@ -51,7 +51,7 @@ class {{ class }} extends ServiceProvider
     /**
      * Register views and Blade components.
      */
-    private function registerViews(): void
+    private function bootViews(): void
     {
         $viewPath = resource_path('views/lareon');
         $sourcePath = cms_path('resources/views');
@@ -59,7 +59,7 @@ class {{ class }} extends ServiceProvider
         $this->publishes([$sourcePath => $viewPath], ['views', 'lareon']);
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'lareon');
 
-        Blade::componentNamespace(cms_namespace('Lareon', cms_path('Lareon', 'App/View/Components')), 'lareon');
+        Blade::componentNamespace(cms_namespace('App\\View\\Components'), 'lareon');
     }
 
     /**

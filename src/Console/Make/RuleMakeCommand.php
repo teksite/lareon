@@ -11,7 +11,7 @@ class RuleMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-rule {name}
+    protected $signature = 'lareon:make-rule {name}
      {--f|force : Create the class even if the resource already exists },
      {--i|implicit : Generate an implicit rule },
     ';

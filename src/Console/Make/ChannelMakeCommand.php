@@ -16,7 +16,7 @@ class ChannelMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'cms:make-channel {name}
+    protected $signature = 'lareon:make-channel {name}
         --f|force : Create the class even if the cast already exists }
         ';
 

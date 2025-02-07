@@ -15,7 +15,7 @@ class NotificationMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-notification {name}
+    protected $signature = 'lareon:make-notification {name}
         {--f|force : Create the class even if the cast already exists }
         {--m|markdown= : Create a new Markdown template for the mailable}
     ';

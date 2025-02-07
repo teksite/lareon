@@ -13,7 +13,7 @@ class ExceptionMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-exception {name}
+    protected $signature = 'lareon:make-exception {name}
         {--f|force : Create the class even if the event already exists }
         {--render : Create the exception with an empty render method}
         {--report : Create the exception with an empty report method}

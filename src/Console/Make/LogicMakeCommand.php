@@ -11,7 +11,7 @@ class LogicMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'cms:make-logic {name} ';
+    protected $signature = 'lareon:make-logic {name} ';
 
 
     protected $description = 'Create a new logic class (repository and logic layer) in the cms';

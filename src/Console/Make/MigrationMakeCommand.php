@@ -18,7 +18,7 @@ class MigrationMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'cms:make-migration {name}
+    protected $signature = 'lareon:make-migration {name}
         {--create= : The table to be created }
         {--table= : The table to migrate }
         ';

@@ -12,7 +12,7 @@ class JobMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'cms:make-job {name}
+    protected $signature = 'lareon:make-job {name}
      {--f|force : Create the class even if the job already exists }
      {--sync : Indicates that job should be synchronous }
     ';

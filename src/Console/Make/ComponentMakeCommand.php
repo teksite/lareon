@@ -21,7 +21,7 @@ class ComponentMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'cms:make-component {name}
+    protected $signature = 'lareon:make-component {name}
      {--f|force : Create the class even if the cast already exists }
      {--inline : Create a component that renders an inline view }
      {--view : Create an anonymous component with only a view }
@@ -124,7 +124,7 @@ class ComponentMakeCommand extends GeneratorCommand
         }
         return str_replace(
             ['DummyView', '{{ view }}'],
-            'view(\'cms::'.$this->getView().'\')',
+            'view(\'lareon::'.$this->getView().'\')',
             parent::buildClass($name)
         );
     }

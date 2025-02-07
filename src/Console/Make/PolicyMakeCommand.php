@@ -11,7 +11,7 @@ class PolicyMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-policy {name}
+    protected $signature = 'lareon:make-policy {name}
         {--f|force= : Create the class even if the policy already exists }
         {--m|model= : The model that the policy applies to }
         {--g|guard= : The guard that the policy relies on }

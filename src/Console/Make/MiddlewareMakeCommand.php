@@ -10,7 +10,7 @@ class MiddlewareMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-middleware {name} ';
+    protected $signature = 'lareon:make-middleware {name} ';
 
     protected $description = 'Create a new middleware class in the cms';
 

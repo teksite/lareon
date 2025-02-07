@@ -11,7 +11,7 @@ class ProviderMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-provider {name}
+    protected $signature = 'lareon:make-provider {name}
         {--f|force : Create the class even if the cast already exists }
     ';
 

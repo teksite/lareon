@@ -16,7 +16,7 @@ class ModelMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'cms:make-model {name}
+    protected $signature = 'lareon:make-model {name}
             {--a|all : Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model }
             {--c|controller : Create a new controller for the model }
             {--f|factory : Create a new factory for the model }
@@ -87,7 +87,7 @@ class ModelMakeCommand extends GeneratorCommand
         $factory = Str::studly($this->argument('name'));
 
 
-        $this->call('cms:make-factory', [
+        $this->call('lareon:make-factory', [
             'name' => "{$factory}Factory",
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
@@ -106,7 +106,7 @@ class ModelMakeCommand extends GeneratorCommand
             $table = Str::singular($table);
         }
 
-        $this->call('cms:make-migration', [
+        $this->call('lareon:make-migration', [
             'name' => "create_{$table}_table",
             '--create' => $table,
         ]);
@@ -122,7 +122,7 @@ class ModelMakeCommand extends GeneratorCommand
         $seeder = Str::studly(class_basename($this->argument('name')));
 
 
-        $this->call('cms:make-seeder', [
+        $this->call('lareon:make-seeder', [
             'name' => "{$seeder}Seeder",
         ]);
     }
@@ -137,7 +137,7 @@ class ModelMakeCommand extends GeneratorCommand
         $controller = Str::studly(class_basename($this->argument('name')));
 
         $modelName = $this->qualifyClass($this->getNameInput());
-        $this->call('cms:make-controller', array_filter([
+        $this->call('lareon:make-controller', array_filter([
             'name' => "{$controller}Controller",
             '--model' => $this->option('resource') || $this->option('api') ? $modelName : null,
             '--api' => $this->option('api'),
@@ -156,11 +156,11 @@ class ModelMakeCommand extends GeneratorCommand
     {
         $request = Str::studly(class_basename($this->argument('name')));
 
-        $this->call('cms:make-request', [
+        $this->call('lareon:make-request', [
             'name' => "Store{$request}Request",
         ]);
 
-        $this->call('cms:make-request', [
+        $this->call('lareon:make-request', [
             'name' => "Update{$request}Request",
         ]);
     }
@@ -175,7 +175,7 @@ class ModelMakeCommand extends GeneratorCommand
         $policy = Str::studly(class_basename($this->argument('name')));
 
 
-        $this->call('cms:make-policy', [
+        $this->call('lareon:make-policy', [
             'name' => "{$policy}Policy",
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);

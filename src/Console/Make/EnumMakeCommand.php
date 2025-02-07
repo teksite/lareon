@@ -25,7 +25,7 @@ class EnumMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'cms:make-enum {name}
+    protected $signature = 'lareon:make-enum {name}
          {--f|force : Create the class even if the cast already exists }
          {--s|string : Generate a string backed enum. }
          {--i|int : Generate an integer backed enum. }

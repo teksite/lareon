@@ -11,7 +11,7 @@ class SeederMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-seeder {name}
+    protected $signature = 'lareon:make-seeder {name}
     ';
 
 

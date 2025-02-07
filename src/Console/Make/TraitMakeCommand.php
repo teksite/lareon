@@ -13,7 +13,7 @@ class TraitMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-trait {name}
+    protected $signature = 'lareon:make-trait {name}
          {--f|force : Create the test even if the test already exists }
     ';
 

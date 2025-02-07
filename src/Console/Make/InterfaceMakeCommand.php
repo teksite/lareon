@@ -10,7 +10,7 @@ class InterfaceMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-interface {name}
+    protected $signature = 'lareon:make-interface {name}
          {--f|force : Create the class even if the cast already exists }
     ';
 

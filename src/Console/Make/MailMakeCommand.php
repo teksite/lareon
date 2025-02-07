@@ -17,8 +17,8 @@ class MailMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait, CreatesMatchingTest;
 
-    // protected $name = 'cms:make-mail';
-    protected $signature = 'cms:make-mail {name}
+    // protected $name = 'lareon:make-mail';
+    protected $signature = 'lareon:make-mail {name}
     {--force= : Create a new Blade template for the mailable (true false) }
     {--m|markdown= : Create a new Markdown template for the mailable }
     {--view= : Create a new Blade template for the mailable }

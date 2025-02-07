@@ -16,7 +16,7 @@ class ClassMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'cms:make-class {name}
+    protected $signature = 'lareon:make-class {name}
         {--f|force : Create the class even if the cast already exists }
         {--i|invokable : Generate a single method, invokable class }
         ';

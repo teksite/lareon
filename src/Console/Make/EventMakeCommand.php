@@ -11,7 +11,7 @@ class EventMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait;
 
-    protected $signature = 'cms:make-event {name}
+    protected $signature = 'lareon:make-event {name}
         {--f|force : Create the class even if the event already exists }
     ';
 

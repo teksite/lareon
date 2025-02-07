@@ -12,7 +12,7 @@ class CommandMakeCommand extends GeneratorCommand
 {
     use  CmsCommandsTrait;
 
-    protected $signature = 'cms:make-command {name}
+    protected $signature = 'lareon:make-command {name}
          {--f|force : Create the class even if the console command already exists }
          {--command : he terminal command that will be used to invoke the class }
          ';

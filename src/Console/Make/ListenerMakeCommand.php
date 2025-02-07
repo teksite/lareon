@@ -15,7 +15,7 @@ class ListenerMakeCommand extends GeneratorCommand
 {
     use CmsCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'cms:make-listener {name}
+    protected $signature = 'lareon:make-listener {name}
         {--e|event= : The event class being listened  for}
         {--f|force : Create the class even if the listener already exists }
         {--queued : Indicates the event listener should be queued }
