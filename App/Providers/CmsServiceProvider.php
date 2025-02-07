@@ -1,0 +1,159 @@
+<?php
+
+namespace Lareon\CMS\App\Providers;
+
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\ServiceProvider;
+use Lareon\CMS\App\Models\User;
+use Lareon\CMS\Database\Seeders\CmsDatabaseSeeder;
+use Teksite\Lareon\Facade\Lareon;
+
+class CmsServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the service provider.
+     */
+    public function register(): void
+    {
+        $this->mergeConfigurations();
+        $this->registerProviders();
+        $this->setDefault();
+    }
+
+    /**
+     * Boot the application events.
+     */
+    public function boot(): void
+    {
+        $this->bootViews();
+        $this->bootTranslations();
+        $this->bootCommands();
+        $this->bootCommandSchedules();
+        $this->loadMigrations();
+    }
+
+    /**
+     * Merge CMS configurations.
+     */
+    protected function mergeConfigurations(): void
+    {
+        $configPath = config_path('cms.php');
+        $cmsConfig = cms_path('config/cms.php');
+        $this->mergeConfigFrom(file_exists($configPath) ? $configPath : $cmsConfig, 'cms');
+    }
+
+    /**
+     * Register additional service providers.
+     */
+    private function registerProviders(): void
+    {
+        $this->app->register(GatesServiceProvider::class);
+        $this->app->register(RouteServiceProvider::class);
+        $this->app->register(EventServiceProvider::class);
+    }
+
+    /**
+     * Register views and Blade components.
+     */
+    private function bootViews(): void
+    {
+        $viewPath = resource_path('views/lareon');
+
+        $sourcePath = cms_path('resources/views');
+
+        $this->publishes([$sourcePath => $viewPath], ['views', 'lareon']);
+
+        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), 'lareon');
+
+        Blade::componentNamespace(cms_namespace('App\\View\\Components'), 'lareon');
+    }
+
+    /**
+     * Register translations.
+     */
+    private function bootTranslations(): void
+    {
+        $langPath = Lareon::cmsPath(config('lareon.lang_path', 'lang'));
+
+        if (is_dir($langPath)) {
+            $this->loadTranslationsFrom($langPath, 'cms');
+            $this->loadJsonTranslationsFrom($langPath);
+        }
+    }
+
+    /**
+     * Load CMS migrations.
+     */
+    private function loadMigrations(): void
+    {
+        $migrationPath = Lareon::cmsPath(config('lareon.database.migration_path', 'Database/Migrations'));
+
+        if (is_dir($migrationPath)) {
+            $this->loadMigrationsFrom($migrationPath);
+        }
+    }
+
+    /**
+     * Register commands.
+     */
+    protected function bootCommands(): void
+    {
+        // $this->commands([]);
+    }
+
+    /**
+     * Register command schedules.
+     */
+    protected function bootCommandSchedules(): void
+    {
+        // $this->app->booted(function () {
+        //     $schedule = $this->app->make(Schedule::class);
+        //     $schedule->command('inspire')->hourly();
+        // });
+    }
+
+    /**
+     * Get the services provided by the provider.
+     */
+    public function provides(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get publishable view paths.
+     */
+    private function getPublishableViewPaths(): array
+    {
+        return array_filter(
+            array_map(fn($path) => is_dir("$path/lareon") ? "$path/lareon" : null, config('view.paths'))
+        );
+    }
+
+    /**
+     * Publish CMS files.
+     */
+    public function publish(): void
+    {
+        $this->publishes([
+            cms_path('config/cms.php') => config_path('cms.php')
+        ], 'cms');
+    }
+
+    /**
+     * Register facades (empty method for future use).
+     */
+    private function registerFacades(): void
+    {
+        //
+    }
+
+    private function setDefault()
+    {
+        Config::set('auth.providers.users.model', User::class);
+    }
+
+
+}
