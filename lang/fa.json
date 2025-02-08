@@ -4,5 +4,20 @@
     "welcome :title": ":title خوش آمدی",
     "visit :title": "مشاهده :title",
     "close": "بستن",
-    "open":"باز کردن"
+    "open":"باز کردن",
+    "icons": "آیکون‌ها",
+    "list of :title ": "لیست :title",
+    "permission": "اجازه",
+    "permissions": "اجازه‌ها",
+    "role":"نقش",
+    "roles":"نقش‌ها",
+    "create a new item": "ایجاد آیتم جدید",
+    "title": "عنوان",
+    "enter a unique title": "یک عنوان منحصر به فرد وارد کنید",
+    ":title list": "لیست :title",
+    "introduction": "مقدمه",
+    "description": "توصیف",
+    "explanation": "توضیح",
+    "content": "محتوا",
+    "body": "بدنه"
 }

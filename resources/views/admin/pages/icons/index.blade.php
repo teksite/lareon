@@ -1,4 +1,5 @@
 <x-lareon::admin-layout>
+            @section('title' , __(':title list' ,['title'=>__('icons')]))
     <div class="bg-zinc-900 text-gray-200 rounded mb-6">
 <pre><code>
 <span class="block bg-zinc-800 border-s-6 border-green-600 px-3 py-1"><span class=""><</span>i class='tkicon stroke-black fill-none' size='24' data-icon='example'><span><</span>/i></span>

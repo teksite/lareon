@@ -1,8 +1,22 @@
 @import "tailwindcss";
 @source "../views";
 
+@theme {
+    --color-main_color: #ff4c28;
+    --color-second_color: #51a2ff;
+
+}
 
 @layer components{
+    h1{
+        @apply text-5xl font-bold mb-1 capitalize
+    }
+    h2{
+        @apply text-3xl font-bold mb-1 capitalize
+    }
+    h3{
+        @apply text-lg font-bold mb-1 capitalize
+    }
     .x-box{
         @apply bg-white shadow rounded border-slate-300 p-3
     }
@@ -10,10 +24,13 @@
         @apply fill-none stroke-current
     }
     .tkicon.active{
-        @apply stroke-blue-600
+        @apply stroke-main_color
     }
     .btn-stroke{
        @apply px-3 py-2 border border-gray-300 rounded-2xl shadow
+    }
+    .input{
+       @apply border border-zinc-600 px-3 py-1 rounded-lg focus:outline-2 focus:outline-blue-600 bg-transparent block w-full
     }
 
 
