@@ -5,21 +5,27 @@ namespace Teksite\Lareon\Console\Migrate;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Lareon\CMS\Database\Seeders\CmsDatabaseSeeder;
+use Teksite\Lareon\Traits\GeneralCommandsTrait;
 use Teksite\Module\Facade\Module;
 
 class SeedCommand extends Command
 {
-    protected $signature = 'lareon:seed';
+    use GeneralCommandsTrait;
 
-    protected $description = 'Seed the module';
+    protected $signature = 'lareon:seed
+    {--m|modules : seed modules too}
+    {--l|laravel : seed modules too}
+    ';
+
+    protected $description = 'Seed the lareon cms';
 
     protected $type = 'Seed';
 
     public function handle()
     {
         $this->callSeedLareon();
-        $this->seedAllModules();
-        $this->callDBseed();
+        if ($this->option('modules')) $this->seedAllModules();
+        if ($this->option('laravel')) $this->callLaravelSeed();
     }
 
 
@@ -27,37 +33,20 @@ class SeedCommand extends Command
     {
         $mainSeeder = CmsDatabaseSeeder::class;
         if (class_exists($mainSeeder)) {
-            $this->line("Seeding: {$mainSeeder}");
-            $startTime = Carbon::now(); // زمان شروع
-            $this->call($mainSeeder);
-            $endTime = Carbon::now(); // زمان پایان
-            $executionTime = $startTime->diffInMilliseconds($endTime); // محاسبه زمان اجرا
-            $this->line(sprintf('%s ................................................................................................ %dms DONE', $mainSeeder, $executionTime));
+
+            $this->print(function () use ($mainSeeder) {
+                $this->call($mainSeeder);
+            }, 'seeding laravel');
             $this->newLine();
         }
     }
 
     protected function seedAllModules()
     {
-       $this->call('module:seed');
+        $this->call('module:seed');
     }
 
-    protected function callModuleSeeders($module): void
-    {
-        $mainSeeder = Module::moduleNamespace($module, "\\Database\\Seeders\\{$module}DatabaseSeeder");
-        if (class_exists($mainSeeder)) {
-            $this->line("Seeding: {$mainSeeder}");
-            $startTime = Carbon::now(); // زمان شروع
-            $this->call($mainSeeder);
-            $endTime = Carbon::now(); // زمان پایان
-            $executionTime = $startTime->diffInMilliseconds($endTime); // محاسبه زمان اجرا
-            $this->line(sprintf('%s ................................................................................................ %dms DONE', $mainSeeder, $executionTime));
-            $this->newLine();
-        }
-    }
-
-
-    protected function callDBseed(): void
+    protected function callLaravelSeed(): void
     {
         $this->call('db:seed');
     }
