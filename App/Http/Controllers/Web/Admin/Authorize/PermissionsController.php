@@ -9,6 +9,7 @@ use Lareon\CMS\App\Logic\PermissionLogic;
 use Lareon\CMS\App\Models\Permission;
 use Lareon\CMS\App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Teksite\Lareon\Facade\WebResponse;
 
 class PermissionsController extends Controller implements HasMiddleware
 {
@@ -30,7 +31,9 @@ class PermissionsController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return view('lareon::admin.pages.authorize.permissions.index');
+        $permissions=$this->logic->getAll()->result;
+
+        return view('lareon::admin.pages.authorize.permissions.index' , compact('permissions'));
 
     }
 
@@ -47,7 +50,8 @@ class PermissionsController extends Controller implements HasMiddleware
      */
     public function store(NewPermission $request)
     {
-
+        $result=$this->logic->register($request->validated());
+        return WebResponse::byResult($result)->go();
     }
 
     /**
@@ -55,7 +59,7 @@ class PermissionsController extends Controller implements HasMiddleware
      */
     public function show(Permission $permission)
     {
-        //
+        abort(404);
     }
 
     /**
@@ -63,7 +67,8 @@ class PermissionsController extends Controller implements HasMiddleware
      */
     public function edit(Permission $permission)
     {
-        //
+        return view('lareon::admin.pages.authorize.permissions.edit' , compact('permission'));
+
     }
 
     /**
@@ -71,7 +76,8 @@ class PermissionsController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Permission $permission)
     {
-        //
+        $result=$this->logic->change($request->validated() , $permission);
+        return WebResponse::byResult($result, ['route'=>route('admin.authorize.permissions.edit' , $permission)])->go();
     }
 
     /**
@@ -79,6 +85,7 @@ class PermissionsController extends Controller implements HasMiddleware
      */
     public function destroy(Permission $permission)
     {
-        //
+        $result=$this->logic->delete($permission);
+        return WebResponse::byResult($result, ['route'=>route('admin.authorize.permissions.index')])->go();
     }
 }

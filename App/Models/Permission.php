@@ -9,6 +9,11 @@ class Permission extends Model
 {
     protected $fillable=['title','description'];
 
+    const rules=[
+        'title'=>'required|string|max:255|unique:auth_permissions,title',
+        'description'=>'nullable|string|max:255',
+    ];
+
     protected $table ='auth_permissions';
 
 

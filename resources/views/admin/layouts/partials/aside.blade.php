@@ -2,13 +2,18 @@
        :class="sidebar ? '-translate-x-full xl:translate-x-0' : 'translate-x-0 xl:-translate-x-full' ">
     <div class="min-h-dvh bg-white xl:bg-transparent shadow-sm xl:shadow-none border border-zinc-200 xl:border-none flex flex-col justify-between p-3 rounded">
        <div class="min-h-full">
-           <div class="mb-6">
-               <h1 class="text-3xl font-bold mb-1 capitalize">
-                   {{config('app.name')}}
-               </h1>
-               <span class="text-zinc-600 font-black text-sm">
+           <div class="mb-6 flex items-center gap-1">
+              <div class="w-16">
+                  <x-lareon::logo />
+              </div>
+              <div>
+                  <h1 class="text-3xl font-bold mb-1 capitalize">
+                      LAREON
+                  </h1>
+                  <span class="text-zinc-600 font-black text-sm">
                {{__('welcome :title' ,['title'=>'sina'])}}!
            </span>
+              </div>
            </div>
            <nav class="">
                <ul class="space-y-6">

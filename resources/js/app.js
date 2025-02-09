@@ -45,6 +45,27 @@ function addToClipboard(content) {
     document.querySelectorAll('.copiedTExtEl').forEach(copiedTExt => copiedTExt.remove());
 }
 
+// delete conformation
+document.querySelectorAll('.deltfrmItms').forEach(form=>{
+   form.addEventListener('submit', e=>{
+       e.preventDefault();
+       const targetId= form.getAttribute('data-target');
+
+       const parenEl =targetId ? document.getElementById(targetId): form.closest('tr') ?? null;
+       if(parenEl) {
+              parenEl.style.opacity='0.5';
+              parenEl.style.backgroundColor='rgba(255,0,0,0.32)';
+       }
+       setTimeout(()=>{
+           const answer =confirm('are you sure?');
+           if(answer) form.submit();
+
+           if(parenEl) parenEl.removeAttribute('style');
+
+       }, 50)
+
+   })
+})
 
 document.addEventListener('DOMContentLoaded', function () {
     iconSetter();
