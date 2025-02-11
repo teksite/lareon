@@ -1,7 +1,10 @@
 <x-lareon::admin-layout>
-    @section('title')
-        @yield('title')
-    @endsection
+
+    @section('title') @yield('title')  @endsection
+
+    @section('header.start') @yield('header.start') @endsection
+    @section('header.end') @yield('header.end')  @endsection
+
     <div class="grid md:grid-cols-3  gap-6">
         <div class="md:col-span-2 flex flex-col gap-6">
             @yield('index')

@@ -2,16 +2,10 @@
 
 namespace Lareon\CMS\App\Providers;
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Lareon\CMS\App\Models\Permission;
-use Lareon\CMS\App\Models\User;
-use Lareon\CMS\Database\Seeders\CmsDatabaseSeeder;
-use Teksite\Lareon\Facade\Lareon;
 
 class GatesServiceProvider extends ServiceProvider
 {

@@ -4,15 +4,16 @@ namespace Lareon\CMS\App\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Lareon\CMS\App\Models\Permission;
+use Lareon\CMS\App\Models\Role;
 
-class UpdatePermission extends FormRequest
+class UpdateRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->can('admin.permission.update');
+        return auth()->check() && auth()->user()->can('admin.role.update');
     }
 
     /**
@@ -22,8 +23,8 @@ class UpdatePermission extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge(Permission::rules , [
-            'title' => ['required', 'string', 'max:255' , Rule::unique('auth_permissions' , 'title')->ignore($this->permission->id)],
+        return array_merge(Role::rules , [
+            'title' => ['required', 'string', 'max:255' , Rule::unique('auth_roles' , 'title')->ignore($this->role->id)],
         ]);
     }
 }

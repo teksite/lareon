@@ -17,8 +17,8 @@ class CmsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigurations();
         $this->registerProviders();
+        $this->mergeConfigurations();
         $this->setDefault();
     }
 
@@ -42,6 +42,10 @@ class CmsServiceProvider extends ServiceProvider
         $configPath = config_path('cms.php');
         $cmsConfig = cms_path('config/cms.php');
         $this->mergeConfigFrom(file_exists($configPath) ? $configPath : $cmsConfig, 'cms');
+
+        $configPath2 = config_path('menu.php');
+        $cmsConfig2 = cms_path('config/menu.php');
+        $this->mergeConfigFrom(file_exists($configPath2) ? $configPath2 : $cmsConfig2, 'menu');
     }
 
     /**
@@ -140,6 +144,10 @@ class CmsServiceProvider extends ServiceProvider
         $this->publishes([
             cms_path('config/cms.php') => config_path('cms.php')
         ], 'cms');
+
+        $this->publishes([
+            cms_path('config/menu.php') => config_path('menu.php')
+        ], 'menu');
     }
 
     /**

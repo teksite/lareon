@@ -16,15 +16,18 @@
               </div>
            </div>
            <nav class="">
-               <ul class="space-y-6">
-                   <x-lareon::accordion.link :title="__('dashboard')" :href="route('admin.dashboard')" icon="gage" icon_size="24" :is_active="Route::currentRouteName() === 'admin.dashboard'"/>
-                   <x-lareon::accordion.nav :title="__('post')" icon="paper-blank" :is_active="request()->routeIs(['admin.dashboard'])">
-                       <x-lareon::accordion.nav-link :title="__('erwer')" :href="route('admin.dashboard')" :is_active="request()->routeIs(['admin.dashboard'])"/>
-                   </x-lareon::accordion.nav>
-
-                   <x-lareon::accordion.nav :title="__('appearance')" icon="columns-three" :is_active="request()->routeIs(['admin.appearance.*'])">
-                       <x-lareon::accordion.nav-link :title="__('icons')" :href="route('admin.appearance.icons.index')" :is_active="request()->routeIs(['admin.appearance.icons.index'])"/>
-                   </x-lareon::accordion.nav>
+               <ul class="menu space-y-6">
+                   @foreach (\Lareon\CMS\App\Service\MenuHelper::getMenu() as $menu)
+                       @if (isset($menu['sub']))
+                           <x-lareon::accordion.nav :title="$menu['label']" :icon="$menu['icon']" :is_active="$menu['is_active']">
+                               @foreach ($menu['sub'] as $sub)
+                                   <x-lareon::accordion.nav-link :title="$sub['label']" :href="$sub['href']" :is_active="$sub['is_active']"/>
+                               @endforeach
+                           </x-lareon::accordion.nav>
+                       @else
+                           <x-lareon::accordion.link :title="$menu['label']" :href="$menu['href']" :icon="$menu['icon']" :is_active="$menu['is_active']"/>
+                       @endif
+                   @endforeach
                </ul>
            </nav>
        </div>

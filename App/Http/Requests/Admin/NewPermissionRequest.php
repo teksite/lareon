@@ -4,7 +4,7 @@ namespace Lareon\CMS\App\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use Lareon\CMS\App\Models\Permission;
 
-class NewPermission extends FormRequest
+class NewPermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

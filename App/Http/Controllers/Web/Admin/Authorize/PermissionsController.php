@@ -4,7 +4,8 @@ namespace Lareon\CMS\App\Http\Controllers\Web\Admin\Authorize;
 
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use Lareon\CMS\App\Http\Requests\Admin\NewPermission;
+use Lareon\CMS\App\Http\Requests\Admin\NewPermissionRequest;
+use Lareon\CMS\App\Http\Requests\Admin\UpdatePermissionRequest;
 use Lareon\CMS\App\Logic\PermissionLogic;
 use Lareon\CMS\App\Models\Permission;
 use Lareon\CMS\App\Http\Controllers\Controller;
@@ -48,7 +49,7 @@ class PermissionsController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
-    public function store(NewPermission $request)
+    public function store(NewPermissionRequest $request)
     {
         $result=$this->logic->register($request->validated());
         return WebResponse::byResult($result)->go();
@@ -74,7 +75,7 @@ class PermissionsController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Permission $permission)
+    public function update(UpdatePermissionRequest $request, Permission $permission)
     {
         $result=$this->logic->change($request->validated() , $permission);
         return WebResponse::byResult($result, ['route'=>route('admin.authorize.permissions.edit' , $permission)])->go();

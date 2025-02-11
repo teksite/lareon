@@ -67,7 +67,28 @@ document.querySelectorAll('.deltfrmItms').forEach(form=>{
    })
 })
 
+function detectMakeHideBtn (){
+    const hideBtns =document.querySelectorAll('.hideBtn')
+    if (hideBtns.length){
+        hideBtns.forEach(hideBtn=>{
+            hideBtn.addEventListener('click',e=>{
+                e.preventDefault();
+                const targetId=  hideBtn.getAttribute('data-target')
+                const target = targetId ?document.getElementById(targetId) : null
+                if(target){
+                    target.style.transition='all 250ms linear'
+                    target.style.opacity="0";
+                    setTimeout(function (){
+                        target.remove();
+                    } ,500);
+                }
+            })
+        })
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+    detectMakeHideBtn();
     iconSetter();
 });
 

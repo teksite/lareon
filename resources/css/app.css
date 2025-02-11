@@ -18,7 +18,7 @@
         @apply text-lg font-bold mb-1 capitalize
     }
     .x-box{
-        @apply bg-white shadow rounded border-slate-300 p-6
+        @apply bg-white shadow rounded-lg border-slate-300 p-6
     }
     .tkicon{
         @apply fill-none stroke-current
@@ -30,7 +30,7 @@
        @apply px-3 py-2 border border-gray-300 rounded-2xl shadow
     }
     .input{
-       @apply border border-zinc-600 px-3 py-1 rounded-lg focus:outline-2 focus:outline-blue-600 bg-transparent block w-full
+       @apply border border-zinc-300 px-3 py-1 rounded focus:outline-2 focus:outline-blue-600 bg-transparent block w-full
     }
     table.tableData td{
         @apply p-2
@@ -41,6 +41,4 @@
     table.tableData tr:hover .action{
         @apply visible
     }
-
-
 }

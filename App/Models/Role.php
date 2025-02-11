@@ -11,6 +11,13 @@ class Role extends Model
 
     protected $fillable =['title', 'description'];
 
+    const rules=[
+        'title'=>'required|string|max:255|unique:auth_roles,title',
+        'description'=>'nullable|string|max:255',
+        'permissions'=>'array|required',
+        'permissions.*'=>'exists:auth_permissions,id',
+    ];
+
 
     public function permissions()
     {
