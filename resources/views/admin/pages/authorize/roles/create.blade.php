@@ -7,6 +7,7 @@
     @section('form')
         <x-lareon::sections.text :title="__('title')" name="title" :placeholder="__('enter a unique title')" :required="true"/>
         <x-lareon::sections.text :title="__('description')" name="description" :placeholder="__('write a :title' ,['title'=>__('description')])" :required="false"/>
+        <x-lareon::sections.text :value="\Lareon\CMS\App\Models\User::hierarchy('min') + 1" type="number" :title="__('hierarchy')" name="hierarchy" :placeholder="__('write a :title' ,['title'=>__('hierarchy')])" :required="true"/>
     @endsection
     @section('aside')
         <x-lareon::sections.permissions />

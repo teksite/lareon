@@ -16,14 +16,17 @@ class RolesDatabaseSeeder extends Seeder
     public function run(): void
     {
         Role::query()->insert([
-            ['title'=>'owner', 'description'=>'owner of the app' ],
-            ['title'=>'administrator', 'description'=>'full control' ],
-            ['title'=>'admin', 'description'=>'full control but not on administrator users' ],
-            ['title'=>'user', 'description'=>'regular client with client\'s permissions' ],
-            ['title'=>'ban', 'description'=>'has no permission' ],
+            ['title'=>'owner', 'description'=>'owner of the app', 'hierarchy'=>1 ],
+            ['title'=>'administrator', 'description'=>'full control', 'hierarchy'=>1 ],
+            ['title'=>'admin', 'description'=>'full control but not on administrator users', 'hierarchy'=>5 ],
+            ['title'=>'user', 'description'=>'regular client with client\'s permissions', 'hierarchy'=>20 ],
+            ['title'=>'ban', 'description'=>'has no permission', 'hierarchy'=>100 ],
 
         ]);
 
         Role::query()->firstWhere(['title'=>'owner'])?->permissions()->attach(Permission::all()->pluck('id')->toArray());
+        Role::query()->firstWhere(['title'=>'administrator'])?->permissions()->attach(Permission::all()->pluck('id')->toArray());
+        Role::query()->firstWhere(['title'=>'admin'])?->permissions()->attach(Permission::all()->pluck('id')->toArray());
+        Role::query()->firstWhere(['title'=>'user'])?->permissions()->attach(Permission::where('title','LIKE', 'clinet%')->pluck('id')->toArray());
     }
 }

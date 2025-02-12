@@ -8,11 +8,12 @@
     @endsection
     @section('index')
         <x-lareon::box>
-            <x-lareon::table :headers="['id'=>'#','title'=>__('title') , __('description') ,]">
+            <x-lareon::table :headers="['id'=>'#','title'=>__('title'),'hierarchy'=>__('hierarchy') , __('description') ,]">
                 @foreach($roles as $key=>$role)
                     <tr>
                         <td class="p-3">{{$roles->firstItem() + $key}}</td>
                         <td>{{$role->title}}</td>
+                        <td>{{$role->hierarchy}}</td>
                         <td>{{$role->description}}</td>
                         <td>
                             <div class="action">

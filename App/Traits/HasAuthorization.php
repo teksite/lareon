@@ -5,6 +5,7 @@ namespace Lareon\CMS\App\Traits;
 use Illuminate\Support\Collection;
 use Lareon\CMS\App\Models\Permission;
 use Lareon\CMS\App\Models\Role;
+use Lareon\CMS\App\Models\User;
 
 trait HasAuthorization
 {
@@ -37,29 +38,40 @@ trait HasAuthorization
 
     public function hasRole(string|int|array|Role|Collection $roles): bool
     {
-        if (is_int($roles)) {
+        if (is_string($roles)) {
             $roles = Role::query()->where('title', $roles)->first('id');
-        }
-
-        if (is_int($roles)) {
+        }elseif (is_int($roles)) {
             $roles = Role::find($roles);
-        }
-
-        if ($roles instanceof Role) {
+        }elseif ($roles instanceof Role) {
             $roles = Role::query()->find($roles ,'id');
         }
-        return !!$roles->intersect($this->roles->pluck('id'))->all();
+
+        return !!collect($roles)->pluck('id')->intersect($this->roles->pluck('id'))->count();
     }
     public function hasPermission(string|int|Permission $permission): bool
     {
+
         if (is_string($permission)) {
-            $permission = Permission::query()->where('title', $permission)->with('roles')->first('id');
+            $permission = Permission::query()->where('title', $permission)->with('roles', function ($query){
+                $query->select(['title', 'id']);
+            })->first('id');
+        }elseif (is_int($permission)) {
+            $permission = Permission::query()->where('id', $permission)->with('roles', function ($query){
+                $query->select(['title', 'id']);
+            })->first('id');
         }
-        if ($permission instanceof Permission) {
-            $permission = $permission->with('roles')->first();
-        }
+        if($permission->exists ===false) return false;
         return $this->permissions->contains('id', $permission->id) || $this->hasRole($permission->roles);
     }
+
+    public function allPermission()
+    {
+        return $this->roles->map(function ($role) {
+           return $role->permissions;
+        })->flatten()->merge($this->permissions)->unique('id');
+    }
+
+
 }
 
 

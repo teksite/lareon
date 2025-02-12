@@ -22,7 +22,16 @@ class UserSeeder extends Seeder
         $administrator->markPhoneAsVerified();
         $administrator->markEmailAsVerified();
 
-        $administrator->permissions()->attach(Permission::all(['id']));
         $administrator->roles()->attach([2]);
+
+        $user = User::factory()->create([
+            'name' => 'sina zb',
+            'email' => 'zb.sina@gmail.com',
+            'phone' => '09382295516',
+        ]);
+        $user->roles()->attach([3]);
+        $user->markPhoneAsVerified();
+        $user->markEmailAsVerified();
+
     }
 }

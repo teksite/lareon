@@ -11,6 +11,10 @@ class Permission extends Model
 
     protected $table ='auth_permissions';
 
+    const rules =[
+        'title'=>'required|string|max:255|unique:auth_permissions,title',
+        'description'=>'nullable|string|max:255',
+    ];
 
     public function roles()
     {

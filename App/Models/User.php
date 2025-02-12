@@ -15,14 +15,14 @@ use Lareon\CMS\Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, MustVerifyEmail ,HasAuthorization;
+    use HasFactory, Notifiable, MustVerifyEmail, HasAuthorization;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
-    protected $fillable = ['name', 'email', 'phone', 'password', 'featured_image', 'telegram_id' ,'parent_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'featured_image', 'telegram_id', 'parent_id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -36,7 +36,7 @@ class User extends Authenticatable
      *
      * @return UserFactory|Factory
      */
-    protected static function newFactory(): UserFactory|\Illuminate\Database\Eloquent\Factories\Factory
+    protected static function newFactory(): UserFactory|Factory
     {
         return UserFactory::new();
     }
@@ -73,6 +73,19 @@ class User extends Authenticatable
         static::creating(function ($model) {
             $model->public_id = (string)Str::ulid();
         });
+    }
+
+    public static function hierarchy($min = true, $max = false)
+    {
+        $hierarchy = [];
+        $hierarchy['min'] = auth()->user()->roles()->max('hierarchy');
+        $hierarchy['max'] = auth()->user()->roles()->max('hierarchy');
+        if($min && $max===false ){
+            return $hierarchy['min'];
+        }elseif ($min===false && $max){
+            return $hierarchy['max'];
+        }
+        return $hierarchy;
     }
 
 

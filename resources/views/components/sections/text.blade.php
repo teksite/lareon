@@ -1,4 +1,4 @@
-@props(['name' ,'title' , 'placeholder'=>null ,'value'=>null , 'required'=>false])
+@props(['name' ,'title' , 'placeholder'=>null ,'value'=>null , 'required'=>false , 'type'=>'text'] )
 @php
     $random=strtolower(\Illuminate\Support\Str::random(4)).rand(1000 ,9999);
       $stringifiedName=stringifyName($name)
@@ -7,6 +7,6 @@
 
 <div class="mb-3">
     <x-lareon::input.label for="{{$random}}" :title="$title"/>
-    <x-lareon::input.text  :name="$name" id="{{$random}}" placeholder="{{$placeholder}}" :value="old($stringifiedName)?? $value" :required="true"/>
+    <x-lareon::input.text :type="$type ?? 'text'" :name="$name" id="{{$random}}" placeholder="{{$placeholder}}" :value="old($stringifiedName)?? $value" :required="$required"/>
     <x-lareon::input.error :messages="$errors->get($stringifiedName)"/>
 </div>

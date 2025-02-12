@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->unique();
             $table->string('description')->nullable();
+            $table->float('hierarchy', 2)->default(15);
             $table->timestamps();
         });
         Schema::create('auth_permission_role', function (Blueprint $table) {

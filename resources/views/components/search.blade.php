@@ -6,7 +6,7 @@
                 <i class="tkicon" data-icon="magnifier" size="20"></i>
             </button>
             @if(request()->s)
-                <a href="{{request()->fullUrlWithoutQuery(['s'])}}" title="{{__('all')}}" class="min-w-fit border-s ps-3 border-zinc-300 px-3 hover:cursor-pointer">
+                <a href="{{request()->fullUrlWithoutQuery(['s'])}}" title="{{__('all')}}" class="min-w-fit text-sm font-semibold border-s ps-3 border-zinc-300 px-3 hover:cursor-pointer">
                     {{__('all')}}
                 </a>
             @endif

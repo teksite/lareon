@@ -23,7 +23,7 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge(Role::rules , [
+        return array_merge(Role::rules() , [
             'title' => ['required', 'string', 'max:255' , Rule::unique('auth_roles' , 'title')->ignore($this->role->id)],
         ]);
     }

@@ -9,15 +9,20 @@ class Role extends Model
 {
     protected $table='auth_roles';
 
-    protected $fillable =['title', 'description'];
+    protected $fillable =['title', 'description' ,'hierarchy'];
 
-    const rules=[
-        'title'=>'required|string|max:255|unique:auth_roles,title',
-        'description'=>'nullable|string|max:255',
-        'permissions'=>'array|required',
-        'permissions.*'=>'exists:auth_permissions,id',
-    ];
 
+    public static  function rules(): array
+    {
+        return [
+            'title'=>'required|string|max:255|unique:auth_roles,title',
+            'description'=>'nullable|string|max:255',
+            'permissions'=>'array|required',
+            'permissions.*'=>'exists:auth_permissions,id',
+            'hierarchy'=>['required','numeric','max:100' , "min:".User::hierarchy('min')],
+        ];
+
+    }
 
     public function permissions()
     {

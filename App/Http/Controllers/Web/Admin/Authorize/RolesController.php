@@ -10,11 +10,13 @@ use Lareon\CMS\App\Logic\RoleLogic;
 use Lareon\CMS\App\Models\Role;
 use Lareon\CMS\App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Lareon\CMS\App\Models\User;
 use Teksite\Lareon\Facade\WebResponse;
 
 class RolesController extends Controller implements HasMiddleware
 {
-    public function __construct(public RoleLogic $logic){
+    public function __construct(public RoleLogic $logic)
+    {
 
     }
 
@@ -27,13 +29,14 @@ class RolesController extends Controller implements HasMiddleware
             new Middleware('can:admin.role.delete', only: ['destroy']),
         ];
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $roles=$this->logic->getAll()->result;
-        return view('lareon::admin.pages.authorize.roles.index' , compact('roles'));
+        $roles = $this->logic->getAll()->result;
+        return view('lareon::admin.pages.authorize.roles.index', compact('roles'));
 
     }
 
@@ -50,8 +53,8 @@ class RolesController extends Controller implements HasMiddleware
      */
     public function store(NewRoleRequest $request)
     {
-        $result=$this->logic->register($request->validated());
-        return WebResponse::byResult($result)->go();
+        $result = $this->logic->register($request->validated());
+        return WebResponse::byResult($result, route('admin.authorize.roles.edit', $result->result))->go();
     }
 
     /**
@@ -67,8 +70,8 @@ class RolesController extends Controller implements HasMiddleware
      */
     public function edit(Role $role)
     {
-        return view('lareon::admin.pages.authorize.roles.edit' , compact('role'));
-
+        $this->hierarchyCheck($role);
+        return view('lareon::admin.pages.authorize.roles.edit', compact('role'));
     }
 
     /**
@@ -76,8 +79,8 @@ class RolesController extends Controller implements HasMiddleware
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        $result=$this->logic->change($request->validated() , $role);
-        return WebResponse::byResult($result, ['route'=>route('admin.authorize.roles.edit' , $role)])->go();
+        $result = $this->logic->change($request->validated(), $role);
+        return WebResponse::byResult($result, route('admin.authorize.roles.edit', $role))->go();
     }
 
     /**
@@ -85,7 +88,14 @@ class RolesController extends Controller implements HasMiddleware
      */
     public function destroy(Role $role)
     {
-        $result=$this->logic->delete($role);
-        return WebResponse::byResult($result, ['route'=>route('admin.authorize.roles.index')])->go();
+        $this->hierarchyCheck($role);
+
+        $result = $this->logic->delete($role);
+        return WebResponse::byResult($result, route('admin.authorize.roles.index'))->go();
+    }
+
+    private function hierarchyCheck(Role $role)
+    {
+        if (User::hierarchy('min') >= $role->hierarchy) abort(403);
     }
 }

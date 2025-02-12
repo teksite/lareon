@@ -21,6 +21,6 @@ class NewRoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        return Role::rules ;
+        return Role::rules() ;
     }
 }

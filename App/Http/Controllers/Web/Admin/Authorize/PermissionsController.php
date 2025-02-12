@@ -78,7 +78,7 @@ class PermissionsController extends Controller implements HasMiddleware
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
         $result=$this->logic->change($request->validated() , $permission);
-        return WebResponse::byResult($result, ['route'=>route('admin.authorize.permissions.edit' , $permission)])->go();
+        return WebResponse::byResult($result, route('admin.authorize.permissions.edit' , $permission))->go();
     }
 
     /**
@@ -87,6 +87,6 @@ class PermissionsController extends Controller implements HasMiddleware
     public function destroy(Permission $permission)
     {
         $result=$this->logic->delete($permission);
-        return WebResponse::byResult($result, ['route'=>route('admin.authorize.permissions.index')])->go();
+        return WebResponse::byResult($result,route('admin.authorize.permissions.index'))->go();
     }
 }
