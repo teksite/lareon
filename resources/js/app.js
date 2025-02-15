@@ -46,49 +46,59 @@ function addToClipboard(content) {
 }
 
 // delete conformation
-document.querySelectorAll('.deltfrmItms').forEach(form=>{
-   form.addEventListener('submit', e=>{
-       e.preventDefault();
-       const targetId= form.getAttribute('data-target');
+document.querySelectorAll('.deltfrmItms').forEach(form => {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const targetId = form.getAttribute('data-target');
 
-       const parenEl =targetId ? document.getElementById(targetId): form.closest('tr') ?? null;
-       if(parenEl) {
-              parenEl.style.opacity='0.5';
-              parenEl.style.backgroundColor='rgba(255,0,0,0.32)';
-       }
-       setTimeout(()=>{
-           const answer =confirm('are you sure?');
-           if(answer) form.submit();
+        const parenEl = targetId ? document.getElementById(targetId) : form.closest('tr') ?? null;
+        if (parenEl) {
+            parenEl.style.opacity = '0.5';
+            parenEl.style.backgroundColor = 'rgba(255,0,0,0.32)';
+        }
+        setTimeout(() => {
+            const answer = confirm('are you sure?');
+            if (answer) form.submit();
 
-           if(parenEl) parenEl.removeAttribute('style');
+            if (parenEl) parenEl.removeAttribute('style');
 
-       }, 50)
+        }, 50)
 
-   })
+    })
 })
 
-function detectMakeHideBtn (){
-    const hideBtns =document.querySelectorAll('.hideBtn')
-    if (hideBtns.length){
-        hideBtns.forEach(hideBtn=>{
-            hideBtn.addEventListener('click',e=>{
+function detectMakeHideBtn() {
+    const hideBtns = document.querySelectorAll('.hideBtn')
+    if (hideBtns.length) {
+        hideBtns.forEach(hideBtn => {
+            hideBtn.addEventListener('click', e => {
                 e.preventDefault();
-                const targetId=  hideBtn.getAttribute('data-target')
-                const target = targetId ?document.getElementById(targetId) : null
-                if(target){
-                    target.style.transition='all 250ms linear'
-                    target.style.opacity="0";
-                    setTimeout(function (){
+                const targetId = hideBtn.getAttribute('data-target')
+                const target = targetId ? document.getElementById(targetId) : null
+                if (target) {
+                    target.style.transition = 'all 250ms linear'
+                    target.style.opacity = "0";
+                    setTimeout(function () {
                         target.remove();
-                    } ,500);
+                    }, 500);
                 }
             })
         })
     }
 }
 
+async function getSystemUsage() {
+    if (document.querySelector('#usageSection')) {
+        let usages = await axios.get('/tkadmin/ajax/settings/system_usage');
+        console.log(usages)
+    }
+
+
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     detectMakeHideBtn();
+    getSystemUsage();
     iconSetter();
 });
 

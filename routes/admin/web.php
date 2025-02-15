@@ -6,12 +6,16 @@ use Lareon\CMS\App\Http\Controllers\Web\Admin\Authorize\PermissionsController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Authorize\RolesController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\DashboardController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Settings\CachesController;
+use Lareon\CMS\App\Http\Controllers\Web\Admin\Settings\InfoController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Settings\LogsController;
 
 Route::get('/', [DashboardController::class, 'show'])->name('dashboard');
 
 
 Route::prefix('settings')->name('settings.')->group(function () {
+    Route::get('info',[InfoController::class,'index'])->name('info.index');
+
+
     Route::prefix('logs')->name('logs.')->group(function () {
         Route::get('/', [LogsController::class, 'show'])->name('show');
         Route::delete('/', [LogsController::class, 'destroy'])->name('delete');

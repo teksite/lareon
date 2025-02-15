@@ -16,11 +16,11 @@
                     @endphp
                     @if(is_string($column))
                         <a href="{{ url()->current() }}?{{ $queryString }}" class="{{request()->order == $column ? 'font-bold text-black' : ''}}">
-                            {{__($title)}}
+                            {{$title}}
                             {{request()->order == $column && $sort=='asc'  ? '↑' : (request()->order == $column && $sort=='desc' ? '↓' :'⇅')}}
                         </a>
                     @else
-                        {{__($title)}}
+                        {{$title}}
                     @endif
 
                 </th>

@@ -31,6 +31,11 @@ return [
             'permission' => 'admin.setting',
             'sub' => [
                 [
+                    "label" => 'info',
+                    'route' => 'admin.settings.info.index',
+                    'is_active' => 'admin.settings.info.index',
+                    'permission' => 'admin.info.read',
+                ], [
                     "label" => 'logs',
                     'route' => 'admin.settings.logs.show',
                     'is_active' => 'admin.settings.logs.show',
@@ -50,7 +55,7 @@ return [
             "label" => "authorization",
             'icon' => 'lock-closed',
             'is_active' => 'admin.authorize.*',
-            'permission' => ['admin.permission.read','admin.role.read'],
+            'permission' => ['admin.permission.read', 'admin.role.read'],
             'sub' => [
                 [
                     "label" => 'permissions',

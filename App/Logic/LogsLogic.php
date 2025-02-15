@@ -20,7 +20,6 @@ class LogsLogic
 
     public function delete($log)
     {
-
         return app(ServiceWrapper::class)(function () use ($log) {
             File::put(base_path('storage/logs/' . $log), '');
         }, hasTransaction: false);

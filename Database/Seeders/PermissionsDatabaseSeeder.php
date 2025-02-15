@@ -36,6 +36,8 @@ class PermissionsDatabaseSeeder extends Seeder
             ['title' => 'admin.log.read', 'description' => 'read all logs in the cms dashboard'],
             ['title' => 'admin.log.delete', 'description' => 'delete content of a log file in the cms dashboard'],
 
+            ['title' => 'admin.info.read', 'description' => 'read all info of the app in the cms dashboard'],
+
             ['title' => 'admin.cache.read', 'description' => 'read all logs in the cms dashboard'],
             ['title' => 'admin.cache.create', 'description' => 'store a in the cms dashboard'],
             ['title' => 'admin.cache.delete', 'description' => 'delete content of a log file in the cms dashboard'],
