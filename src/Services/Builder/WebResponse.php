@@ -56,12 +56,12 @@ class WebResponse
     }
 
 
-    public function byResult(ServiceResult $result, $success = ['route' => null, 'message' => null], $failed = ['route' => null, 'message' => null])
+    public function byResult(ServiceResult $result, ?string $success_route = null, ?string $success_message = null, ?string $failed_route = null, ?string $failed_message = null)
     {
         if ($result->success) {
-            $this->message($success['message'] ?? __('successfully done'))->result(ResponseType::SUCCESS)->data($result->result)->route($success['route'] ?? null);
+            $this->message($success_message ?? __('successfully done'))->result(ResponseType::SUCCESS)->data($result->result)->route($success_route ?? null);
         } else {
-            $this->message($failed['message'] ?? __('unfortunately failed'))->result(ResponseType::FAILED)->data($result->result)->route($failed['route'] ?? null);
+            $this->message($failed_route ?? __('unfortunately failed'))->result(ResponseType::FAILED)->data($result->result)->route($failed_message ?? null);
 
         }
         return $this;
