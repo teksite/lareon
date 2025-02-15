@@ -10,9 +10,9 @@ use Teksite\Handler\Actions\ServiceWrapper;
 
 class LogsLogic
 {
-    public function getAll() : Collection
+    public function getAll(): Collection
     {
-        $filesInfo=File::files(base_path('storage/logs'));
+        $filesInfo = File::files(base_path('storage/logs'));
         return collect($filesInfo)->map(function ($file) {
             return basename($file);
         });
@@ -22,15 +22,15 @@ class LogsLogic
     {
 
         return app(ServiceWrapper::class)(function () use ($log) {
-              File::put(base_path('storage/logs/' . $log) ,'');
-        });
+            File::put(base_path('storage/logs/' . $log), '');
+        }, hasTransaction: false);
     }
 
-    public function getContent(?string $file =null)
+    public function getContent(?string $file = null)
     {
         $default = request()->get("log", 'laravel.log');
         $file ??= $default;
-        return File::get(base_path('storage/logs/'.$file));
+        return File::get(base_path('storage/logs/' . $file));
 
     }
 }

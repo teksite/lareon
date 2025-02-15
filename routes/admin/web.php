@@ -13,13 +13,13 @@ Route::get('/', [DashboardController::class, 'show'])->name('dashboard');
 
 Route::prefix('settings')->name('settings.')->group(function () {
     Route::prefix('logs')->name('logs.')->group(function () {
-        Route::get('/',[LogsController::class, 'show'])->name('show');
-        Route::delete('/',[LogsController::class, 'destroy'])->name('delete');
+        Route::get('/', [LogsController::class, 'show'])->name('show');
+        Route::delete('/', [LogsController::class, 'destroy'])->name('delete');
     });
     Route::prefix('cache')->name('caches.')->group(function () {
-        Route::get('/',[CachesController::class, 'index'])->name('index');
-        Route::post('/',[CachesController::class, 'store'])->name('store');
-        Route::delete('/',[CachesController::class, 'destroy'])->name('delete');
+        Route::get('/', [CachesController::class, 'index'])->name('index');
+        Route::post('/', [CachesController::class, 'store'])->name('store');
+        Route::delete('/', [CachesController::class, 'destroy'])->name('delete');
     });
 });
 
