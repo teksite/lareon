@@ -2,9 +2,8 @@
     @props(['type'=>'create' ,'instance'=>null , 'publishStatus'=>true])
 
     @section('title') @yield('title') @endsection
-
     @section('header.end')
-        <x-lareon::button.solid type="submit" role="submit" class="block w-full" onclick="document.getElementById('createForm').submit()">
+        <x-lareon::button.solid type="submit" role="submit" class="block w-full" onclick="document.getElementById('createForm').submit()" :color="$type ==='update' || $type=='put' ? 'blue' : ($type=='delete' ? __('red') : __('green'))">
             {{$type=='update' || $type=='put' ? __('update') : ($type=='delete' ? __('delete') : __('create'))}}
         </x-lareon::button.solid>
     @endsection
@@ -30,7 +29,7 @@
                     <x-lareon::sections.publish-data :instance="$instance"/>
                 @endif
                 <div class="mt-3">
-                    <x-lareon::button.solid type="submit" role="submit" class="block w-full">
+                    <x-lareon::button.solid type="submit" role="submit" class="block w-full" :color="$type ==='update' || $type=='put' ? 'blue' : ($type=='delete' ? __('red') : __('green'))">
                         {{$type=='update' || $type=='put' ? __('update') : ($type=='delete' ? __('delete') : __('create'))}}
                     </x-lareon::button.solid>
                 </div>

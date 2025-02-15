@@ -1,6 +1,6 @@
 <form action="" method="GET" class="relative">
     <div class="flex gap-1 items-center border border-zinc-300 ps-3 py-1 rounded focus:outline-2 focus:outline-blue-600 bg-transparent  w-full">
-        <input type="text" name="s" class="block w-full outline-none py-1 px-1" value="{{request()->input('s' ,'')}}" >
+        <input type="text" name="s" class="block w-full outline-none bnpx-1" value="{{request()->input('s' ,'')}}" placeholder="{{__('search')}}...">
         <div class="flex items-center ">
             <button type="submit" role="button" title="{{__('search')}}" class="min-w-fit border-s px-3 border-zinc-300 hover:cursor-pointer">
                 <i class="tkicon" data-icon="magnifier" size="20"></i>

@@ -7,27 +7,64 @@ return [
             'icon' => 'gage',
             "label" => "Dashboard",
             'route' => 'admin.dashboard',
+            'permission' => 'admin',
+        ],
+        [
+            'position' => 50,
+            "label" => "appearance",
+            'icon' => 'columns-three',
+            'is_active' => 'admin.appearance.*',
+            'sub' => [
+                [
+                    "label" => 'icons',
+                    'route' => 'admin.appearance.icons.index',
+                    'is_active' => 'admin.appearance.icons.index',
+                ],
+            ]
+        ],
+
+        [
+            'position' => 51,
+            "label" => "settings",
+            'icon' => 'gears',
+            'is_active' => 'admin.settings.*',
+            'permission' => 'admin.setting',
+            'sub' => [
+                [
+                    "label" => 'logs',
+                    'route' => 'admin.settings.logs.show',
+                    'is_active' => 'admin.settings.logs.show',
+                    'permission' => 'admin.log.show',
+                ],
+                [
+                    "label" => 'caches',
+                    'route' => 'admin.settings.caches.index',
+                    'is_active' => 'admin.settings.caches.index',
+                    'permission' => 'admin.cache.read',
+                ],
+
+            ]
         ],
         [
             'position' => 100,
             "label" => "authorization",
             'icon' => 'lock-closed',
-            'is_active'=>'admin.authorize.*',
-
+            'is_active' => 'admin.authorize.*',
+            'permission' => ['admin.permission.read','admin.role.read'],
             'sub' => [
                 [
                     "label" => 'permissions',
                     'route' => 'admin.authorize.permissions.index',
-                    'is_active'=>'admin.authorize.permissions.*'
+                    'is_active' => 'admin.authorize.permissions.*',
+                    'permission' => 'admin.permission.read',
                 ],
                 [
                     "label" => 'roles',
                     'route' => 'admin.authorize.roles.index',
-                    'is_active'=>'admin.authorize.roles.*',
+                    'is_active' => 'admin.authorize.roles.*',
+                    'permission' => 'admin.role.read',
                 ],
             ]
-
         ]
-
     ],
 ];

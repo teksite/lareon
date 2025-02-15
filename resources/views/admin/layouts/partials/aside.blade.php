@@ -1,5 +1,4 @@
-<aside class="p-3 fixed top-0 start-0 w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/6 transition-all duration-100 -translate-x-full"
-       :class="sidebar ? '-translate-x-full xl:translate-x-0' : 'translate-x-0 xl:-translate-x-full' ">
+<aside class="p-3 fixed top-0 start-0 w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/6 transition-all duration-100 -translate-x-full" :class="sidebar ? '-translate-x-full xl:translate-x-0' : 'translate-x-0 xl:-translate-x-full' ">
     <div class="min-h-dvh bg-white xl:bg-transparent shadow-sm xl:shadow-none border border-zinc-200 xl:border-none flex flex-col justify-between p-3 rounded">
        <div class="min-h-full">
            <div class="mb-6 flex items-center gap-1">
@@ -19,13 +18,13 @@
                <ul class="menu space-y-6">
                    @foreach (\Lareon\CMS\App\Service\MenuHelper::getMenu() as $menu)
                        @if (isset($menu['sub']))
-                           <x-lareon::accordion.nav :title="$menu['label']" :icon="$menu['icon']" :is_active="$menu['is_active']">
+                           <x-lareon::accordion.nav :title="$menu['label']" :icon="$menu['icon']" :is_active="$menu['is_active']  && request()->routeIs($menu['is_active'] )">
                                @foreach ($menu['sub'] as $sub)
-                                   <x-lareon::accordion.nav-link :title="$sub['label']" :href="$sub['href']" :is_active="$sub['is_active']"/>
+                                   <x-lareon::accordion.nav-link :title="$sub['label']" :href="route($sub['route'])" :is_active="$sub['is_active'] && request()->routeIs($sub['is_active'] )"/>
                                @endforeach
                            </x-lareon::accordion.nav>
                        @else
-                           <x-lareon::accordion.link :title="$menu['label']" :href="$menu['href']" :icon="$menu['icon']" :is_active="$menu['is_active']"/>
+                           <x-lareon::accordion.link :title="$menu['label']" :href="route($menu['route'])" :icon="$menu['icon']" :is_active="$menu['is_active'] ?? false"/>
                        @endif
                    @endforeach
                </ul>
@@ -40,5 +39,4 @@
             </button>
         </div>
     </div>
-
 </aside>

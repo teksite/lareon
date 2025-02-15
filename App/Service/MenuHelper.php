@@ -2,59 +2,70 @@
 
 namespace Lareon\CMS\App\Service;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Teksite\Module\Facade\Module;
 
 class MenuHelper
 {
-    public static function getMenu()
+    public static function getMenu(): array
     {
-        $menuItems = config('menu.cms');
-        $modulesMenus = self::getModulesMenus();
+        $menu = Config::get('menu.cms', []);
 
 
-        $allMenus = array_merge($menuItems, $modulesMenus);
+        foreach (config('modules.modules', []) as $module=>$provider) {
+            $moduleMenuFile = base_path("Lareon/Modules/{$module}/Config/menu.php");
 
+            if (file_exists($moduleMenuFile)) {
+                $moduleMenu = require $moduleMenuFile;
 
-        return collect($allMenus)->sortBy('position')->map(function ($menu) {
-            return self::formatMenuItem($menu);
-        })->toArray();
-    }
-
-    private static function getModulesMenus()
-    {
-        $modulesPath = base_path('Lareon/Module');
-        $menus = [];
-
-        foreach (Module::all() as $module) {
-
+                if (isset($moduleMenu['cms'])) {
+                    $menu = self::mergeMenus($menu, $moduleMenu['cms']);
+                }
+            }
         }
 
-        return $menus;
+        return self::filterMenuByPermission($menu);
     }
 
-    private static function formatMenuItem($menu)
+    private static function mergeMenus(array $baseMenu, array $moduleMenu): array
     {
-        $formattedMenu = [
-            'label' => __($menu['label']),
-            'icon' => $menu['icon'] ?? 'circle',
-            'href' => isset($menu['route']) ? route($menu['route']) : '#',
-            'is_active' => isset($menu['is_active']) && request()->routeIs([$menu['is_active']]),
-        ];
+        foreach ($moduleMenu as $newItem) {
 
-        if (isset($menu['sub']) && is_array($menu['sub'])) {
-            $formattedMenu['sub'] = collect($menu['sub'])->map(function ($sub) {
-                return [
-                    'label' => __($sub['label']),
-                    'href' => isset($sub['route']) ? route($sub['route']) : '#',
-                    'is_active' =>
-                        (isset($sub['is_active']) && request()->routeIs([$sub['is_active']])) ||
-                        (isset($sub['route']) && Route::is($sub['route'])),
-                ];
-            })->toArray();
+            $found = false;
+
+            foreach ($baseMenu as &$existingItem) {
+                if ($existingItem['label'] === $newItem['label']) {
+                    if (isset($newItem['sub'])) {
+                        $existingItem['sub'] = array_merge($existingItem['sub'] ?? [], $newItem['sub']);
+                    }
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $baseMenu[] = $newItem;
+            }
         }
 
-        return $formattedMenu;
+        return $baseMenu;
+    }
+
+    private static function filterMenuByPermission(array $menu): array
+    {
+        return array_filter($menu, function ($item) {
+            if (isset($item['permission']) && !Gate::allows($item['permission'])) {
+                return false;
+            }
+
+            if (isset($item['sub'])) {
+                $item['sub'] = self::filterMenuByPermission($item['sub']);
+            }
+
+            return true;
+        });
     }
 }

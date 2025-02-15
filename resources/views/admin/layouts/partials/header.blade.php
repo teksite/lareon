@@ -10,7 +10,7 @@
     </div>
 
     @if(View::hasSection('header.start') || View::hasSection('header.end') )
-        <div class="x-box flex items-center justify-between gap-6 -mt-12 w-11/12 mx-auto ">
+        <div class="x-box flex flex-col sm:flex-row items-center justify-between gap-6 -mt-12 w-11/12 mx-auto ">
             <div class="flex items-center justify-start gap-3">
                 @yield('header.start')
             </div>

@@ -26,6 +26,5 @@
             timer: 2000,
         });
     </script>
-
 @endif
 @stack('footerScripts')
