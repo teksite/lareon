@@ -7,6 +7,7 @@ use Teksite\Lareon\Console\App\RefreshAppCommand;
 use Teksite\Lareon\Console\Install\InstallerCommand;
 use Teksite\Lareon\Console\Make\CastMakeCommand;
 use Teksite\Lareon\Console\Migrate\SeedCommand;
+use Teksite\Lareon\Services\Builder\JsonResponse;
 use Teksite\Lareon\Services\Builder\WebResponse;
 use Teksite\Lareon\Services\LareonServices;
 use Teksite\Lareon\Console\Make\ChannelMakeCommand;
@@ -72,6 +73,9 @@ class LareonServiceProvider extends ServiceProvider
         });
         $this->app->singleton('WebResponse', function () {
             return new WebResponse();
+        });
+        $this->app->singleton('JsonResponse', function () {
+            return new JsonResponse();
         });
     }
 
