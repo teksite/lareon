@@ -90,7 +90,15 @@ function detectMakeHideBtn() {
 async function getSystemUsage() {
     if (document.querySelector('#usageSection')) {
         let usages = await axios.get('/tkadmin/ajax/settings/system_usage');
-        console.log(usages)
+        const cpuUsageEl = document.querySelector('#cpuUsage');
+        const memoryUsageEl = document.querySelector('#memoryUsage');
+        const diskUsageEl = document.querySelector('#diskUsage');
+        setInterval(function () {
+            let {cpu, memory, disk} = usages.data.data
+            cpuUsageEl.innerText = cpu.percent
+            memoryUsageEl.innerText = memory.percent
+            diskUsageEl.innerText = disk.percent
+        }, 10000)
     }
 
 

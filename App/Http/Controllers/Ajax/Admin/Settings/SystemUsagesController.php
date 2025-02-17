@@ -2,13 +2,12 @@
 
 namespace Lareon\CMS\App\Http\Controllers\Ajax\Admin\Settings;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Lareon\CMS\App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Lareon\CMS\App\Logic\SystemUsageLogic;
-use Teksite\Lareon\Facade\ApiResponse;
+use Teksite\Lareon\Facade\JsonResponse;
 use Teksite\Lareon\Facade\WebResponse;
 
 class SystemUsagesController extends Controller implements HasMiddleware
@@ -25,9 +24,9 @@ class SystemUsagesController extends Controller implements HasMiddleware
         ];
     }
 
-    public function get(): JsonResponse|ApiResponse
+    public function get()
     {
         $result=$this->logic->getUsage();
-        return ApiResponse::byResult($result)->reply();
+        return JsonResponse::byResult($result)->reply();
     }
 }

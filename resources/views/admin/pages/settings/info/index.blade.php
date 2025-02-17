@@ -96,19 +96,26 @@
                     <h3 class="text-center">
                         {{__('usages')}}
                     </h3>
-                    <x-lareon::table :headers="['title','version']" :linkable="false">
+                    <p class="text-center my-3">
+                        {{__('are checked each :title' ,['title'=>'10s'])}}
+                    </p>
+                    <x-lareon::table :headers="['title','value']" :linkable="false">
                         <tr>
                             <td class="p-3">CPU</td>
-                            <td class="p-3" id="cpuUsage">{{$usages['cpu']['percent']}}</td>
+                            <td class="p-3" >
+                                <span id="cpuUsage">{{$usages['cpu']['percent']}}</span>
+                            </td>
                         </tr>
                         <tr>
                             <td class="p-3">MEMORY</td>
-                            <td class="p-3" id="memoryUsage">{{$usages['memory']['percent']}} %</td>
+                            <td class="p-3" >
+                                <span id="memoryUsage">{{$usages['memory']['percent']}}</span>%</td>
                         </tr>
 
                         <tr>
                             <td class="p-3">DISK</td>
-                            <td class="p-3" id="disUsage">{{$usages['disk']['percent']}} %</td>
+                            <td class="p-3" >
+                                <span id="diskUsage">{{$usages['disk']['percent']}}</span>%</td>
                         </tr>
 
                     </x-lareon::table>
