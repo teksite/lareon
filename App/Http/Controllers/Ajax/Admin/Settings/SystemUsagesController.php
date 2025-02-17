@@ -2,6 +2,7 @@
 
 namespace Lareon\CMS\App\Http\Controllers\Ajax\Admin\Settings;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Lareon\CMS\App\Http\Controllers\Controller;
@@ -23,10 +24,10 @@ class SystemUsagesController extends Controller implements HasMiddleware
             new Middleware('can:admin.info.read'),
         ];
     }
-    public function get()
+
+    public function get(): JsonResponse|ApiResponse
     {
         $result=$this->logic->getUsage();
-        ApiResponse::byResult($result)->reply();
-
+        return ApiResponse::byResult($result)->reply();
     }
 }

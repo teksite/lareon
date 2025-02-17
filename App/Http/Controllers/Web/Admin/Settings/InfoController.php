@@ -23,7 +23,8 @@ class InfoController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $usages=$this->logic->getUsage();
+        $usages=$this->logic->getUsage()->result;
+
         return view('lareon::admin.pages.settings.info.index',compact('usages'));
     }
 
