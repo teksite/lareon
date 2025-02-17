@@ -102,20 +102,22 @@
                     <x-lareon::table :headers="['title','value']" :linkable="false">
                         <tr>
                             <td class="p-3">CPU</td>
-                            <td class="p-3" >
+                            <td class="p-3">
                                 <span id="cpuUsage">{{$usages['cpu']['percent']}}</span>
                             </td>
                         </tr>
                         <tr>
                             <td class="p-3">MEMORY</td>
-                            <td class="p-3" >
-                                <span id="memoryUsage">{{$usages['memory']['percent']}}</span>%</td>
+                            <td class="p-3">
+                                <span id="memoryUsage">{{$usages['memory']['percent']}}</span>%
+                            </td>
                         </tr>
 
                         <tr>
                             <td class="p-3">DISK</td>
-                            <td class="p-3" >
-                                <span id="diskUsage">{{$usages['disk']['percent']}}</span>%</td>
+                            <td class="p-3">
+                                <span id="diskUsage">{{$usages['disk']['percent']}}</span>%
+                            </td>
                         </tr>
 
                     </x-lareon::table>

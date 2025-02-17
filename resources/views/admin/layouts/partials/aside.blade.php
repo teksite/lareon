@@ -18,13 +18,13 @@
                <ul class="menu space-y-6">
                    @foreach (\Lareon\CMS\App\Service\MenuHelper::getMenu() as $menu)
                        @if (isset($menu['sub']))
-                           <x-lareon::accordion.nav :title="$menu['label']" :icon="$menu['icon']" :is_active="$menu['is_active']  && request()->routeIs($menu['is_active'] )">
+                           <x-lareon::accordion.nav :title="__($menu['label'])" :icon="$menu['icon']" :is_active="$menu['is_active']  && request()->routeIs($menu['is_active'] )">
                                @foreach ($menu['sub'] as $sub)
-                                   <x-lareon::accordion.nav-link :title="$sub['label']" :href="route($sub['route'])" :is_active="$sub['is_active'] && request()->routeIs($sub['is_active'] )"/>
+                                   <x-lareon::accordion.nav-link :title="__($sub['label'])" :href="route($sub['route'])" :is_active="$sub['is_active'] && request()->routeIs($sub['is_active'] )"/>
                                @endforeach
                            </x-lareon::accordion.nav>
                        @else
-                           <x-lareon::accordion.link :title="$menu['label']" :href="route($menu['route'])" :icon="$menu['icon']" :is_active="$menu['is_active'] ?? false"/>
+                           <x-lareon::accordion.link :title="__($menu['label'])" :href="route($menu['route'])" :icon="$menu['icon']" :is_active="$menu['is_active'] ?? false"/>
                        @endif
                    @endforeach
                </ul>

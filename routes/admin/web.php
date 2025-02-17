@@ -8,6 +8,7 @@ use Lareon\CMS\App\Http\Controllers\Web\Admin\DashboardController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Settings\CachesController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Settings\InfoController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Settings\LogsController;
+use Lareon\CMS\App\Http\Controllers\Web\Admin\Users\UsersController;
 
 Route::get('/', [DashboardController::class, 'show'])->name('dashboard');
 
@@ -35,3 +36,5 @@ Route::prefix('authorize')->name('authorize.')->group(function () {
     Route::resource('permissions', PermissionsController::class);
     Route::resource('roles', RolesController::class);
 });
+
+Route::resource('users', UsersController::class);

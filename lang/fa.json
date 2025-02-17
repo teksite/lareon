@@ -43,5 +43,18 @@
     "caches": "کش‌ها",
     "cache": "کش‌",
     "information": "اطلاعات",
-    "are checked each :title": "هر :title چک می‌شود"
+    "are checked each :title": "هر :title چک می‌شود",
+    "logout": "خروج",
+    "settings": "تنظیمات",
+    "info":"اطلاعات",
+    "logs": "لاگ‌ها",
+    "log": "لاگ",
+    "authorization": "سطح دسترسی",
+    "appearance": "نمایش",
+    "name": "نام",
+    "email": "ایمیل",
+    "phone": "تلفن",
+    "avatar": "آواتار",
+    "featured image": "تضصویر شاخص"
+
 }

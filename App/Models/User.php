@@ -24,6 +24,19 @@ class User extends Authenticatable
      */
     protected $fillable = ['name', 'email', 'phone', 'password', 'featured_image', 'telegram_id', 'parent_id'];
 
+    static public function rules(): array
+    {
+        return [
+            "name"=>'string|required|max:255',
+            "email"=>'string|email|max:255|unique:users,email",',
+            "phone"=>['string','required','unique:users,phone'],
+            "password"=>'string|required|min:8',
+            "featured_image"=>'string|nullable',
+            "telegram_id"=>'string|nullable',
+            "parent_id"=>'integer|nullable|exists:users,id',
+        ];
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -80,9 +93,9 @@ class User extends Authenticatable
         $hierarchy = [];
         $hierarchy['min'] = auth()->user()->roles()->max('hierarchy');
         $hierarchy['max'] = auth()->user()->roles()->max('hierarchy');
-        if($min && $max===false ){
+        if ($min && $max === false) {
             return $hierarchy['min'];
-        }elseif ($min===false && $max){
+        } elseif ($min === false && $max) {
             return $hierarchy['max'];
         }
         return $hierarchy;
