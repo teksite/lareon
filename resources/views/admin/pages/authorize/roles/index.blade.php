@@ -1,5 +1,5 @@
 <x-lareon::admin-index-layout>
-    @section('title', __('roles'))
+    @section('title', __(':title list',['title'=>__('roles')]))
     @section('header.start')
         <x-lareon::link.btn-outline :href="route('admin.authorize.roles.create')"/>
     @endsection
@@ -17,8 +17,10 @@
                         <td>{{$role->description}}</td>
                         <td>
                             <div class="action">
-                                @can('admin.role.update')
+                                @can('admin.role.edit')
                                     <x-lareon::link.edit :href="route('admin.authorize.roles.edit' , $role)"/>
+                                @endcan
+                                @can('admin.role.delete')
                                     <x-lareon::link.trash :href="route('admin.authorize.roles.destroy' , $role)"/>
                                 @endcan
                             </div>

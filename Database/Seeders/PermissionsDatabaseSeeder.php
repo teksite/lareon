@@ -18,17 +18,17 @@ class PermissionsDatabaseSeeder extends Seeder
             ['title' => 'admin', 'description' => 'access to cms dashboard'],
             ['title' => 'admin.permission.read', 'description' => 'read all permissions in the cms dashboard'],
             ['title' => 'admin.permission.create', 'description' => 'create a new permission in the cms dashboard'],
-            ['title' => 'admin.permission.update', 'description' => 'update a permission in the cms dashboard'],
+            ['title' => 'admin.permission.edit', 'description' => 'update a permission in the cms dashboard'],
             ['title' => 'admin.permission.delete', 'description' => 'delete a permission in the cms dashboard'],
 
             ['title' => 'admin.role.read', 'description' => 'read all roles in the cms dashboard'],
             ['title' => 'admin.role.create', 'description' => 'create a new role in the cms dashboard'],
-            ['title' => 'admin.role.update', 'description' => 'update a role in the cms dashboard'],
+            ['title' => 'admin.role.edit', 'description' => 'update a role in the cms dashboard'],
             ['title' => 'admin.role.delete', 'description' => 'delete a role in the cms dashboard'],
 
             ['title' => 'admin.user.read', 'description' => 'read all users in the cms dashboard'],
             ['title' => 'admin.user.create', 'description' => 'create a new user in the cms dashboard'],
-            ['title' => 'admin.user.update', 'description' => 'update a user in the cms dashboard'],
+            ['title' => 'admin.user.edit', 'description' => 'update a user in the cms dashboard'],
             ['title' => 'admin.user.delete', 'description' => 'delete a user in the cms dashboard'],
 
             ['title' => 'admin.setting', 'description' => 'can read and edit overall site setting'],

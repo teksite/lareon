@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Lareon\CMS\App\Cast\AvatarCast;
 use Lareon\CMS\App\Traits\HasAuthorization;
 use Lareon\CMS\Database\Factories\UserFactory;
 
@@ -28,9 +29,9 @@ class User extends Authenticatable
     {
         return [
             "name"=>'string|required|max:255',
-            "email"=>'string|email|max:255|unique:users,email",',
+            "email"=>'string|email|max:255|unique:users,email',
             "phone"=>['string','required','unique:users,phone'],
-            "password"=>'string|required|min:8',
+            "password"=>'string|required|min:8|confirmed',
             "featured_image"=>'string|nullable',
             "telegram_id"=>'string|nullable',
             "parent_id"=>'integer|nullable|exists:users,id',
@@ -65,6 +66,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'password' => 'hashed',
+            'featured_image' => AvatarCast::class,
         ];
     }
 

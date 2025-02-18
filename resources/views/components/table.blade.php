@@ -8,7 +8,7 @@
                 $currentParams = request()->query();
             @endphp
             @foreach($headers as $column=>$title)
-                <th scope="col" class="px-6 py-3 text-xs font-medium uppercase text-start">
+                <th scope="col" class="px-3 py-3 text-xs uppercase text-start font-semibold text-zinc-600">
                     @php
                         $additionalParams = ['order' =>$column,'sort'=>$sort];
                         $mergedParams = array_merge($currentParams, $additionalParams);
@@ -22,7 +22,6 @@
                     @else
                         {{$title}}
                     @endif
-
                 </th>
             @endforeach
         </tr>

@@ -1,5 +1,5 @@
 <x-lareon::admin-layout>
-    @section('title', __('caches'))
+    @section('title', __(':title list',['title'=>__('caches')]))
     <div class="grid gap-6 grid-cols-2 inner-container">
         @foreach($caches as $cache=>$actions)
             <x-lareon::box class="flex items-center justify-between gap-6">

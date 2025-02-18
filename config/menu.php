@@ -22,7 +22,6 @@ return [
                 ],
             ]
         ],
-
         [
             'position' => 51,
             "label" => "settings",
@@ -51,6 +50,27 @@ return [
             ]
         ],
         [
+            'position' => 75,
+            "label" => "users",
+            'icon' => 'users',
+            'is_active' => 'admin.users.*',
+            'permission' =>'admin.user.read',
+            'sub' => [
+                [
+                    "label" => 'users',
+                    'route' => 'admin.users.index',
+                    'is_active' => 'admin.users.index',
+                    'permission' => 'admin.user.read',
+                ],
+                [
+                    "label" => 'new',
+                    'route' => 'admin.users.create',
+                    'is_active' => 'admin.users.create',
+                    'permission' => 'admin.user.create',
+                ],
+            ]
+        ],
+        [
             'position' => 100,
             "label" => "authorization",
             'icon' => 'lock-closed',
@@ -70,6 +90,6 @@ return [
                     'permission' => 'admin.role.read',
                 ],
             ]
-        ]
+        ],
     ],
 ];

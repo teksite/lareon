@@ -23,7 +23,7 @@ class PermissionsController extends Controller implements HasMiddleware
         return [
             new Middleware('can:admin.permission.read'),
             new Middleware('can:admin.permission.create', only: ['create', 'store']),
-            new Middleware('can:admin.permission.update', only: ['edit', 'update']),
+            new Middleware('can:admin.permission.edit', only: ['edit', 'update']),
             new Middleware('can:admin.permission.delete', only: ['destroy']),
         ];
     }

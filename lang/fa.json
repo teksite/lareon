@@ -4,7 +4,7 @@
     "welcome :title": ":title خوش آمدی",
     "visit :title": "مشاهده :title",
     "new :title": ":title جدید",
-    "edit :title": "ویرایش :title",
+    "edit the :title": "ویرایش :title",
     "close": "بستن",
     "open":"باز کردن",
     "icons": "آیکون‌ها",
@@ -16,7 +16,8 @@
     "roles":"نقش‌ها",
     "create a new item": "ایجاد آیتم جدید",
     "title": "عنوان",
-    "enter a unique title": "یک عنوان منحصر به فرد وارد کنید",
+    "enter a unique :title": "یک :title منحصر به فرد وارد کنید",
+    "enter a :title": "یک :title وارد کنید",
     ":title list": "لیست :title",
     "all :title" : "همه :title",
     "introduction": "مقدمه",
@@ -55,6 +56,14 @@
     "email": "ایمیل",
     "phone": "تلفن",
     "avatar": "آواتار",
-    "featured image": "تضصویر شاخص"
+    "featured image": "تضصویر شاخص",
+    "users": "کاربران",
+    "user": "کاربر",
+    "new": "جدید",
+    "hierarchy": "سلسله مراتب",
+    "choose a :title": ":title انتخاب کنید",
+    "password confirmation": "تایید گذرواژه",
+    "re-enter the password": "دوباره گذرواژه را وارد کنید",
+    "password": "گذرواژه"
 
 }

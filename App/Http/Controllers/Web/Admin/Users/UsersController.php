@@ -22,7 +22,7 @@ class UsersController extends Controller implements HasMiddleware
         return [
             new Middleware('can:admin.user.read'),
             new Middleware('can:admin.user.create', only: ['create', 'store']),
-            new Middleware('can:admin.user.update', only: ['edit', 'update']),
+            new Middleware('can:admin.user.edit', only: ['edit', 'update']),
             new Middleware('can:admin.user.delete', only: ['destroy']),
         ];
     }
@@ -51,7 +51,7 @@ class UsersController extends Controller implements HasMiddleware
     public function store(NewUserRequest $request)
     {
         $result=$this->logic->register($request->validated());
-        return WebResponse::byResult($result ,route('admin.users.edit', $result))->go();
+        return WebResponse::byResult($result ,route('admin.users.edit', $result->result))->go();
     }
 
     /**

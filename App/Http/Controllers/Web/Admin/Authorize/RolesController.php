@@ -25,7 +25,7 @@ class RolesController extends Controller implements HasMiddleware
         return [
             new Middleware('can:admin.role.read'),
             new Middleware('can:admin.role.create', only: ['create', 'store']),
-            new Middleware('can:admin.role.update', only: ['edit', 'update']),
+            new Middleware('can:admin.role.edit', only: ['edit', 'update']),
             new Middleware('can:admin.role.delete', only: ['destroy']),
         ];
     }
@@ -37,7 +37,6 @@ class RolesController extends Controller implements HasMiddleware
     {
         $roles = $this->logic->getAll()->result;
         return view('lareon::admin.pages.authorize.roles.index', compact('roles'));
-
     }
 
     /**
