@@ -4,6 +4,7 @@ namespace Lareon\CMS\App\Http\Controllers\Web\Admin\Users;
 
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Route;
 use Lareon\CMS\App\Http\Controllers\Controller;
 use Lareon\CMS\App\Http\Requests\Admin\NewUserRequest;
 use Lareon\CMS\App\Http\Requests\Admin\UpdateUserRequest;
@@ -32,8 +33,8 @@ class UsersController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $users=$this->logic->getAll()->result;
-        return view('lareon::admin.pages.users.index' , compact('users'));
+        $users = $this->logic->getAll()->result;
+        return view('lareon::admin.pages.users.index', compact('users'));
 
     }
 
@@ -42,7 +43,7 @@ class UsersController extends Controller implements HasMiddleware
      */
     public function create()
     {
-        return view('lareon::admin.pages.users.create' );
+        return view('lareon::admin.pages.users.create');
     }
 
     /**
@@ -50,8 +51,8 @@ class UsersController extends Controller implements HasMiddleware
      */
     public function store(NewUserRequest $request)
     {
-        $result=$this->logic->register($request->validated());
-        return WebResponse::byResult($result ,route('admin.users.edit', $result->result))->go();
+        $result = $this->logic->register($request->validated());
+        return WebResponse::byResult($result, route('admin.users.edit', $result->result))->go();
     }
 
     /**
@@ -59,7 +60,9 @@ class UsersController extends Controller implements HasMiddleware
      */
     public function show(User $user)
     {
-        abort(404);
+        if (Route::has('users.show'))  return redirect()->route('users.show', compact('user'));
+
+        abort('404');
     }
 
     /**
@@ -67,8 +70,8 @@ class UsersController extends Controller implements HasMiddleware
      */
     public function edit(User $user)
     {
-        return view('lareon::admin.pages.users.edit' , compact('user'));
-
+        $meta=$this->logic->getInfo($user)->result;
+        return view('lareon::admin.pages.users.edit', compact('user','meta'));
     }
 
     /**
@@ -76,8 +79,8 @@ class UsersController extends Controller implements HasMiddleware
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $result=$this->logic->change($request->validated() , $user);
-        return WebResponse::byResult($result, route('admin.users.edit' , $user))->go();
+        $result = $this->logic->change($request->validated(), $user);
+        return WebResponse::byResult($result, route('admin.users.edit', $user))->go();
     }
 
     /**
@@ -85,7 +88,7 @@ class UsersController extends Controller implements HasMiddleware
      */
     public function destroy(User $user)
     {
-        $result=$this->logic->delete($user);
-        return WebResponse::byResult($result,route('admin.users.index'))->go();
+        $result = $this->logic->delete($user);
+        return WebResponse::byResult($result, route('admin.users.index'))->go();
     }
 }

@@ -64,6 +64,31 @@
     "choose a :title": ":title انتخاب کنید",
     "password confirmation": "تایید گذرواژه",
     "re-enter the password": "دوباره گذرواژه را وارد کنید",
-    "password": "گذرواژه"
+    "password": "گذرواژه",
+    "slug": "نامک",
+    "nickname": "نام مستعار",
+    "type":"نوع",
+    "economic code":"کد اقتصادی",
+    "registration code":"شناسه ملی",
+    "natural person":"شخصیت حقیقی",
+    "legal person":"شخصیت حقوقی",
+    "social id": "شماره ملی",
+    "about":"درباره",
+    "cellphone": "تلفن موبایل",
+    "telephone":"تلفن ثابت",
+    "address": "آدرس",
+    "linkedin":"لینکدین",
+    "telegram": "تلگرام",
+    "instagram":"اینستاگرام",
+    "whatsapp": "واستاپ",
+    "facebook":"فیسبوک",
+    "skype": "اسکایپ",
+    "twitter":"توییتر",
+    "website": "وب‌سایت",
+    "wikipedia":"ویکی‌پدیا",
+    "extra :title": ":title اضافه",
+    "social id, economic code and registration code are not shown at all": "کد ملی، کد ثبت و شماره اقتصادی به هیچ وجه نشان داده نمی‌شوند",
+    "check each item to show in your profile page": "برای نمایش هر آیتم در برگه پروفایلتان آن را علامت گذاری کنید"
+
 
 }

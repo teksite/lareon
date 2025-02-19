@@ -28,13 +28,13 @@ class User extends Authenticatable
     static public function rules(): array
     {
         return [
-            "name"=>'string|required|max:255',
-            "email"=>'string|email|max:255|unique:users,email',
-            "phone"=>['string','required','unique:users,phone'],
-            "password"=>'string|required|min:8|confirmed',
-            "featured_image"=>'string|nullable',
-            "telegram_id"=>'string|nullable',
-            "parent_id"=>'integer|nullable|exists:users,id',
+            "name" => 'string|required|max:255',
+            "email" => 'string|email|max:255|unique:users,email',
+            "phone" => ['string', 'required', 'unique:users,phone'],
+            "password" => 'string|required|min:8|confirmed',
+            "featured_image" => 'string|nullable',
+            "telegram_id" => 'string|nullable',
+            "parent_id" => 'integer|nullable|exists:users,id',
         ];
     }
 
@@ -82,18 +82,10 @@ class User extends Authenticatable
         ])->save();
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->public_id = (string)Str::ulid();
-        });
-    }
-
     public static function hierarchy($min = true, $max = false)
     {
         $hierarchy = [];
-        $hierarchy['min'] = auth()->user()->roles()->max('hierarchy');
+        $hierarchy['min'] = auth()->user()->roles()->min('hierarchy');
         $hierarchy['max'] = auth()->user()->roles()->max('hierarchy');
         if ($min && $max === false) {
             return $hierarchy['min'];
@@ -103,5 +95,24 @@ class User extends Authenticatable
         return $hierarchy;
     }
 
+    public function meta()
+    {
+        return $this->hasMany(UserMeta::class);
+    }
+    public function info(array|string|null $key=null)
+    {
+        $allInfo= $this->meta()->firstWhere('key','info');
+        $infoData=$allInfo->value;
+        if(count($infoData)){
+            if (is_null($key)) return $infoData;
+            $key= is_array($key) ? $key : [$key];
+            $data=[];
+            foreach ($key as $ky){
+                $data[$ky]=$infoData[$ky];
+            }
+            return $data;
+        }
+        return null;
+    }
 
 }

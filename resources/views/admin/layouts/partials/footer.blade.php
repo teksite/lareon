@@ -22,7 +22,7 @@
             showConfirmButton: false,
             title: '{{session()->get('reply')['title'] ?? ''}}',
             text: '{{session()->get('reply')['message'] ?? ''}}',
-            icon: '{{session()->get('reply')['result'] ?? ''}}',
+            icon: '{{session()->get('reply')['type'] ?? ''}}',
             timer: 2000,
         });
     </script>

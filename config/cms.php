@@ -87,10 +87,38 @@ return [
                     'name' => 'panel.api.v1.',  //DO NOT CHANGE IT,
                 ],
 
+            ],
+        'users' => [
+            'extra' => [
+                //column name database => label
+                'public'=>[
+                    'social_id' => 'social id',
+                    'about' => 'about',
+
+                ],
+                'social'=>[
+                    'cellphone' => 'cellphone',
+                    'telephone' => 'telephone',
+                    'email' => 'email',
+                    'address' => 'address',
+                    'linkedin' => 'linkedin',
+                    'telegram' => 'telegram',
+                    'instagram' => 'instagram',
+                    'whatsapp' => 'whatsapp',
+                    'facebook' => 'facebook',
+                    'skype' => 'skype',
+                    'twitter' => 'twitter (x)',
+                    'website' => 'website',
+                    'wikipedia' => 'wikipedia',
+                ],
+                'legal'=>[
+                    'economic_code' => 'economic code',
+                    'registration_code' => 'registration code'
+                ],
             ]
+        ]
 
     ],
-
 
     'modules' => [
 
@@ -161,4 +189,6 @@ return [
             2 => 'sitemap.php',
         ],
     ],
+
+
 ];

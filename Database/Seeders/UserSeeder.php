@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
             'name' => 'sina zangibad',
             'email' => 'sina.zangiband@gmail.com',
             'phone' => '09126037279',
+            'slug' => '09126037279',
         ]);
         $administrator->markPhoneAsVerified();
         $administrator->markEmailAsVerified();
@@ -28,6 +29,7 @@ class UserSeeder extends Seeder
             'name' => 'sina zb',
             'email' => 'zb.sina@gmail.com',
             'phone' => '09382295516',
+            'slug' => '09382295516',
         ]);
         $user->roles()->attach([3]);
         $user->markPhoneAsVerified();

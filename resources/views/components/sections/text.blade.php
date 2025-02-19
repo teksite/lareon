@@ -7,6 +7,6 @@
 
 <div class="mb-3">
     <x-lareon::input.label for="{{$random}}" :title="$title"/>
-    <x-lareon::input.text :type="$type ?? 'text'" :name="$name" id="{{$random}}" placeholder="{{$placeholder}}" :value="old($stringifiedName)?? $value" :required="$required"/>
+    <x-lareon::input.text :type="$type ?? 'text'" :name="$name" id="{{$random}}" placeholder="{{$placeholder}}" :value="$value" :required="$required"/>
     <x-lareon::input.error :messages="$errors->get($stringifiedName)"/>
 </div>
