@@ -6,11 +6,11 @@ use AllowDynamicProperties;
 use Closure;
 use Teksite\Lareon\Enums\ResponseType;
 
-#[AllowDynamicProperties] class WebResponseServices
+class WebResponseServices
 {
     private ?string $title = null;
     private ?string $message = null;
-    private ResponseType $result = ResponseType::SUCCESS;
+    private null|ResponseType $type= null;
     private mixed $data = null;
     private string|null $route = null;
 
@@ -41,11 +41,10 @@ use Teksite\Lareon\Enums\ResponseType;
         $with = [];
         !is_null($this->title) && $with['title'] = $this->title;
         !is_null($this->message) && $with['message'] = $this->message;
-        !is_null($this->result) && $with['result'] = $this->result->value;
+        !is_null($this->type) && $with['type'] = $this->type->value;
         !is_null($this->data) && $with['data'] = $this->data;
 
        $redirect = $this->route ? redirect($this->route) : back();
-
         return count($with) ? $redirect->with(['reply' => $with]) : $redirect;
     }
 }
