@@ -19,6 +19,10 @@ return [
                     "label" => 'icons',
                     'route' => 'admin.appearance.icons.index',
                     'is_active' => 'admin.appearance.icons.index',
+                ], [
+                    "label" => 'media manager',
+                    'route' => 'admin.appearance.media.index',
+                    'is_active' => 'admin.appearance.media.index',
                 ],
             ]
         ],
@@ -54,7 +58,7 @@ return [
             "label" => "users",
             'icon' => 'users',
             'is_active' => 'admin.users.*',
-            'permission' =>'admin.user.read',
+            'permission' => 'admin.user.read',
             'sub' => [
                 [
                     "label" => 'users',

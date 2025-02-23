@@ -3,16 +3,6 @@
     @csrf
     @method('DELETE')
 </form>
-<script src="sweetalert2.min.js"></script>
-<script>
-    Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 1500
-    });
-</script>
 @if(session()->has('reply'))
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

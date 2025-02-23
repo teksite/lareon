@@ -32,10 +32,10 @@ class UserLogic
         return app(ServiceWrapper::class)(function () use ($input, $user) {
             if (is_null($input['password'])) unset($input['password']);
             $user->update(Arr::except($input, 'meta'));
-            $user->meta()->updateOrCreate(
-                ['key' => 'info',],
-                ['value' => $input['meta']['info'] ?? [],],
-            );
+//            $user->meta()->updateOrCreate(
+//                ['key' => 'info',],
+//                ['value' => $input['meta']['info'] ?? [],],
+//            );
             return $user;
         });
     }

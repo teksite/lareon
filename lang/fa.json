@@ -87,8 +87,12 @@
     "website": "وب‌سایت",
     "wikipedia":"ویکی‌پدیا",
     "extra :title": ":title اضافه",
+    "path": "مسیر",
+    "url": "آدرس اینترنتی",
+    "file name": "نام فایل",
+    "load more": "بارگزاری بیشتر",
+    "download": "دانلود",
+    "upload": "آپلود",
     "social id, economic code and registration code are not shown at all": "کد ملی، کد ثبت و شماره اقتصادی به هیچ وجه نشان داده نمی‌شوند",
     "check each item to show in your profile page": "برای نمایش هر آیتم در برگه پروفایلتان آن را علامت گذاری کنید"
-
-
 }

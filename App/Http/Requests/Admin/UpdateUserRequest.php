@@ -31,7 +31,7 @@ class UpdateUserRequest extends FormRequest
 
     protected function assignRules() :array
     {
-        $can = auth()->check() && auth()->user()->hasRole(['admin', 'adminiszxctrator']);
+        $can = auth()->check() && auth()->user()->hasRole(['admin', 'administrator']);
         $defaultRules = User::rules();
         if ($can) {
            return array_merge($defaultRules, [

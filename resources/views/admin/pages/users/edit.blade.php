@@ -13,7 +13,7 @@
         <div class="grid xl:grid-cols-2 2xl:grid-cols-4 gap-6 items-center">
             <section class="xl:col-span-2">
                 <x-lareon::sections.text :title="__('name')" name="name" :placeholder="__('enter a :title' ,['title'=>__('name')])" :required="true" :value="old('name') ?? $user->name"/>
-                @if(auth()->user()->hasRole(['admin','administryuator']))
+                @if(auth()->user()->hasRole(['admin','administrator']))
                     <x-lareon::sections.text :title="__('email')" name="email" :placeholder="__('enter a :title' ,['title'=>__('email')])" :required="true" :value="old('email') ?? $user->email"/>
                     <x-lareon::sections.text :title="__('phone')" name="phone" :placeholder="__('enter a :title' ,['title'=>__('phone')])" :required="true" :value="old('phone') ?? $user->phone"/>
                 @else
@@ -27,7 +27,7 @@
                 <x-lareon::sections.text type="password" :title="__('password')" name="password" :placeholder="__('enter a :title' ,['title'=>__('password')])"/>
             </section>
             <section class="xl:col-span-2">
-                <img src="{{$user->featured_image}}" alt="{{$user->name}}" class="mx-auto" width="300" height="300" fetchpriority="low" decoding="async" loading="lazy">
+                <x-lareon::input.media name="featured_image" prev="image" width="400" height="400" :value="$user->featured_image"/>
             </section>
         </div>
     @endsection
