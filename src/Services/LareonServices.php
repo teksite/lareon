@@ -2,11 +2,9 @@
 
 namespace Teksite\Lareon\Services;
 
-use Teksite\Extralaravel\Traits\StudyPathNamespace;
 
 class LareonServices
 {
-    use StudyPathNamespace;
 
     /**
      * Get absolute or relative root of CMS or the specific path.
@@ -21,15 +19,13 @@ class LareonServices
             ? config('lareon.main_path') . DIRECTORY_SEPARATOR . config('lareon.cms_directory')
             : "Lareon/CMS";
 
-        $relativePath = $this->normalizePath($mainPath . ($path ? '/' . $path : ''));
+        $relativePath = normalizePath($mainPath . ($path ? '/' . $path : ''));
         return $absolute ? base_path($relativePath) : $relativePath;
     }
 
     public function cmsNamespace(?string $path = null): string
     {
-        $mainNamespace = config('lareon.namespace', "Lareon\CMS");
-
-        return $this->normalizeNamespace($mainNamespace  . ($path ? '\\' . trim($path, "/\\") : ''));
+        return cms_namespace($path);
     }
 
     public function cmsViewPath(?string $path = null): string

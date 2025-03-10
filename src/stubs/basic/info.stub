@@ -1,0 +1,8 @@
+{
+    "version":"{{ version }}",
+    "id": "Lareon",
+    "title": "lareon",
+    "alias": "lareon",
+    "description": "Lareon (made by teksite.net) is provided to start a simple modular cms"
+}
+

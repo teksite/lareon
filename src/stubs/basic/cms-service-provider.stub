@@ -35,9 +35,9 @@ class {{ class }} extends ServiceProvider
      */
     protected function mergeConfigurations(): void
     {
-        $configPath = config_path('cms.php');
-        $cmsConfig = cms_path('config/cms.php');
-        $this->mergeConfigFrom(file_exists($configPath) ? $configPath : $cmsConfig, 'cms');
+        $configPath = config_path('lareon.php');
+        $cmsConfig = cms_path('config/lareon.php');
+        $this->mergeConfigFrom(file_exists($configPath) ? $configPath : $cmsConfig, 'lareon');
     }
 
     /**
@@ -133,8 +133,8 @@ class {{ class }} extends ServiceProvider
     public function publish(): void
     {
         $this->publishes([
-            cms_path('config/cms.php') => config_path('cms.php')
-        ], 'cms');
+            cms_path('config/lareon.php') => config_path('lareon.php')
+        ], 'lareon');
 
     }
 

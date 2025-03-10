@@ -26,8 +26,6 @@ class RefreshAppCommand extends Command
 
     public function handle()
     {
-        $progressbar = $this->output->createProgressBar();
-
         $admin = $this->option('admin');
         $doRestore = $this->option('restore');
         $backupPath = base_path($this->option('path'));
@@ -93,7 +91,6 @@ class RefreshAppCommand extends Command
 
         Artisan::call('cache:clear');
         $this->line('caches are cleared successful!');
-
 
         $this->newLine();
         $this->alert('The site is refreshed successfully :)');

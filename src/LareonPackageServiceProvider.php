@@ -45,6 +45,7 @@ class LareonPackageServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+
         $this->registerConfig();
         $this->registerFacades();
         $this->registerProviders();
@@ -79,8 +80,8 @@ class LareonPackageServiceProvider extends ServiceProvider
 
     public function registerProviders(): void
     {
-        if (class_exists('\Lareon\CMS\App\Providers\CmsServiceProvider')) {
-            $this->app->register(\Lareon\CMS\App\Providers\CmsServiceProvider::class);
+        if (class_exists('\Lareon\Cms\App\Providers\CmsServiceProvider')) {
+            $this->app->register(\Lareon\Cms\App\Providers\CmsServiceProvider::class);
         }
     }
 

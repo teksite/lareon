@@ -16,7 +16,7 @@ class InstallerCommand extends Command
     use GeneratorCommandTrait;
 
     protected $signature = 'lareon:install
-      ';
+    ';
 
     protected $description = 'install lareon and cms';
 
@@ -31,7 +31,7 @@ class InstallerCommand extends Command
             return;
         }
 
-        $this->createDirectories($cmsPath);
+       $this->createDirectories($cmsPath);
 
         $this->createFiles($cmsPath);
         $this->dumpingComposer();
@@ -77,6 +77,8 @@ class InstallerCommand extends Command
         $namespace = cms_namespace();
         $cmsPath = cms_path(absolute: false);
         $moduleName = 'Lareon';
+        $composerContent =file_get_contents(base_path('composer.json'));
+        $version= json_decode($composerContent,true)['require']['teksite/lareon'] ?? "1.0.0";
 
         /* Register Composer file  */
         $this->generateFile(
@@ -90,17 +92,45 @@ class InstallerCommand extends Command
             "{$path}/composer.json"
         );
 
+        /* create info.json  */
+        $this->generateFile(
+            'basic/info.stub',
+            [
+                '{{ version }}' => $version,
+            ],
+            "{$path}/info.json"
+        );
+
+
         /* Register ServiceProvider file  */
         $this->generateFile(
-            'basic/provider.stub',
+            'basic/cms-service-provider.stub',
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers",
-                '{{ class }}' => "{$moduleName}ServiceProvider",
-                '{{ module }}' => $moduleName,
-                '{{ moduleLowerName }}' => strtolower($moduleName),
-
+                '{{ class }}' => "CmsServiceProvider",
             ],
-            "{$path}/App/Providers/{$moduleName}ServiceProvider.php"
+            "{$path}/App/Providers/CmsServiceProvider.php"
+        );
+
+        /* Register ServiceProvider of modules  */
+        $this->generateFile(
+            'basic/module-manager-service-provider.stub',
+            [
+                '{{ namespace }}' => "{$namespace}\\App\\Providers\\Modules",
+                '{{ class }}' => "ModulesManagerServiceProvider",
+            ],
+            "{$path}/App/Providers/Modules/ModulesManagerServiceProvider.php"
+        );
+
+        /* Register ServiceProvider of routes of modules  */
+        $this->generateFile(
+
+            'basic/modules-routes-manager-service-provider.stub',
+            [
+                '{{ namespace }}' => "{$namespace}\\App\\Providers\\Modules",
+                '{{ class }}' => "RoutesManagerServiceProvider",
+            ],
+            "{$path}/App/Providers/Modules/RoutesManagerServiceProvider.php"
         );
         /* Register Event ServiceProvider file  */
         $this->generateFile(
@@ -108,8 +138,7 @@ class InstallerCommand extends Command
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers",
                 '{{ class }}' => "EventServiceProvider",
-                '{{ moduleLowerName }}' => strtolower($moduleName),
-                '{{ module }}' => $moduleName,
+                '{{ moduleLowerName }}' => 'cms',
             ],
             "{$path}/App/Providers/EventServiceProvider.php"
         );
@@ -119,8 +148,6 @@ class InstallerCommand extends Command
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers",
                 '{{ class }}' => "RouteServiceProvider",
-                '{{ moduleLowerName }}' => strtolower($moduleName),
-                '{{ module }}' => $moduleName,
             ],
             "{$path}/App/Providers/RouteServiceProvider.php"
         );
@@ -134,11 +161,9 @@ class InstallerCommand extends Command
         );
         /* Register config file  */
         $this->generateFile(
-            'basic/config.stub',
-            [
-                '{{ module }}' => $moduleName,
-            ],
-            "{$path}/config/config.php"
+            'basic/cms-config.stub',
+            [],
+            "{$path}/config/lareon.php"
         );
         /* Register JS file  */
         $this->generateFile(
@@ -159,36 +184,25 @@ class InstallerCommand extends Command
             "{$path}/resources/views/master.blade.php"
         );
         /* Register web route file  */
-        $this->generateFile(
-            'basic/route-web.stub',
-            ['{{ module }}' => strtolower($moduleName)],
-            "{$path}/routes/web.php"
-        );
 
         /* Register Seeder file file  */
         $this->generateFile(
             'basic/seeder.stub',
             [
-                '{{ module }}' => strtolower($moduleName),
+                '{{ class }}' => "CmsDatabaseSeeder",
+
                 '{{ namespace }}' => "{$namespace}\\Database\\Seeders",
-                '{{ class }}' => "{$moduleName}DatabaseSeeder",
             ],
-
-            "{$path}/Database/Seeders/{$moduleName}DatabaseSeeder.php"
+            "{$path}/Database/Seeders/CmsDatabaseSeeder.php"
         );
 
-        /* Register Seeder file file  */
-        $this->generateFile(
-            'basic/info.stub',
-            [
-                '{{ name }}' => $moduleName,
-                '{{ alias }}' => strtolower($moduleName),
-                '{{ providers }}' => str_replace('\\', '\\\\', "$namespace\App\Providers\\" . $moduleName . "ServiceProvider"),
-            ],
-
-            "{$path}/info.json"
-        );
-
+        foreach ($this->routes() as $route)
+            // Routes
+            $this->generateFile(
+                'basic/route.stub',
+                [],
+                "{$path}/routes/$route"
+            );
     }
 
     private function generateFile(string $stub, array $replacements, string $destination): void
@@ -209,5 +223,23 @@ class InstallerCommand extends Command
             ->run()->output();
 
     }
+
+    private function routes()
+    {
+        return [
+            'admin/web.php', 'admin/ajax.php', 'admin/api.php',
+
+            'panel/web.php', 'admin/ajax.php', 'admin/api.php',
+
+            'auth/web.php', 'auth/ajax.php', 'auth/api.php',
+
+            'web.php', 'ajax.php', 'api.php',
+
+
+        ];
+
+
+    }
+
 
 }
