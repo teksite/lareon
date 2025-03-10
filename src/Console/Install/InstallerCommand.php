@@ -18,37 +18,41 @@ class InstallerCommand extends Command
     protected $signature = 'lareon:install
       ';
 
-    protected $description = 'install lareon';
+    protected $description = 'install lareon and cms';
 
     protected $type = 'Install';
 
     public function handle()
     {
 
-        $this->createDirectories();
-        $this->createFiles();
+        $cmsPath = cms_path();
+        if (is_dir($cmsPath)) {
+            $this->error("a directory with name Cms is already existed in $cmsPath");
+            return;
+        }
+
+        $this->createDirectories($cmsPath);
+
+        $this->createFiles($cmsPath);
         $this->dumpingComposer();
 
-        $this->output->getFormatter()->setStyle('success', new OutputFormatterStyle('white', 'blue', ['bold']));
+        $this->output->getFormatter()->setStyle('success', new OutputFormatterStyle('black', 'blue', ['bold']));
         $this->newLine();
 
-        $this->info("<success>SUCCESS</success> Lareon cms is installed successfully.");
+        $this->info("<success>SUCCESS</success> Lareon is installed successfully.");
     }
 
-    private function getCmsPath()
-    {
-        return Lareon::cmsPath();
-    }
-
-
-    private function createDirectories(): void
+    private function createDirectories(string $path): void
     {
         $directories = [
             '',
+            'App',
+            'App/Http',
             'App/Http/Controllers',
             'App/Models',
             'App/Providers',
             'config',
+            'Database',
             'Database/Factories',
             'Database/Migrations',
             'Database/Seeders',
@@ -57,33 +61,30 @@ class InstallerCommand extends Command
             'resources/js',
             'resources/css',
             'routes',
-            'routes/admin',
-            'routes/panel',
-            'routes/auth',
             'Tests',
             'Tests/Feature',
             'Tests/Unit',
         ];
-        $path = Lareon::cmsPath(absolute: false);
 
         foreach ($directories as $directory) {
-            if (!is_dir($directory)) {
-                File::makeDirectory("{$path}/{$directory}", 0755, true);
-                $this->line("Directory: {$path}/{$directory} is generated");
-            }
+            File::makeDirectory($path . DIRECTORY_SEPARATOR . $directory, 0755, true);
+            $this->components->twoColumnDetail("Directory: <fg=white;options=bold>$directory</>", '<fg=green;options=bold>DONE</>');
         }
     }
 
-    private function createFiles(): void
+    private function createFiles(string $path): void
     {
-        $namespace = config('lareon.namespace');
-
-        $path = Lareon::cmsPath(absolute: false);
+        $namespace = cms_namespace();
+        $cmsPath = cms_path(absolute: false);
+        $moduleName = 'Lareon';
 
         /* Register Composer file  */
         $this->generateFile(
             'basic/composer.stub',
             [
+                '{{ moduleLowerName }}' => strtolower($moduleName),
+                '{{ moduleName }}' => 'Lareon',
+                '{{ modulePath }}' => str_replace("\\", '/', $cmsPath),
                 '{{ namespace }}' => str_replace("\\", '\\\\', $namespace),
             ],
             "{$path}/composer.json"
@@ -91,33 +92,15 @@ class InstallerCommand extends Command
 
         /* Register ServiceProvider file  */
         $this->generateFile(
-            'basic/cms-service-provider.stub',
+            'basic/provider.stub',
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers",
-                '{{ class }}' => "CmsServiceProvider",
-            ],
-            "{$path}/App/Providers/CmsServiceProvider.php"
-        );
+                '{{ class }}' => "{$moduleName}ServiceProvider",
+                '{{ module }}' => $moduleName,
+                '{{ moduleLowerName }}' => strtolower($moduleName),
 
-        /* Register ServiceProvider of modules  */
-        $this->generateFile(
-            'basic/module-manager-service-provider.stub',
-            [
-                '{{ namespace }}' => "{$namespace}\\App\\Providers\\Modules",
-                '{{ class }}' => "ModulesManagerServiceProvider",
             ],
-            "{$path}/App/Providers/Modules/ModulesManagerServiceProvider.php"
-        );
-
-        /* Register ServiceProvider of routes of modules  */
-        $this->generateFile(
-
-            'basic/modules-routes-manager-service-provider.stub',
-            [
-                '{{ namespace }}' => "{$namespace}\\App\\Providers\\Modules",
-                '{{ class }}' => "RoutesManagerServiceProvider",
-            ],
-            "{$path}/App/Providers/Modules/RoutesManagerServiceProvider.php"
+            "{$path}/App/Providers/{$moduleName}ServiceProvider.php"
         );
         /* Register Event ServiceProvider file  */
         $this->generateFile(
@@ -125,7 +108,8 @@ class InstallerCommand extends Command
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers",
                 '{{ class }}' => "EventServiceProvider",
-                '{{ moduleLowerName }}' => 'cms',
+                '{{ moduleLowerName }}' => strtolower($moduleName),
+                '{{ module }}' => $moduleName,
             ],
             "{$path}/App/Providers/EventServiceProvider.php"
         );
@@ -135,6 +119,8 @@ class InstallerCommand extends Command
             [
                 '{{ namespace }}' => "{$namespace}\\App\\Providers",
                 '{{ class }}' => "RouteServiceProvider",
+                '{{ moduleLowerName }}' => strtolower($moduleName),
+                '{{ module }}' => $moduleName,
             ],
             "{$path}/App/Providers/RouteServiceProvider.php"
         );
@@ -148,9 +134,11 @@ class InstallerCommand extends Command
         );
         /* Register config file  */
         $this->generateFile(
-            'basic/cms-config.stub',
-            [],
-            "{$path}/config/cms.php"
+            'basic/config.stub',
+            [
+                '{{ module }}' => $moduleName,
+            ],
+            "{$path}/config/config.php"
         );
         /* Register JS file  */
         $this->generateFile(
@@ -171,59 +159,54 @@ class InstallerCommand extends Command
             "{$path}/resources/views/master.blade.php"
         );
         /* Register web route file  */
+        $this->generateFile(
+            'basic/route-web.stub',
+            ['{{ module }}' => strtolower($moduleName)],
+            "{$path}/routes/web.php"
+        );
 
         /* Register Seeder file file  */
         $this->generateFile(
             'basic/seeder.stub',
             [
-                '{{ class }}' => "CmsDatabaseSeeder",
-
+                '{{ module }}' => strtolower($moduleName),
                 '{{ namespace }}' => "{$namespace}\\Database\\Seeders",
+                '{{ class }}' => "{$moduleName}DatabaseSeeder",
             ],
-            "{$path}/Database/Seeders/CmsDatabaseSeeder.php"
+
+            "{$path}/Database/Seeders/{$moduleName}DatabaseSeeder.php"
         );
 
+        /* Register Seeder file file  */
+        $this->generateFile(
+            'basic/info.stub',
+            [
+                '{{ name }}' => $moduleName,
+                '{{ alias }}' => strtolower($moduleName),
+                '{{ providers }}' => str_replace('\\', '\\\\', "$namespace\App\Providers\\" . $moduleName . "ServiceProvider"),
+            ],
 
-       foreach ($this->routes() as $route)
-           // Routes
-           $this->generateFile(
-               'basic/route.stub',
-               [],
-               "{$path}/routes/$route"
-           );
+            "{$path}/info.json"
+        );
+
     }
 
     private function generateFile(string $stub, array $replacements, string $destination): void
     {
         $this->replaceStub($stub, $replacements, $destination);
-        $this->line("File: $destination is generated");
+        $relativePath = str_replace(base_path(), '', $destination);
+        $this->components->twoColumnDetail("File: <fg=white;options=bold>$relativePath</>", '<fg=green;options=bold>DONE</>');
+
     }
 
 
     private function dumpingComposer(): void
     {
-        $this->info("now wait to dump autoload of composer, it may take a while ...");
+        $this->info("wait to dump autoload of composer, it may take a while ...");
 
         Process::path(base_path())
             ->command('composer dump-autoload')
             ->run()->output();
-
-    }
-
-    private function routes()
-    {
-        return [
-            'admin/web.php', 'admin/ajax.php', 'admin/api.php',
-
-            'panel/web.php', 'admin/ajax.php', 'admin/api.php',
-
-            'auth/web.php', 'auth/ajax.php', 'auth/api.php',
-
-            'web.php', 'ajax.php', 'api.php',
-
-
-        ];
-
 
     }
 

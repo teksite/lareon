@@ -11,7 +11,7 @@ use Teksite\Lareon\Services\LareonServices;
 trait GeneralCommandsTrait
 {
 
-    public function print(\Closure $callback , $message )
+    public function print(\Closure $callback , string $message )
     {
         $startTime = Carbon::now();
 
@@ -19,7 +19,9 @@ trait GeneralCommandsTrait
 
         $endTime = Carbon::now();
 
-        $executionTime = $startTime->diffInMilliseconds($endTime); // محاسبه زمان اجرا
-        $this->line(sprintf('%s ................................................................................................ %dms DONE', $message, $executionTime));
+        $executionTime = $startTime->diffInMilliseconds($endTime);
+
+        $this->components->twoColumnDetail("$message" ,"$executionTime <fg=green;options=bold>DONE</>" );
+
     }
 }

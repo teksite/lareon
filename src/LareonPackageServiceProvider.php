@@ -41,7 +41,7 @@ use Teksite\Lareon\Console\Make\TestMakeCommand;
 use Teksite\Lareon\Console\Make\TraitMakeCommand;
 use Teksite\Lareon\Console\Make\ViewMakeCommand;
 
-class LareonServiceProvider extends ServiceProvider
+class LareonPackageServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -54,16 +54,14 @@ class LareonServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->bootCommands();
-        $this->bootTranslations();
         $this->publish();
     }
 
     public function registerConfig(): void
     {
-        //Module configuration
-        $configPath = config_path('lareon.php'); // Path to the published file
+        $configPath = config_path('cms-setting.php');
         $this->mergeConfigFrom(
-            file_exists($configPath) ? $configPath : __DIR__ . '/config/lareon.php', 'lareon');
+            file_exists($configPath) ? $configPath : __DIR__ . '/config/cms-setting.php', 'cms-setting');
     }
 
     public function registerFacades()
@@ -81,7 +79,7 @@ class LareonServiceProvider extends ServiceProvider
 
     public function registerProviders(): void
     {
-        if (file_exists(base_path('Lareon\CMS\App\Providers\CmsServiceProvider.php')) && class_exists('\Lareon\CMS\App\Providers\CmsServiceProvider')) {
+        if (class_exists('\Lareon\CMS\App\Providers\CmsServiceProvider')) {
             $this->app->register(\Lareon\CMS\App\Providers\CmsServiceProvider::class);
         }
     }
@@ -141,23 +139,9 @@ class LareonServiceProvider extends ServiceProvider
     /**
      * @return void
      */
-    public function bootTranslations(): void
-    {
-        $langPath = __DIR__ . '/lang/';
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, 'lareon');
-            $this->loadJsonTranslationsFrom($langPath);
-        }
-    }
-
-
-    /**
-     * @return void
-     */
     public function publish(): void
     {
         $this->publishes([
-            __DIR__ . '/config/lareon.php' => config_path('lareon.php')], 'lareon');
+            __DIR__ . '/config/cms-setting.php' => config_path('cms-setting.php')], 'cms-setting');
     }
 }

@@ -36,7 +36,7 @@ if you face to ``Do you trust "wikimedia/composer-merge-plugin" to execute code 
 Add the following line to the `bootstrap/providers` file:
 
 ```php
-Teksite\Lareon\LareonServiceProvider::class,
+Teksite\Lareon\LareonPackageServiceProvider::class,
 ```
 
 #### Laravel 5.x and earlier
@@ -45,7 +45,7 @@ If you are using Laravel 5.x or earlier, register the service provider in the `c
 ```php
 'providers' => [
     // Other Service Providers
-    Teksite\Lareon\LareonServiceProvider::class,
+    Teksite\Lareon\LareonPackageServiceProvider::class,
 ];
 ```
 ### Step 3: Install CMS
@@ -59,7 +59,7 @@ php artisan lareon:install"
 Optionally, publish the package's configuration file by running:
 
 ```bash
-php artisan vendor:publish --provider="teksite\lareon\LareonServiceProvider"
+php artisan vendor:publish --provider="Teksite\Lareon\LareonPackageServiceProvider"
 ```
 
 ### Step 5: add to Composer.json

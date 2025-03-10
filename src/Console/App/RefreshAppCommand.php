@@ -3,7 +3,10 @@
 namespace Teksite\Lareon\Console\App;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Teksite\Lareon\Traits\GeneralCommandsTrait;
@@ -13,8 +16,11 @@ class RefreshAppCommand extends Command
     use GeneralCommandsTrait;
 
     protected $signature = 'lareon:refresh
-                            {--admin=no : need to make a superadmin (yes/no)}
-                            {--single=yes : use single files backup files instead of bulk file  (yes/no)}';
+                            {--admin=no : need to make a administrator (yes/no) }
+                            {--restore : restore backup data (single/no) };
+                            {--seed : seeding }
+                            {--path=storage/backups : backup path to restore from }
+                            {--prevent-migration : prevent migrating after drop all tables }';
 
     protected $description = 'reset all tables then migrate, seed and restore data';
 
@@ -23,8 +29,11 @@ class RefreshAppCommand extends Command
         $progressbar = $this->output->createProgressBar();
 
         $admin = $this->option('admin');
-        $single = $this->option('single');
+        $doRestore = $this->option('restore');
+        $backupPath = base_path($this->option('path'));
+
         $db = [
+            'connection' => env('DB_CONNECTION'),
             'username' => env('DB_USERNAME'),
             'password' => env('DB_PASSWORD'),
             'host' => env('DB_HOST'),
@@ -32,108 +41,64 @@ class RefreshAppCommand extends Command
         ];
 
         $this->print(function () {
-            Artisan::call('migrate:fresh');
-        }, 'resetting migration');
+            Artisan::call('migrate:reset');
 
-        if ($single === 'yes') {
-
-
-            $this->print(function () {
+            if (!$this->option('prevent-migration')) {
                 Artisan::call('migrate');
-            }, 'refreshing migration');
+            }
+        }, 'refresh migrations');
+        $this->newLine();
 
 
-
+        if ($this->option('seed')) {
             $this->print(function () {
                 Artisan::call('lareon:seed');
-            }, 'seeding cms');
-
-
+            }, 'seeding lareon cms');
 
             $this->print(function () {
-            //    Artisan::call('module:seed');
+                Artisan::call('module:seed');
             }, 'seeding modules');
-
 
             $this->print(function () {
                 Artisan::call('db:seed');
-            }, 'seeding laravel');
+            }, 'seeding app');
+        }
 
+        if ($doRestore) {
+            if (is_dir($backupPath)) {
+                $files = File::allFiles($backupPath);
+                if (count($files) > 0) {
+                    $this->line('restoring backup data:');
 
-
-            if (is_dir(storage_path('backups/singles/'))) {
-
-
-                $files = array_diff(scandir(storage_path('backups/singles/')), array('..', '.'));
-
-                foreach ($files as $file) {
-                    $this->line('restoring: ' . $file . '...');
-
-                    $sql = storage_path('backups/singles/' . $file);
-
-                    $this->print(function () use ($sql, $db) {
-                        exec("mysql --user={$db['username']} --password={$db['password']} --host={$db['host']} --database {$db['database']} < $sql",);
-                    }, 'seeding laravel');
-
-
+                    foreach ($files as $file) {
+                        $fileName = $file->getBasename();
+                        $path = $file->getPathname();
+                        $this->print(function () use ($path, $db) {
+                            exec("mysql --user={$db['username']} --password={$db['password']} --host={$db['host']} --database {$db['database']} < $path",);
+                        }, "$fileName");
+                    }
+                    $this->newLine();
                 }
             }
-
-        } else {
-            if (is_dir(storage_path('backups/'))) {
-                $files = array_diff(scandir(storage_path('backups/')), array('..', '.'));
-                $file = $files[2];
-                $this->line('restoring: ' . $file . '...');
-                $sql = storage_path('backups/' . $file);
-                $this->print(function () use ($sql, $db) {
-                    exec("mysql --user={$db['username']} --password={$db['password']} --host={$db['host']} --database {$db['database']} < $sql",);
-                }, 'seeding laravel');
-
-
-            }
-
         }
-        $this->info('data is restored successfully');
-
-
-        if ($admin === 'yes') {
-
-           // $this->call('lareon:make-superadmin');
-        }
-
-
 
         Artisan::call('config:clear');
-        $this->info('configs are cleared successfully!');
+        $this->line('configs are cleared successfully!');
 
         Artisan::call('route:clear');
-        $this->info('routes are cleared successfully!');
+        $this->line('routes are cleared successfully!');
 
         Artisan::call('view:clear');
-        $this->info('views are cleared successfully!');
+        $this->line('views are cleared successfully!');
 
         Artisan::call('cache:clear');
-        $this->info('caches are cleared successful!');
+        $this->line('caches are cleared successful!');
 
 
-
-        $progressbar->finish();
         $this->newLine();
         $this->alert('The site is refreshed successfully :)');
+
+        if ($admin === 'yes')  $this->call('lareon:make-admin');
     }
 
-
-    protected function getArguments(): array
-    {
-        return [
-            ['admin', InputArgument::OPTIONAL, 'make a super admin user.'],
-        ];
-    }
-
-    protected function getOptions(): array
-    {
-        return [
-            ['example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null],
-        ];
-    }
 }

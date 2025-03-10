@@ -54,7 +54,7 @@ class JsonResponse
         if ($result->success) {
             $this->message($success_message ?? __('successfully done'))->result(ResponseType::SUCCESS)->data($result->result)->status(200);
         } else {
-            $this->message($failed_message ?? __('unfortunately failed'))->result(ResponseType::FAILED)->data($result->result)->status(500);
+            $this->message($failed_message ?? __('something goes wrong'))->result(ResponseType::FAILED)->data($result->result)->status(500);
 
         }
         return $this;

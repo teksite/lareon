@@ -7,7 +7,13 @@ use Illuminate\Support\Str;
 
 trait GeneratorCommandTrait
 {
-    public function replaceStub(string $stub, array $replace, string $destination)
+    /**
+     * @param string $stub
+     * @param array $replace
+     * @param string $destination
+     * @return void
+     */
+    public function replaceStub(string $stub, array $replace, string $destination): void
     {
         $stubPath = $this->getStubFile($stub);
         $replacedContent = $this->getStubContent($stubPath, $replace);
@@ -24,11 +30,20 @@ trait GeneratorCommandTrait
 
     }
 
-    protected function getStubFile($path)
+    /**
+     * @param $path
+     * @return string
+     */
+    protected function getStubFile($path): string
     {
         return app('cms.stubs') . trim($path, '\/');
     }
 
+    /**
+     * @param string $stubPath
+     * @param array $replacements
+     * @return string
+     */
     private function getStubContent(string $stubPath, array $replacements = []): string
     {
         if (!File::exists($stubPath)) {
