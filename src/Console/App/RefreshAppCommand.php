@@ -39,10 +39,10 @@ class RefreshAppCommand extends Command
         ];
 
         $this->print(function () {
-            Artisan::call('migrate:reset');
+            Artisan::call('migrate:reset',outputBuffer: $this->output);
 
             if (!$this->option('prevent-migration')) {
-                Artisan::call('migrate');
+                Artisan::call('migrate' ,outputBuffer: $this->output);
             }
         }, 'refresh migrations');
         $this->newLine();
@@ -50,11 +50,11 @@ class RefreshAppCommand extends Command
 
         if ($this->option('seed')) {
             $this->print(function () {
-                Artisan::call('lareon:seed');
+                Artisan::call('lareon:seed',outputBuffer: $this->output);
             }, 'seeding lareon cms');
 
             $this->print(function () {
-                Artisan::call('module:seed');
+                Artisan::call('module:seed',outputBuffer: $this->output);
             }, 'seeding modules');
 
             $this->print(function () {

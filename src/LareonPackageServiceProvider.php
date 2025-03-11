@@ -3,6 +3,7 @@
 namespace Teksite\Lareon;
 
 use Illuminate\Support\ServiceProvider;
+use Teksite\Lareon\Console\App\MakerAdminUser;
 use Teksite\Lareon\Console\App\RefreshAppCommand;
 use Teksite\Lareon\Console\Install\InstallerCommand;
 use Teksite\Lareon\Console\Make\CastMakeCommand;
@@ -131,7 +132,8 @@ class LareonPackageServiceProvider extends ServiceProvider
 
             SeedCommand::class,
 
-            RefreshAppCommand::class
+            RefreshAppCommand::class,
+            MakerAdminUser::class,
 
         ]);
     }
