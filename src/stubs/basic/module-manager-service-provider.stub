@@ -175,18 +175,6 @@ class {{ class }} extends ServiceProvider
 
     private function lareonModules(bool $active = true): array
     {
-        $modules = get_module_bootstrap();
-        $modulesArray = [];
-        foreach ($modules as $name => $data) {
-            $type = $data['type'] ?? 'self';
-            if ($type !== 'lareon') continue;
-
-            if ($active) {
-                if ($data['active']) $modulesArray[$name] = $data;
-            } else {
-                $modulesArray[$name] = $data;
-            }
-        }
-        return $modulesArray;
+      return lareonModules($active)
     }
 }

@@ -33,6 +33,29 @@ if (!function_exists('cms_namespace')) {
 }
 
 
+if (!function_exists('lareonModules')) {
+    /**
+     * @param bool $active
+     * @return array
+     */
+    function lareonModules(bool $active = true): array
+    {
+        $modulesArray=[];
+        foreach ( get_module_bootstrap() ?? [] as $name => $data) {
+            $type = $data['type'] ?? 'self';
+            if ($type !== 'lareon') continue;
+
+            if ($active) {
+                if ($data['active']) $modulesArray[$name] = $data;
+            } else {
+                $modulesArray[$name] = $data;
+            }
+        }
+        return $modulesArray;
+    }
+}
+
+
 
 if (!function_exists('dateAdapter')) {
     function dateAdapter($time, $format = "Y-m-d H:i"): ?string

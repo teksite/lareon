@@ -8,45 +8,20 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 
 class {{ class }} extends ServiceProvider
 {
-
-    public function boot()
-    {
-        parent::boot();
-    }
-
     public function map(): void
     {
         $routes = config('cms.modules.routes', []);
-        $modules = config('modules.modules', []);
 
-        foreach ($modules as $module => $provider) {
-            if (!$this->isSelfProvider($provider)) {
-                foreach ($routes as $route) {
-                    $routePath = Module::modulePath($module, 'routes' . DIRECTORY_SEPARATOR . $route['path']);
-                    if (file_exists($routePath)) {
-                        Route::prefix($route['prefix'] ?? '')
-                            ->name($route['name'] ?? '')
-                            ->middleware($route['middleware'] ?? [])
-                            ->group($routePath);
-                    }
+        foreach (lareonModules() as $module => $data) {
+            foreach ($routes as $route) {
+                $routePath = Module::modulePath($module, 'routes' . DIRECTORY_SEPARATOR . $route['path']);
+                if (file_exists($routePath)) {
+                    Route::prefix($route['prefix'] ?? '')
+                        ->name($route['name'] ?? '')
+                        ->middleware($route['middleware'] ?? [])
+                        ->group($routePath);
                 }
             }
         }
     }
-
-    /**
-     * Determines if the module provider is self-handled.
-     *
-     * This method checks if the provider class defines a constant 'TYPE'
-     * and whether its value is 'self'. If so, the module manages its own
-     * routes, and this provider skips processing it.
-     *
-     * @param string $provider
-     * @return bool
-     */
-    private function isSelfProvider(string $provider): bool
-    {
-        return defined("$provider::TYPE") && $provider::TYPE === 'self';
-    }
-
 }
