@@ -4,7 +4,10 @@ namespace {{ namespace }};
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Lareon\CMS\App\Providers\Modules\ModulesManagerServiceProvider;
+use Lareon\CMS\App\Providers\Modules\RoutesManagerServiceProvider;
 use Teksite\Lareon\Facade\Lareon;
+
 
 class {{ class }} extends ServiceProvider
 {
@@ -47,6 +50,8 @@ class {{ class }} extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
+        $this->app->register(ModulesManagerServiceProvider::class);
+        $this->app->register(RoutesManagerServiceProvider::class);
     }
 
     /**

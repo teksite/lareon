@@ -80,8 +80,8 @@ class LareonPackageServiceProvider extends ServiceProvider
 
     public function registerProviders(): void
     {
-        if (class_exists('\Lareon\Cms\App\Providers\CmsServiceProvider')) {
-            $this->app->register(\Lareon\Cms\App\Providers\CmsServiceProvider::class);
+        if (class_exists(\Lareon\CMS\App\Providers\CmsServiceProvider::class)) {
+            $this->app->register(\Lareon\CMS\App\Providers\CmsServiceProvider::class);
         }
     }
 

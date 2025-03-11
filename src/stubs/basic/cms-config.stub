@@ -161,4 +161,7 @@ return [
              2 => 'sitemap.php',
          ],
     ],
+
+    'lang_path'=>'lang'
+
 ];

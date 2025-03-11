@@ -20,11 +20,11 @@ class {{ class }}  extends ServiceProvider
 
     public function map(): void
     {
-        $routes = config('cms.cms.routes', []);
+        $routes = config('lareon.cms.routes', []);
         foreach ($routes as $route) {
             if ($route['path']) {
                 $path = cms_path('routes' . DIRECTORY_SEPARATOR . $route['path']);
-                $middleware = $route['middleware'] ?? null;
+                $middleware = $route['middleware'] ?? [];
                 $prefix = $route['prefix'] ?? '';
                 $name = $route['name'] ?? '';
                 if (file_exists($path)) {

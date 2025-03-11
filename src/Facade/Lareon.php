@@ -5,8 +5,8 @@ namespace Teksite\Lareon\Facade;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \Teksite\Lareon\Services\LareonServices cmsPath(?string $path = null, bool $absolute = true)
- * @method static \Teksite\Lareon\Services\LareonServices cmsNamespace(?string $path = null)
+ * @method static string cmsPath(?string $path = null, bool $absolute = true)
+ * @method static string cmsNamespace(?string $path = null)
  *
  * @see \Teksite\Module\Services\LareonServices
  */

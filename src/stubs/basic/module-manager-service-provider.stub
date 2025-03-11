@@ -17,15 +17,13 @@ class {{ class }} extends ServiceProvider
         $this->registerModules();
         $this->registerConfigs();
         $this->registerViews();
-        $this->app->register(RoutesManagerServiceProvider::class);
-        $this->app->register(ModulesManagerServiceProvider::class);
     }
 
     public function boot(): void
     {
-        $this->bootTranslations();
-        $this->loadModuleMigrations();
-        $this->loadModuleSeeders();
+         $this->bootTranslations();
+         $this->loadModuleMigrations();
+         $this->loadModuleSeeders();
     }
 
     /**
@@ -33,9 +31,12 @@ class {{ class }} extends ServiceProvider
      */
     private function registerModules(): void
     {
-        $modules = config('modules.modules', []);
-        foreach ($modules as $module => $provider) {
-            $this->app->register($provider);
+        $modules = get_module_bootstrap();
+
+        foreach ($this->lareonModules() as $name => $data) {
+            $providerClass = $data['provider'];
+            if (class_exists($providerClass)) $this->app->register($providerClass);
+
         }
     }
 
@@ -44,32 +45,27 @@ class {{ class }} extends ServiceProvider
      */
     private function registerConfigs(): void
     {
-        $modules = config('modules.modules', []);
-        $configsFromConfig = config('cms.modules.configs', []);
+        $configsFiles = config('lareon.modules.configs', []);
 
-        foreach ($modules as $module => $provider) {
-            if (!$this->isSelfProvider($provider)) {
-                $this->processConfigs($module, $configsFromConfig);
+        foreach ($this->lareonModules() as $module => $data) {
+            foreach ($configsFiles as $config) {
+                $this->publishAndMergeConfig($module, $config);
             }
         }
     }
-
-    private function processConfigs(string $module, array $configs): void
+    private function publishAndMergeConfig(string $module, string $config): void
     {
         $lowerModuleName = strtolower($module);
-        foreach ($configs as $config) {
-            $this->publishAndMergeConfig($module, $config, $lowerModuleName);
-        }
-    }
-
-    private function publishAndMergeConfig(string $module, string $config, string $lowerModuleName): void
-    {
         $suggestedConfigPath = module_path($module, "config/$config");
         $configName = str_replace('.php', '', $config);
+        $configGroup=$configName;
 
         if (file_exists($suggestedConfigPath)) {
-            $this->publishes([$suggestedConfigPath => config_path("$lowerModuleName.php")], $configName);
-            $this->mergeConfigFrom($suggestedConfigPath, "$configName.$lowerModuleName");
+            if($configName==='config'){
+                $configGroup='modules';
+            }
+            $this->publishes([$suggestedConfigPath => config_path("$lowerModuleName.php")], $configGroup);
+            $this->mergeConfigFrom($suggestedConfigPath, "$configGroup.$lowerModuleName");
         }
     }
 
@@ -78,19 +74,16 @@ class {{ class }} extends ServiceProvider
      */
     private function bootTranslations(): void
     {
-        $modules = config('modules.modules', []);
 
-        foreach ($modules as $module => $provider) {
-            if (!$this->isSelfProvider($provider)) {
+        foreach ($this->lareonModules() as $module => $data) {
                 $this->processTranslations($module);
-            }
         }
     }
 
     private function processTranslations(string $module): void
     {
         $lowerModuleName = strtolower($module);
-        $langPath = module_path($module, config('cms.module.lang_path', 'lang'));
+        $langPath = module_path($module, config('lareon.lang_path', 'lang'));
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, $lowerModuleName);
             $this->loadJsonTranslationsFrom($langPath);
@@ -102,16 +95,13 @@ class {{ class }} extends ServiceProvider
      */
     private function registerViews(): void
     {
-        $modules = config('modules.modules', []);
-
-        foreach ($modules as $module => $provider) {
-            if (!$this->isSelfProvider($provider)) {
-                $this->processViews($module);
-            }
+        foreach ($this->lareonModules() as $module => $data) {
+                $this->processViews($module , $data);
         }
+
     }
 
-    private function processViews(string $module): void
+    private function processViews(string $module ,array $data): void
     {
         $lowerModuleName = strtolower($module);
         $viewPath = resource_path('views/modules/' . $lowerModuleName);
@@ -141,21 +131,17 @@ class {{ class }} extends ServiceProvider
      */
     private function loadModuleMigrations(): void
     {
-        $modules = config('modules.modules', []);
-
-        foreach ($modules as $module => $provider) {
-            if (!$this->isSelfProvider($provider)) {
+        foreach ($this->lareonModules() as $module => $provider) {
                 $this->loadMigrationsForModule($module);
-            }
         }
     }
 
     private function loadMigrationsForModule(string $module): void
     {
-        $migrationPath = Module::modulePath($module, config('moduleconfigs.module.database.migration_path', 'Database/Migrations'));
-        if (is_dir($migrationPath)) {
-            $this->loadMigrationsFrom($migrationPath);
-        }
+        $migrationPath = Module::modulePath($module, 'Database/Migrations');
+
+        if (is_dir($migrationPath)) $this->loadMigrationsFrom($migrationPath);
+
     }
 
     /**
@@ -170,15 +156,7 @@ class {{ class }} extends ServiceProvider
     {
         $commands = $_SERVER['argv'] ?? [];
         if (in_array('db:seed', $commands) || in_array('--seed', $commands)) {
-            $this->seedModules();
-        }
-    }
-
-    private function seedModules(): void
-    {
-        $modules = config('modules.modules', []);
-        foreach ($modules as $module => $provider) {
-            if (!$this->isSelfProvider($provider)) {
+            foreach ($this->lareonModules() as $module => $provider) {
                 $this->runSeederForModule($module);
             }
         }
@@ -194,8 +172,21 @@ class {{ class }} extends ServiceProvider
         }
     }
 
-    private function isSelfProvider($provider)
+
+    private function lareonModules(bool $active = true): array
     {
-        return defined("$provider::TYPE") && $provider::TYPE === 'self';
+        $modules = get_module_bootstrap();
+        $modulesArray = [];
+        foreach ($modules as $name => $data) {
+            $type = $data['type'] ?? 'self';
+            if ($type !== 'lareon') continue;
+
+            if ($active) {
+                if ($data['active']) $modulesArray[$name] = $data;
+            } else {
+                $modulesArray[$name] = $data;
+            }
+        }
+        return $modulesArray;
     }
 }
