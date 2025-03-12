@@ -18,6 +18,15 @@ class BasicMigrator extends Command
     use LareonMigrationTrait;
 
     /**
+     * @return void
+     */
+    public function handle(): void
+    {
+        $this->installMigrateTable();
+        $this->runTheCommand();
+    }
+
+    /**
      * @param $file
      * @return mixed
      */
@@ -25,7 +34,7 @@ class BasicMigrator extends Command
     {
         return class_exists($file) ? new $file : include $file;
     }
-    
+
     /**
      * @return void
      */
