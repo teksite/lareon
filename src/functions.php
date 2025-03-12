@@ -25,7 +25,7 @@ if (!function_exists('cms_namespace')) {
         $moduleBaseNamespace = config('cms-setting.cms.namespace' ,'Lareon\CMS');
 
         $path=$path ? str_replace('/', '\\', $path) :null;
-
+        $path=trim($path ,'\\');
         return $path
             ? $moduleBaseNamespace .'\\'. $path
             : $moduleBaseNamespace;

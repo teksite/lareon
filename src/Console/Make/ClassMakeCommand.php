@@ -26,7 +26,7 @@ class ClassMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $description = 'Create a new classin the cms';
+    protected $description = 'Create a new class in the cms';
 
     protected $type = 'Class';
 
