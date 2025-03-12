@@ -4,50 +4,29 @@ namespace Teksite\Lareon\Console\Migrate;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Lareon\CMS\Database\Seeders\CmsDatabaseSeeder;
-use Teksite\Lareon\Traits\GeneralCommandsTrait;
+use Teksite\Lareon\Console\BasicMigrator;
+use Teksite\Lareon\Contract\MigrationContract;
+use Teksite\Lareon\Traits\Migration\LareonMigrationTrait;
 use Teksite\Module\Facade\Module;
+use Teksite\Module\Traits\ModuleNameValidator;
 
-class SeedCommand extends Command
+class SeedCommand extends BasicMigrator implements MigrationContract
 {
-    use GeneralCommandsTrait;
+    use LareonMigrationTrait;
 
     protected $signature = 'lareon:seed
-    {--m|modules : seed modules too}
-    {--l|laravel : seed modules too}
+        {--module : The module to seed.}
+        {--only=false : only migration manged by lareon}
+
     ';
 
-    protected $description = 'Seed the lareon cms';
+    protected $description = 'Seed the module';
 
-    protected $type = 'Seed';
+    protected string $type = 'Seed';
 
-    public function handle()
+
+    public function runTheCommand(): void
     {
-        $this->callSeedLareon();
-        if ($this->option('modules')) $this->seedAllModules();
-        if ($this->option('laravel')) $this->callLaravelSeed();
-    }
-
-
-    protected function callSeedLareon(): void
-    {
-        $mainSeeder = CmsDatabaseSeeder::class;
-        if (class_exists($mainSeeder)) {
-
-            $this->print(function () use ($mainSeeder) {
-                $this->call($mainSeeder);
-            }, 'seeding laravel');
-            $this->newLine();
-        }
-    }
-
-    protected function seedAllModules()
-    {
-        $this->call('module:seed');
-    }
-
-    protected function callLaravelSeed(): void
-    {
-        $this->call('db:seed');
+        $this->seeding();
     }
 }

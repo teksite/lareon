@@ -8,6 +8,10 @@ use Teksite\Lareon\Console\App\RefreshAppCommand;
 use Teksite\Lareon\Console\Install\InstallerCommand;
 use Teksite\Lareon\Console\Make\CastMakeCommand;
 use Teksite\Lareon\Console\Make\ModuleMakeCommand;
+use Teksite\Lareon\Console\Migrate\FreshCommands;
+use Teksite\Lareon\Console\Migrate\MigrateCommands;
+use Teksite\Lareon\Console\Migrate\ResetCommands;
+use Teksite\Lareon\Console\Migrate\RollbackCommands;
 use Teksite\Lareon\Console\Migrate\SeedCommand;
 use Teksite\Lareon\Services\Builder\JsonResponse;
 use Teksite\Lareon\Services\Builder\WebResponse;
@@ -131,11 +135,14 @@ class LareonPackageServiceProvider extends ServiceProvider
             TraitMakeCommand::class,
             ViewMakeCommand::class,
 
-            SeedCommand::class,
             ModuleMakeCommand::class,
+            MigrationMakeCommand::class,
 
-            RefreshAppCommand::class,
-            MakerAdminUser::class,
+            FreshCommands::class,
+            MigrateCommands::class,
+            ResetCommands::class,
+            RollbackCommands::class,
+            SeedCommand::class,
 
         ]);
     }
