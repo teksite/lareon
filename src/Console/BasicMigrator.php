@@ -25,28 +25,7 @@ class BasicMigrator extends Command
     {
         return class_exists($file) ? new $file : include $file;
     }
-
-    /**
-     * @param \Closure $closer
-     * @param string $first
-     * @param string $second
-     * @param string|null $result
-     * @return void
-     */
-    public function runAndCalculate(\Closure $closer, string $first = '', string $second = '', ?string $result = 'DONE'): void
-    {
-        $startTime = Carbon::now();
-
-        $closer();
-
-        $endTime = Carbon::now();
-
-        $executionTime = $startTime->diffInMilliseconds($endTime);
-
-        $this->components->twoColumnDetail($first, "$second $executionTime <fg=green;options=bold>$result</>");
-
-    }
-
+    
     /**
      * @return void
      */
