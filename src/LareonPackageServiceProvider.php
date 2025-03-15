@@ -86,7 +86,7 @@ class LareonPackageServiceProvider extends ServiceProvider
 
     public function registerProviders(): void
     {
-        if (class_exists(\Lareon\CMS\App\Providers\CmsServiceProvider::class)) {
+        if (file_exists(cms_path('App/Providers/CmsServiceProvider')) && class_exists(\Lareon\CMS\App\Providers\CmsServiceProvider::class)) {
             $this->app->register(\Lareon\CMS\App\Providers\CmsServiceProvider::class);
         }
     }
@@ -102,6 +102,7 @@ class LareonPackageServiceProvider extends ServiceProvider
     {
         $this->commands([
             InstallerCommand::class,
+            RefreshAppCommand::class,
 
             CastMakeCommand::class,
             ChannelMakeCommand::class,
@@ -137,7 +138,6 @@ class LareonPackageServiceProvider extends ServiceProvider
 
             ModuleMakeCommand::class,
             MigrationMakeCommand::class,
-
             FreshCommands::class,
             MigrateCommands::class,
             ResetCommands::class,

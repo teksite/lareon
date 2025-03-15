@@ -15,7 +15,7 @@ class RefreshAppCommand extends Command
 {
     use GeneralCommandsTrait;
 
-    protected $signature = 'lareon:refresh
+    protected $signature = 'app:refresh
                             {--admin=no : need to make a administrator (yes/no) }
                             {--restore : restore backup data (single/no) };
                             {--seed : seeding }
@@ -38,28 +38,22 @@ class RefreshAppCommand extends Command
             'database' => env('DB_DATABASE')
         ];
 
-        $this->print(function () {
+            Artisan::call('lareon:migrate-reset --module',outputBuffer: $this->output);
+            Artisan::call('module:migrate-reset',outputBuffer: $this->output);
+            $this->warn('Dropping other tables');
             Artisan::call('migrate:reset',outputBuffer: $this->output);
 
             if (!$this->option('prevent-migration')) {
-                Artisan::call('migrate' ,outputBuffer: $this->output);
+                Artisan::call('lareon:migrate --module',outputBuffer: $this->output);
+                Artisan::call('migrate',outputBuffer: $this->output);
             }
-        }, 'refresh migrations');
-        $this->newLine();
-
 
         if ($this->option('seed')) {
-            $this->print(function () {
-                Artisan::call('lareon:seed',outputBuffer: $this->output);
-            }, 'seeding lareon cms');
+                Artisan::call('lareon:seed --module',outputBuffer: $this->output);
+              //  Artisan::call('db:seed',outputBuffer: $this->output);
+            $this->warn('seeding others');
 
-            $this->print(function () {
-                Artisan::call('module:seed',outputBuffer: $this->output);
-            }, 'seeding modules');
-
-            $this->print(function () {
-                Artisan::call('db:seed');
-            }, 'seeding app');
+                Artisan::call('db:seed' ,outputBuffer: $this->output);
         }
 
         if ($doRestore) {
@@ -79,6 +73,9 @@ class RefreshAppCommand extends Command
                 }
             }
         }
+
+        Artisan::call('optimize:clear');
+        $this->line('optimize is cleared successfully!');
 
         Artisan::call('config:clear');
         $this->line('configs are cleared successfully!');
