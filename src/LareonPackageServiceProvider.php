@@ -86,7 +86,7 @@ class LareonPackageServiceProvider extends ServiceProvider
 
     public function registerProviders(): void
     {
-        if (file_exists(cms_path('App/Providers/CmsServiceProvider')) && class_exists(\Lareon\CMS\App\Providers\CmsServiceProvider::class)) {
+        if (file_exists(cms_path('App/Providers/CmsServiceProvider.php')) && class_exists(\Lareon\CMS\App\Providers\CmsServiceProvider::class)) {
             $this->app->register(\Lareon\CMS\App\Providers\CmsServiceProvider::class);
         }
     }

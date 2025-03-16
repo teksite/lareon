@@ -175,6 +175,6 @@ class {{ class }} extends ServiceProvider
 
     private function lareonModules(bool $active = true): array
     {
-      return lareonModules($active)
+      return lareonModules($active);
     }
 }
