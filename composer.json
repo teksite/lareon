@@ -1,0 +1,49 @@
+{
+    "name": "teksite/cms",
+    "description": "This package is made for lareon (laravel)",
+    "keywords": ["laravel", "lareon" , "cms"],
+
+    "authors": [
+        {
+            "name": "Sina Zangiband",
+            "email": "sina.zangiband@gmail.com",
+            "homepage": "https://teksite.net",
+            "role":"manager"
+        },
+        {
+            "name": "Sina zb",
+            "email": "sina.zangiband@laratek.ir",
+            "homepage": "https://laratek.ir",
+            "role": "developer"
+        }
+    ],
+    "require": {
+    },
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Lareon\\CMS\\": "/",
+            "Lareon\\CMS\\App\\": "App/",
+            "Lareon\\CMS\\Database\\Factories\\": "Database/Factories/",
+            "Lareon\\CMS\\Database\\Seeders\\": "Database/Seeders/"
+        },
+         "files": [
+
+         ]
+    },
+    "require-dev": {
+
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lareon\\CMS\\Tests\\": "Tests/"
+        }
+    }
+}
