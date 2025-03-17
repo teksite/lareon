@@ -10,7 +10,7 @@ class {{ class }} extends ServiceProvider
 {
     public function map(): void
     {
-        $routes = config('cms.modules.routes', []);
+        $routes = config('lareon.modules.routes', []);
 
         foreach (lareonModules() as $module => $data) {
             foreach ($routes as $route) {

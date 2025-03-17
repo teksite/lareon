@@ -61,7 +61,7 @@ class WebResponse
         if ($result->success) {
             $this->message($success_message ?? __('successfully done'))->result(ResponseType::SUCCESS)->data($result->result)->route($success_route ?? null);
         } else {
-            $this->message($failed_message ?? __('unfortunately failed'))->result(ResponseType::FAILED)->data($result->result)->route($failed_message ?? null);
+            $this->message($failed_message ?? __('unfortunately failed'))->result(ResponseType::FAILED)->data($result->result)->route($failed_route ?? null);
         }
         return $this;
 
