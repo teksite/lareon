@@ -3,24 +3,29 @@
 namespace Lareon\CMS\App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
-
+//use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Teksite\Authorize\Models\Role;
 
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register the service provider.
+     * The policy mappings for the application.
+     *
+     * @var array
      */
-    public function register(): void
-    {
-
-    }
+    protected $policies = [
+        \Teksite\Authorize\Models\Role::class => \Lareon\CMS\App\Policies\RolePolicy::class,
+    ];
 
     /**
-     * Boot the application events.
+     * Register any application authentication / authorization services.
+     *
+     * @return void
      */
     public function boot(): void
     {
+        $this->registerPolicies();
 
     }
 }

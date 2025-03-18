@@ -1,17 +1,18 @@
 <?php
-namespace Lareon\CMS\App\Http\Requests;
+namespace Lareon\CMS\App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Teksite\Authorize\Models\Role;
 
-class NewRoleRequest extends FormRequest
+class UpdateRoleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->can('admin.role.create');
+        return auth()->check() && auth()->user()->can('admin.role.edit');
     }
 
     /**
@@ -21,6 +22,8 @@ class NewRoleRequest extends FormRequest
      */
     public function rules(): array
     {
-        return Role::rules();
+        return array_merge(Role::rules() ,[
+            'title' => ['required', 'string', 'max:255',Rule::unique('auth_roles')->ignore($this->role)],
+        ]);
     }
 }

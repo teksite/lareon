@@ -1,14 +1,12 @@
 <x-lareon::admin-editor-layout type="update"  :instance="$role">
-    @section('title', __('edit :title',['title'=>__('role')]))
+    @section('title', __('edit the :title',['title'=>__('role') . " ($role->title)"]))
     @section('formRoute', route('admin.authorize.roles.update', $role))
     @section('header.start')
         <x-lareon::link.btn-outline :href="route('admin.authorize.roles.index')" :title="__('all :title',['title'=>__('roles')])" color="teal"/>
     @endsection
     @section('header.end')
         @parent
-        @can('admin.permission,delete')
-            <x-lareon::link.trash :href="route('admin.authorize.roles.destroy', $role)"/>
-        @endcan
+            <x-lareon::link.trash :href="route('admin.authorize.roles.destroy', $role)" can="admin.role.delete"/>
     @endsection
     @section('form')
         <x-lareon::sections.text :value="old('title') ?? $role->title" :title="__('title')" name="title" :placeholder="__('enter a unique :title',['title'=>__('title')])"  :required="true"/>

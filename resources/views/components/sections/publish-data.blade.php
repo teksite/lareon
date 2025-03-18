@@ -1,7 +1,7 @@
 @props(['instance'])
 <x-lareon::box >
     <h3>
-        <x-lareon::input.label :title="__('publish data')" />
+        <x-lareon::input.label :title="__('release information')" />
     </h3>
     <section class="p-3 rounded border border-dotted border-zinc-600">
         <div class="flex items-center gap-3 justify-between text-xs">

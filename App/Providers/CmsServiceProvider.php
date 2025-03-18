@@ -5,7 +5,6 @@ namespace Lareon\CMS\App\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
-use Lareon\CMS\App\Models\User;
 use Lareon\CMS\App\Providers\Modules\ModulesManagerServiceProvider;
 use Lareon\CMS\App\Providers\Modules\RoutesManagerServiceProvider;
 use Teksite\Lareon\Facade\Lareon;
@@ -52,6 +51,7 @@ class CmsServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
+        $this->app->register(AuthServiceProvider::class);
         $this->app->register(ModulesManagerServiceProvider::class);
         $this->app->register(RoutesManagerServiceProvider::class);
     }
@@ -158,7 +158,7 @@ class CmsServiceProvider extends ServiceProvider
      */
     private function setDefault(): void
     {
-        Config::set(User::class);
+        Config::set('auth.providers.users.model' ,\Lareon\CMS\App\Models\User::class);
     }
 
 }

@@ -16,7 +16,21 @@
            </div>
            <nav class="">
                <ul class="menu space-y-6">
-
+                   @foreach(\Lareon\CMS\App\Services\MenuService::getAdminMenu() as $menu)
+                       <li>
+                       @isset($menu['children'])
+                           <ul>
+                           @foreach($menu['children'] as $item)
+                                   <li>
+                                   <a href="{{route($item['route'])}}">{{$item['title']}}</a>
+                               </li>
+                           @endforeach
+                           </ul>
+                       @else
+                               <a href="{{route($menu['route'])}}">{{$menu['title']}}</a>
+                       @endisset
+                       </li>
+                   @endforeach
                </ul>
            </nav>
        </div>

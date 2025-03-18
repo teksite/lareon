@@ -6,7 +6,7 @@
 @endphp
 
 <div class="mb-3">
-    <x-lareon::input.label for="{{$random}}" :title="$title"/>
-    <x-lareon::input.password :name="$name" id="{{$random}}" placeholder="{{$placeholder}}" :value="$value" :required="$required"/>
+    <x-lareon::input.label for="pass-{{$random}}" :title="$title"/>
+    <x-lareon::input.password :name="$name" id="pass-{{$random}}" placeholder="{{$placeholder}}" :value="$value" :required="$required"/>
     <x-lareon::input.error :messages="$errors->get($stringifiedName)"/>
 </div>

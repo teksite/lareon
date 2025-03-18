@@ -1,16 +1,18 @@
-<x-lareon::admin-credix-layout>
+<x-lareon::admin-entry-layout>
     @section('title', __(':title list',['title'=>__('permissions')]))
     @section('formRoute', route('admin.authorize.permissions.store'))
+    @section('description', __('by permissions, user can access to different parts of the app'))
 
     @section('header.end')
         @parent
     @endsection
-    @section('form')
-        <x-lareon::sections.text :title="__('title')" name="title" :placeholder="__('enter a unique :title' ,['title'=>__('title')])"
-                                 :required="true"/>
-        <x-lareon::sections.text :title="__('description')" name="description" :placeholder="__('enter a :title', ['title'=>__('description')])"/>
-    @endsection
-    @section('index')
+    @can('admin.permission.create')
+        @section('form')
+            <x-lareon::sections.text :title="__('title')" name="title" :placeholder="__('enter a unique :title' ,['title'=>__('title')])" :required="true"/>
+            <x-lareon::sections.text :title="__('description')" name="description" :placeholder="__('write a :title', ['title'=>__('description')])"/>
+        @endsection
+    @endcan
+    @section('list')
         <x-lareon::box>
             <x-lareon::table :headers="['id'=>'#','title'=>__('title') , __('description') ,]">
                 @foreach($permissions as $key=>$permission)
@@ -20,12 +22,8 @@
                         <td>{{$permission->description}}</td>
                         <td>
                             <div class="action">
-                                @can('admin.permission.edit')
-                                    <x-lareon::link.edit :href="route('admin.authorize.permissions.edit' , $permission)"/>
-                                @endcan
-                                @can('admin.permission.delete')
-                                    <x-lareon::link.trash :href="route('admin.authorize.permissions.destroy' , $permission)"/>
-                                @endcan
+                                <x-lareon::link.edit :href="route('admin.authorize.permissions.edit' , $permission)" can="admin.permission.edit"/>
+                                <x-lareon::link.trash :href="route('admin.authorize.permissions.destroy' , $permission)" can="admin.permission.delete"/>
                             </div>
                         </td>
                     </tr>
@@ -36,4 +34,4 @@
         </x-lareon::box>
     @endsection
 
-</x-lareon::admin-credix-layout>
+</x-lareon::admin-entry-layout>

@@ -2,12 +2,12 @@
 
 namespace Lareon\CMS\App\Http\Controllers\Web\Admin\Authorization;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 use Lareon\CMS\App\Http\Controllers\Controller;
-use Lareon\CMS\App\Http\Requests\NewRoleRequest;
-use Lareon\CMS\App\Http\Requests\UpdateRoleRequest;
+use Lareon\CMS\App\Http\Requests\Admin\NewRoleRequest;
+use Lareon\CMS\App\Http\Requests\Admin\UpdateRoleRequest;
 use Lareon\CMS\App\Logic\RoleLogic;
 use Teksite\Authorize\Models\Role;
 use Teksite\Lareon\Facade\WebResponse;
@@ -71,8 +71,8 @@ class RolesController extends Controller implements HasMiddleware
      */
     public function edit(Role $role)
     {
+        Gate::authorize('update', $role);
         return view('lareon::admin.pages.authorization.roles.edit', compact('role'));
-
     }
 
     /**
@@ -80,6 +80,7 @@ class RolesController extends Controller implements HasMiddleware
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
+        Gate::authorize('update', $role);
         $res = $this->logic->change($request->validated() , $role);
         return WebResponse::byResult($res, route('admin.authorize.roles.edit', $role))->go();
     }
@@ -89,6 +90,8 @@ class RolesController extends Controller implements HasMiddleware
      */
     public function destroy(Role $role)
     {
+        Gate::authorize('delete', $role);
+
         $res = $this->logic->delete($role);
         return WebResponse::byResult($res, route('admin.authorize.roles.index'))->go();
     }
