@@ -6,6 +6,16 @@ return [
         'icon' => 'gauge',
     ],
     [
+        'title' => 'appearance',
+        'icon' => 'columns-three',
+        'children' => [
+            [
+                'title' => 'icons library',
+                'route' => 'admin.appearance.icons.index',
+            ],
+        ],
+    ],
+    [
         'title' => 'authorization',
         'icon' => 'lock-closed',
         'children' => [

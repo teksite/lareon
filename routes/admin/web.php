@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Lareon\CMS\App\Http\Controllers\Web\Admin\Apearance\IconsController;
+use Lareon\CMS\App\Http\Controllers\Web\Admin\Appearance\IconsController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Apearance\MediaController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Authorization\PermissionsController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Authorization\RolesController;
