@@ -5,8 +5,10 @@ namespace Lareon\CMS\App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lareon\CMS\App\Traits\UserHasMeta;
 use Lareon\CMS\Database\Factories\UserFactory;
 use Teksite\Authorize\Models\Role;
 use Teksite\Authorize\Traits\HasAuthorization;
@@ -14,7 +16,7 @@ use Teksite\Authorize\Traits\HasAuthorization;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable , HasAuthorization;
+    use HasFactory, Notifiable , HasAuthorization ,UserHasMeta;
 
     protected static function newFactory(): UserFactory|Factory
     {
@@ -32,17 +34,17 @@ class User extends Authenticatable
     /**
      * @return string[]
      */
-    protected function rules(): array
+    static function rules(): array
     {
         return [
             'parent_id'=>'nullable|int',
             'name'=>'required|string|max:255',
-            'nick_name'=>'required|string|max:255',
+            'nick_name'=>'nullable|string|max:255',
             'email'=>'required|string|email|max:255|unique:users',
             'phone'=>'required|string|max:11',
             'telegram_id'=>'nullable|string|max:255',
             'featured_image'=>'nullable|string|max:255',
-            'password'=>'required|string|min:8|confirmed',
+            'password'=>'required|string|min:8',
         ];
     }
     /**
@@ -70,7 +72,6 @@ class User extends Authenticatable
         ];
     }
 
-
     /**
      * @return bool
      */
@@ -81,23 +82,13 @@ class User extends Authenticatable
         ])->save();
     }
 
-
     /**
-     * @param bool $min
-     * @param bool $max
-     * @return array|float|null
+     * @return BelongsTo|null
      */
-    public static function hierarchy(bool $min = true, bool $max = false): array|float|null
+    public function parent(): ? BelongsTo
     {
-        $user = auth()->user(); if (!$user) return null;
-
-        $hierarchy['min'] = $user->roles()->min('hierarchy');
-        $hierarchy['max'] = $user->roles()->max('hierarchy');
-        if ($min && $max === false) {
-            return $hierarchy['min'];
-        } elseif ($min === false && $max) {
-            return $hierarchy['max'];
-        }
-        return $hierarchy;
+       return $this->parent_id ? $this->belongsTo(self::class, 'parent_id') : null;
     }
+
+
 }

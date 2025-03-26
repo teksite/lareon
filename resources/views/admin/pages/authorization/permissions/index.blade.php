@@ -2,10 +2,6 @@
     @section('title', __(':title list',['title'=>__('permissions')]))
     @section('formRoute', route('admin.authorize.permissions.store'))
     @section('description', __('by permissions, user can access to different parts of the app'))
-
-    @section('header.end')
-        @parent
-    @endsection
     @can('admin.permission.create')
         @section('form')
             <x-lareon::sections.text :title="__('title')" name="title" :placeholder="__('enter a unique :title' ,['title'=>__('title')])" :required="true"/>

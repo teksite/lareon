@@ -46,7 +46,6 @@ class RolesController extends Controller implements HasMiddleware
     public function create()
     {
         return view('lareon::admin.pages.authorization.roles.create');
-
     }
 
     /**

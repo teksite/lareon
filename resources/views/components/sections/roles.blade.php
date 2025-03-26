@@ -1,13 +1,8 @@
 @props(['instance'=>null , 'multiple'=>true ,'hierarchy'=>true])
 @php
-if (auth()->user()->hasRole(['owner','administrator'])){
-    $roles=\Lareon\CMS\App\Models\Role::query()->orderBy('hierarchy')->get(['id','title']);
 
-}else{
-    $roles=\Lareon\CMS\App\Models\Role::query()->orderBy('hierarchy')->where('hierarchy' ,">" ,auth()->user()->roles()->min('hierarchy'))->get(['id','title']);
-
-}
-    $random='roles-select'.rand(1000,9999);
+$roles=\Lareon\CMS\App\Models\User::hierarchyRoles();
+$random='roles-select'.rand(1000,9999);
 @endphp
 <x-lareon::box>
     <x-lareon::input.label for="{{$random}}" :title="__('roles')"/>

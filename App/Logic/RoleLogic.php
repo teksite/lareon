@@ -62,6 +62,11 @@ class RoleLogic
         });
     }
 
+    public function getRoleBaseHirarichy($user )
+    {
+
+    }
+
 
     /**
      * @return void

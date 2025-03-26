@@ -42,6 +42,10 @@ class CmsServiceProvider extends ServiceProvider
         $configPath = config_path('lareon.php');
         $cmsConfig = cms_path('config/lareon.php');
         $this->mergeConfigFrom(file_exists($configPath) ? $configPath : $cmsConfig, 'lareon');
+
+        $configUserInfoPath = config_path('user-info.php');
+        $cmsUserInfoConfig = cms_path('config/user-info.php');
+        $this->mergeConfigFrom(file_exists($configUserInfoPath) ? $configUserInfoPath : $cmsUserInfoConfig, 'user-info');
     }
 
     /**
@@ -129,9 +133,9 @@ class CmsServiceProvider extends ServiceProvider
      */
     private function getPublishableViewPaths(): array
     {
-       return array_filter(
-                  array_map(fn($path) => is_dir("$path/lareon") ? "$path/lareon" : null, config('view.paths'))
-       );
+        return array_filter(
+            array_map(fn($path) => is_dir("$path/lareon") ? "$path/lareon" : null, config('view.paths'))
+        );
     }
 
     /**
@@ -158,7 +162,12 @@ class CmsServiceProvider extends ServiceProvider
      */
     private function setDefault(): void
     {
-        Config::set('auth.providers.users.model' ,\Lareon\CMS\App\Models\User::class);
+        Config::set('auth.providers.users.model', \Lareon\CMS\App\Models\User::class);
+        Config::set('filesystems.disks.storage', [
+            'driver' => 'local',
+            'root' => storage_path('/'),
+            'throw' => false,
+        ]);
     }
 
 }

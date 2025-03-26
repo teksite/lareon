@@ -8,7 +8,7 @@ return [
             //Admin Routes
            'admin.web' => [
               'path' => 'admin/web.php',
-              'middleware' => ['web','auth','verified'],
+              'middleware' => ['web','auth','verified','can:admin'],
               'prefix' => 'tkadmin',
               'name' => 'admin.',  //DO NOT CHANGE IT,
            ],

@@ -3,6 +3,8 @@
 namespace Lareon\CMS\App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Lareon\CMS\App\Events\UserRegistrationEvent;
+use Lareon\CMS\App\Listeners\UserRegistrationListener;
 
 class EventServiceProvider  extends ServiceProvider
 {
@@ -12,7 +14,9 @@ class EventServiceProvider  extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-
+            UserRegistrationEvent::class=>[
+                UserRegistrationListener::class,
+            ]
     ];
 
     /**

@@ -2,7 +2,7 @@
     @section('title', __(':title list',['title'=>__('roles')]))
     @section('description', __('by roles, user can be categorized and have access to different parts of the app'))
     @section('header.start')
-        <x-lareon::link.btn-outline :href="route('admin.authorize.roles.create')" :title="__('create a new one')" color="green" can="admin.role.create"/>
+        <x-lareon::link.btn-outline :href="route('admin.authorize.roles.create')" :title="__('create a new one')" color="create" can="admin.role.create"/>
     @endsection
     @section('list')
         <x-lareon::box>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import iconSetter, {iconList} from "tkicon";
+import iconSetter from "./icon.js";
 import Alpine from 'alpinejs'
 import {copyToClipboard, loader} from './utilities.js'
 
@@ -14,7 +14,7 @@ Alpine.start();
     const iconListEl = document.getElementById('iconList');
     if (!iconListEl) return;
 
-    const {iconList} = await import("tkicon");
+    const {iconList} = await import("./icon.js");
     const fragment = document.createDocumentFragment();
 
     // Create template once and reuse
@@ -62,5 +62,6 @@ Alpine.start();
 
 
 document.addEventListener("DOMContentLoaded", function (event) {
+
     iconSetter();
 });

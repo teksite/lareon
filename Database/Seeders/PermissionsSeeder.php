@@ -52,6 +52,42 @@ class PermissionsSeeder extends Seeder
                'title'=>'admin.permission.delete',
                'description'=>'have access to delete permissions',
            ],
+           /* Settings */
+           [
+               'title'=>'admin.setting.read',
+               'description'=>'have access to setting parts and read them',
+           ],
+           /* Settings */
+           [
+               'title'=>'admin.setting.info.read',
+               'description'=>'have access to information of the app',
+           ],
+           /* Cache */
+           [
+               'title'=>'admin.setting.cache.read',
+               'description'=>'have access to the caches',
+           ],
+           [
+               'title'=>'admin.setting.cache.create',
+               'description'=>'have access to cache determined data',
+           ],
+           [
+               'title'=>'admin.setting.cache.delete',
+               'description'=>'have access to delete determined caches',
+           ],
+           /* Log */
+           [
+               'title'=>'admin.setting.log.read',
+               'description'=>'have access to the logs',
+           ],
+           [
+               'title'=>'admin.setting.log.clear',
+               'description'=>'have access to clear log files',
+           ],
+           [
+               'title'=>'admin.setting.log.delete',
+               'description'=>'have access to delete log files',
+           ],
            /* users */
            [
                'title'=>'admin.user.read',

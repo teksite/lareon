@@ -1,9 +1,9 @@
 <x-lareon::admin-editor-layout>
     @section('title', __('new :title',['title'=>__('role')]))
-    @section('description', __('in this window you can creat a new :title',['title'=>__('role')]))
+    @section('description', __('in this window you can create a new :title',['title'=>__('role')]))
     @section('formRoute', route('admin.authorize.roles.store'))
     @section('header.start')
-        <x-lareon::link.btn-outline :href="route('admin.authorize.roles.index')" :title="__('all :title',['title'=>__('roles')])" color="teal"/>
+        <x-lareon::link.btn-outline :href="route('admin.authorize.roles.index')" :title="__('all :title',['title'=>__('roles')])" color="index"/>
     @endsection
     @section('form')
         <x-lareon::sections.text :value="old('title')" :title="__('title')" name="title" :placeholder="__('enter a unique :title',['title'=>__('title')])" :required="true"/>
