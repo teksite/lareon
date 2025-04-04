@@ -1,4 +1,4 @@
-@props(['type'=>'text' ,'value'=>null , "disabled"=>false ,'required'=>false])
+@props(['type'=>'text' , "disabled"=>false ,'required'=>false])
 @php
 $class=$disabled ? 'text-zinc-300 cursor-not-allowed' : ''
 @endphp

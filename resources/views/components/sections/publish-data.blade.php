@@ -22,14 +22,14 @@
             {{dateAdapter($instance->updated_at) ?? '-'}}
         </span>
         </div>
-        @if($instance->publish_at)
+        @if($instance->published_at)
             <div class="flex items-center gap-3 justify-between text-xs">
             <span class="font-bold">
                 {{__('publish at')}}
             </span>
                 <hr class="border-dotted w-full">
                 <span class="min-w-fit">
-                {{dateAdapter($instance->publish_at) ?? '-'}}
+                {{$instance->published_at}}
             </span>
             </div>
         @endif

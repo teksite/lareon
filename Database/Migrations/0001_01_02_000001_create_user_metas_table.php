@@ -18,6 +18,8 @@ return new class extends Migration
             $table->text('value');
             $table->string('state')->nullable();
             $table->timestamps();
+
+            $table->unique(['user_id', 'key']);
         });
     }
 

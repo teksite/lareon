@@ -16,8 +16,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        \Teksite\Authorize\Models\Role::class => \Lareon\CMS\App\Policies\RolePolicy::class,
-        \Lareon\CMS\App\Models\User::class => \Lareon\CMS\App\Policies\UserPolicy::class,
+       \Teksite\Authorize\Models\Role::class => \Lareon\CMS\App\Policies\RolePolicy::class,
+       \Lareon\CMS\App\Models\User::class => \Lareon\CMS\App\Policies\UserPolicy::class,
     ];
 
     /**

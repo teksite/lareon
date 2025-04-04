@@ -12,20 +12,24 @@
 
     @yield('form.before')
     <form method="POST" action="@yield('formRoute')" id="createForm">
-        <div class="grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-7 gap-6">
+        <div class="grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-7 gap-6 mb-6">
             <div class="md:col-span-2 lg:col-span-2 xl:col-span-5 flex flex-col gap-6">
-                <x-lareon::box>
-                    @csrf
-                    @if($type=='update')
-                        @method('PATCH')
-                    @elseif($type=='put')
-                        @method('PUT')
-                    @elseif($type=='delete')
-                        @method('DELETE')
-                    @endif
-                    @yield('form')
-                </x-lareon::box>
-                @yield('form.before.end')
+                <div>
+                    @yield('form.after.start')
+
+                        @csrf
+                        @if($type=='update')
+                            @method('PATCH')
+                        @elseif($type=='put')
+                            @method('PUT')
+                        @elseif($type=='delete')
+                            @method('DELETE')
+                        @endif
+                       <div class="flex flex-col gap-6">
+                           @yield('form')
+                       </div>
+                    @yield('form.before.end')
+                </div>
             </div>
             <div class="flex flex-col gap-6 xl:col-span-2">
                 @yield('aside')

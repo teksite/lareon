@@ -9,7 +9,7 @@ class MenuService
     public static function getAdminMenu()
     {
         $menuItems = [];
-        $cmsConig=cms_path('config/admin-menu.php');
+        $cmsConig = cms_path('config/admin-menu.php');
         if (file_exists($cmsConig)) {
             $moduleMenu = include $cmsConig;
             $menuItems = array_merge($menuItems, $moduleMenu);
@@ -18,7 +18,7 @@ class MenuService
         $modules = Module::all();
 
         foreach ($modules as $module) {
-            $menuFile = module_path($module ,'config/admin-menu.php');
+            $menuFile = module_path($module, 'config/admin-menu.php');
             if (file_exists($menuFile)) {
                 $moduleMenu = include $menuFile;
                 $menuItems = array_merge($menuItems, $moduleMenu);
@@ -35,10 +35,16 @@ class MenuService
 
         foreach ($menuItems as $item) {
             if (isset($item['children'])) {
-                $menuMap[$item['title']] = $item;
+                if (isset($menuMap[$item['title']])) {
+                    $menuMap[$item['title']]['children'] = array_merge(array_merge($menuMap[$item['title']]['children'], $item['children']));
+                } else {
+                    $menuMap[$item['title']] = $item;
+                }
             } else {
-                $menuMap[] = $item;
+                $menuMap[$item['title']] = $item;
             }
-        }return array_values($menuMap);
+        }
+
+        return array_values($menuMap);
     }
 }

@@ -3,11 +3,11 @@ return [
     [
         'title' => 'dashboard',
         'route' => 'admin.dashboard',
-        'icon' => 'gauge',
+        'icon' => 'home',
 
     ],
     [
-        'title' => 'appearance',
+        'title' => 'visual elements',
         'icon' => 'columns-three',
         'children' => [
             [
@@ -51,7 +51,7 @@ return [
         ],
     ],
     [
-        'title' => 'authorization',
+        'title' => 'user authorizations',
         'icon' => 'lock-closed',
         'canany' => ['admin.role.index', 'admin.permission.index'],
         'children' => [

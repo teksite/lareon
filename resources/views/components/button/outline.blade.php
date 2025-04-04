@@ -1,4 +1,4 @@
-@props(['type'=>'submit' , 'color'=>null])
+@props(['type'=>'submit' , 'color'=>null , 'value'=>null])
 @php
 
     $class=match ($color){
@@ -16,6 +16,6 @@
 @endphp
 <button
     type="{{$type}}" {{$attributes->merge(['class'=> "border rounded text-sm px-3 py-2 shadow font-semibold hover:cursor-pointer select-none $class"])}}>
-    {!! $slot !!}
+    {!! $value ?? $slot !!}
 </button>
 

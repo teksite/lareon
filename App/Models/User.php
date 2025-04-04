@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Lareon\CMS\App\Cast\AvatarCast;
 use Lareon\CMS\App\Traits\UserHasMeta;
 use Lareon\CMS\Database\Factories\UserFactory;
 use Teksite\Authorize\Models\Role;
@@ -69,6 +70,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'password' => 'hashed',
+            'featured_image' =>AvatarCast::class,
         ];
     }
 

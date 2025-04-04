@@ -117,7 +117,7 @@ class ModulesManagerServiceProvider extends ServiceProvider
 
     private function registerBladeComponents(string $module, string $lowerModuleName): void
     {
-        $componentNamespace = module_namespace($module, module_path($module, 'App/View/Components'));
+        $componentNamespace = module_namespace($module,'App/View');
         Blade::componentNamespace($componentNamespace, $lowerModuleName);
     }
 

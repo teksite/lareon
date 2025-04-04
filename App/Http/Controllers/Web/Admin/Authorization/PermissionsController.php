@@ -15,7 +15,6 @@ use Teksite\Lareon\Facade\WebResponse;
 
 class PermissionsController extends Controller implements HasMiddleware
 {
-
     public function __construct(public PermissionLogic $logic)
     {
     }

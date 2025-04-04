@@ -6,9 +6,11 @@
         <x-lareon::link.btn-outline :href="route('admin.authorize.roles.index')" :title="__('all :title',['title'=>__('roles')])" color="index"/>
     @endsection
     @section('form')
+    <x-lareon::box>
         <x-lareon::sections.text :value="old('title')" :title="__('title')" name="title" :placeholder="__('enter a unique :title',['title'=>__('title')])" :required="true"/>
         <x-lareon::sections.text :value="old('description')" :title="__('description')" name="description" :placeholder="__('write a :title' ,['title'=>__('description')])" :required="false"/>
         <x-lareon::sections.text :value="old('hierarchy') ?? \Lareon\CMS\App\Models\User::hierarchy('min') + 1" type="number" :title="__('hierarchy')" name="hierarchy" :placeholder="__('choose a :title' ,['title'=>__('hierarchy')])" :required="true"/>
+    </x-lareon::box>
     @endsection
     @section('aside')
         <x-lareon::sections.permissions />

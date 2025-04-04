@@ -5,6 +5,7 @@ namespace Lareon\CMS\App\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use Lareon\CMS\App\Http\Middleware\SetLanguage;
 use Lareon\CMS\App\Providers\Modules\ModulesManagerServiceProvider;
 use Lareon\CMS\App\Providers\Modules\RoutesManagerServiceProvider;
 use Teksite\Lareon\Facade\Lareon;
@@ -20,6 +21,7 @@ class CmsServiceProvider extends ServiceProvider
         $this->mergeConfigurations();
         $this->registerProviders();
         $this->setDefault();
+        $this->registerMiddlewares();
     }
 
     /**
@@ -168,6 +170,10 @@ class CmsServiceProvider extends ServiceProvider
             'root' => storage_path('/'),
             'throw' => false,
         ]);
+    }
+
+    private function registerMiddlewares(): void
+    {
     }
 
 }

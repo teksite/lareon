@@ -18,14 +18,16 @@ return new class extends Migration
             $table->string('name');
             $table->string('nick_name')->nullable();
             $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->string('telegram_id')->nullable();
+            $table->string('phone' ,15)->unique();
+            $table->unsignedBigInteger('telegram_id')->nullable();
             $table->string('featured_image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->index('name');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -41,6 +43,7 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+
         });
     }
 

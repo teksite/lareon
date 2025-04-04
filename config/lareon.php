@@ -1,8 +1,21 @@
 <?php
 
 return [
-
+    /*
+     |--------------------------------------------------------------------------
+     | CMS CONFIG
+     |--------------------------------------------------------------------------
+     |
+     */
     "cms"=>[
+        /*
+         |----------------------------------------------------------------------
+         | CMS Routes
+         |----------------------------------------------------------------------
+         |
+         | specify which route files should be registered, along with their corresponding middleware and prefix
+         |
+         */
         "routes"=>
            [
             //Admin Routes
@@ -87,14 +100,43 @@ return [
               'name' => 'panel.api.v1.',  //DO NOT CHANGE IT,
            ],
 
-        ]
+        ],
+        /*
+         |----------------------------------------------------------------------
+         | sitemap ** The sitemap configuration is consistent with the Lareon/SEO module. **
+         |----------------------------------------------------------------------
+         |
+         | sitemap: Defines how URLs should be structured in the sitemap. Choose between:
+         |      index: Generates multiple sitemap files for different parts of the app, along with an index file listing all sitemap files.
+         |      single: Creates a single sitemap file containing all URLs.
+         |
+         | sitemap_crawling: Determines how URLs are detected. Choose between: : database , auto
+         |
+         | Note: The Auto mode only works with the Single file option.
+         |
+        */
+        "sitemap"=>[
+            'file' => env('SITEMAP_FILE','index'),   //index, single
 
+            'crawl' => env('SITEMAP_CRAWL','database'), // database , auto
+        ]
     ],
 
-
+    /*
+       |--------------------------------------------------------------------------
+       | Modules
+       |--------------------------------------------------------------------------
+       |
+       */
     'modules'=>[
-
-    // routes of modules to be scanned
+        /*
+       |----------------------------------------------------------------------
+       | CMS Routes
+       |----------------------------------------------------------------------
+       |
+       | specify which route files should be registered by the CMS, along with their corresponding middleware and prefix
+       |
+       */
         'routes' => [
            'client.web' => [
                'path' => 'web.php',
@@ -118,13 +160,13 @@ return [
                'path' => 'admin/web.php',
                'middleware' => ['web','auth','verified'],
                'prefix' => 'tkadmin',
-               'name' => '',
+               'name' => 'admin.',
            ],
            'admin.api.v1' => [
                'path' => 'admin/api.php',
                'middleware' => ['api'],
                'prefix' => 'tkadmin/api',
-               'name' => 'api.v1.',
+               'name' => 'admin.api.v1.',
            ],
            'admin.ajax' => [
                'path' => 'admin/ajax.php',
@@ -153,15 +195,22 @@ return [
          ],
 
 
-        // configs of modules to be scanned
+        /*
+        |----------------------------------------------------------------------
+        | CMS Routes
+        |----------------------------------------------------------------------
+        |
+        | registering configuration files by the CMS
+        |
+        */
 
          'configs' => [
              0 => 'config.php',
              1 => 'search.php',
-             2 => 'sitemap.php',
          ],
     ],
 
-    'lang_path'=>'lang'
+
+
 
 ];

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Appearance\IconsController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Authorization\PermissionsController;
@@ -11,6 +14,14 @@ use Lareon\CMS\App\Http\Controllers\Web\Admin\Settings\LogsController;
 use Lareon\CMS\App\Http\Controllers\Web\Admin\Users\UsersController;
 
 Route::get('/', [DashboardController::class, 'show'])->name('dashboard');
+Route::get('/setlang', function (\Illuminate\Http\Request $request) {
+    $lang = $request->cookie('lang' ,'en') === 'en' ? 'fa' : 'en';
+    App::setLocale($lang);
+    Config::set('app.locale', $lang);
+    Cookie::queue('lang', $lang, 60 * 24 * 30);
+    return back();
+
+})->name('setlang');
 
 Route::prefix('appearance')->name('appearance.')->group(function () {
     Route::get('/icons', [IconsController::class, 'index'])->name('icons.index');

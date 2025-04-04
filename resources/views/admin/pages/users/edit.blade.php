@@ -9,10 +9,10 @@
     @endsection
     @section('header.end')
         @parent
-            <x-lareon::link.trash :href="route('admin.users.destroy', $user)" can="admin.user.delete"/>
+            <x-lareon::link.delete :href="route('admin.users.destroy', $user)" can="admin.user.delete"/>
     @endsection
     @section('form')
-       <div class="grid xl:grid-cols-2 gap-6">
+       <x-lareon::box class="grid xl:grid-cols-2 gap-6 mb-6">
            <div>
            <x-lareon::sections.text :value="old('name') ?? $user->name" :title="__('name')" name="name" :placeholder="__('write a :title for :item',['title'=>__('name') , 'item'=>__('user')])" :required="true"/>
            <x-lareon::sections.text :value="old('nick_name') ?? $user->nick_name ?? $user->name" :title="__('nickname')" name="nick_name" :placeholder="__('write a :title',['title'=>__('nickname')])" :required="false"/>
@@ -31,9 +31,8 @@
            <x-lareon::sections.text :value="old('telegram_id') ?? $user->telegram_id" :title="__('telegram_id')" name="telegram_id" :placeholder="__('write a :title',['title'=>__('telegram id')])"/>
            <x-lareon::sections.password value="" :title="__('new :title' ,['title'=>__('password')])" name="password" :placeholder="__('leave it empty to not change')"/>
            </div>
-           <!--//TODO: Create image avatar selection -->
-           <img src="" alt="{{__('avatar') .' '.$user->name }}" width="250" height="250" >
-       </div>
+           <x-lareon::sections.image value="{{old('featured_image') ?? $user->featured_image}}" :title="__('avatar')" name="featured_image" />
+       </x-lareon::box>
     @endsection
     @section('form.before.end')
         <x-lareon::box>

@@ -20,7 +20,7 @@
                         <td>
                             <div class="action">
                                 <x-lareon::link.edit :href="route('admin.users.edit' , $user)" can="admin.user.edit"/>
-                                <x-lareon::link.trash :href="route('admin.users.destroy' , $user)" can="admin.user.delete"/>
+                                <x-lareon::link.delete :href="route('admin.users.destroy' , $user)" can="admin.user.delete"/>
                             </div>
                         </td>
                     </tr>

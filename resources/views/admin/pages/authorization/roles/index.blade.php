@@ -17,7 +17,7 @@
                         <td>
                             <div class="action">
                                 <x-lareon::link.edit :href="route('admin.authorize.roles.edit' , $role)" can="admin.role.edit"/>
-                                <x-lareon::link.trash :href="route('admin.authorize.roles.destroy' , $role)" can="admin.role.delete"/>
+                                <x-lareon::link.delete :href="route('admin.authorize.roles.destroy' , $role)" can="admin.role.delete"/>
                             </div>
                         </td>
                     </tr>
