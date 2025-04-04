@@ -18,7 +18,7 @@ class RefreshAppCommand extends Command
     protected $signature = 'app:refresh
                             {--admin=no : need to make a administrator (yes/no) }
                             {--restore : restore backup data (single/no) };
-                            {--seed : seeding }
+                            {--seeding : seeding }
                             {--path=storage/backups : backup path to restore from }
                             {--prevent-migration : prevent migrating after drop all tables }';
 
@@ -26,6 +26,7 @@ class RefreshAppCommand extends Command
 
     public function handle()
     {
+
         $admin = $this->option('admin');
         $doRestore = $this->option('restore');
         $backupPath = base_path($this->option('path'));
@@ -37,23 +38,19 @@ class RefreshAppCommand extends Command
             'host' => env('DB_HOST'),
             'database' => env('DB_DATABASE')
         ];
+        Artisan::call('migrate:reset', outputBuffer: $this->output);
 
-            Artisan::call('lareon:migrate-reset --module',outputBuffer: $this->output);
-            Artisan::call('module:migrate-reset',outputBuffer: $this->output);
-            $this->warn('Dropping other tables');
-            Artisan::call('migrate:reset',outputBuffer: $this->output);
 
-            if (!$this->option('prevent-migration')) {
-                Artisan::call('lareon:migrate --module',outputBuffer: $this->output);
-                Artisan::call('migrate',outputBuffer: $this->output);
-            }
-
-        if ($this->option('seed')) {
-                Artisan::call('lareon:seed --module',outputBuffer: $this->output);
-              //  Artisan::call('db:seed',outputBuffer: $this->output);
+        if (!$this->option('prevent-migration')) {
+            $this->warn('Migrating database');
+            Artisan::call('migrate', outputBuffer: $this->output);
+        }
+        if ($this->option('seeding')) {
             $this->warn('seeding others');
 
-                Artisan::call('db:seed' ,outputBuffer: $this->output);
+            Artisan::call('lareon:seed --module', outputBuffer: $this->output);
+            $this->warn('seeding others');
+            Artisan::call('db:seed', outputBuffer: $this->output);
         }
 
         if ($doRestore) {
@@ -66,7 +63,7 @@ class RefreshAppCommand extends Command
                         $fileName = $file->getBasename();
                         $path = $file->getPathname();
                         $this->print(function () use ($path, $db) {
-                            exec("mysql --user={$db['username']} --password={$db['password']} --host={$db['host']} --database {$db['database']} < $path",);
+                            exec("mysql --user={$db['username']} --password={$db['password']} --host={$db['host']} --database {$db['database']} < $path");
                         }, "$fileName");
                     }
                     $this->newLine();
@@ -92,7 +89,7 @@ class RefreshAppCommand extends Command
         $this->newLine();
         $this->alert('The site is refreshed successfully :)');
 
-        if ($admin === 'yes')  $this->call('lareon:make-admin');
+        if ($admin === 'yes') $this->call('lareon:make-admin');
     }
 
 }

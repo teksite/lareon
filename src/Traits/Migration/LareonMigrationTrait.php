@@ -18,7 +18,7 @@ trait LareonMigrationTrait
     {
         $this->warn("Dropping all tables of lareon");
         $this->runAndCalculate(function () {
-            foreach ($this->lareonMigrationFiles() as $migration) {
+            foreach (array_reverse($this->lareonMigrationFiles()) as $migration) {
                 $class = $this->resolve($migration['path']);
                 $class->down();
                 $this->removeFromMigrationTable($migration['name']);

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static string cmsPath(?string $path = null, bool $absolute = true)
  * @method static string cmsNamespace(?string $path = null)
+ * @method static array getModules()
  *
  * @see \Teksite\Module\Services\LareonServices
  */

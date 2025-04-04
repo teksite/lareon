@@ -40,8 +40,8 @@ class BasicMigrator extends Command
      */
     public function down(): void
     {
-        $this->downLareon();
         if ($this->option('module')) $this->downModules();
+        $this->downLareon();
     }
 
     /**
@@ -106,7 +106,7 @@ class BasicMigrator extends Command
     public function seeding(): void
     {
         $this->seedingLareon();
-        if ($this->option('module')) $this->seedingModules();
+       if ($this->option('module')) $this->seedingModules();
     }
 
     /**

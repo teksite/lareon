@@ -3,8 +3,16 @@
 namespace Teksite\Lareon\Services;
 
 
+use Illuminate\Support\Facades\File;
+
 class LareonServices
 {
+    private string $bootstrapFile;
+
+    public function __construct()
+    {
+        $this->bootstrapFile = config('module.registration_file', base_path('bootstrap') . '/modules.php');
+    }
 
     /**
      * Get absolute or relative root of CMS or the specific path.
@@ -31,6 +39,26 @@ class LareonServices
     public function cmsViewPath(?string $path = null): string
     {
         return $this->cmsPath('resources/views' . ($path ? DIRECTORY_SEPARATOR . $path : ''));
+    }
+
+
+    /**
+     * @return array|string[]
+     */
+    public function getModules(): array
+    {
+        $bootstrapFile = $this->bootstrapFile;
+        $modules = [];
+        if (File::exists($bootstrapFile)) {
+            $bootstrapModule = include $bootstrapFile;
+            foreach ($bootstrapModule as $name => $data) {
+                if ($data['type'] == 'lareon') {
+                    $modules[] = $name;
+                }
+            }
+        }
+
+        return $modules;
     }
 
 

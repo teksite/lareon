@@ -19,13 +19,13 @@ class FreshCommands extends BasicMigrator implements MigrationContract
     public function handle(): void
     {
         parent::handle();
-        if ($this->option('seed')) $this->seeding();
     }
 
     public function runTheCommand(): void
     {
         $this->down();
         $this->up();
+        if ($this->option('seed')) $this->seeding();
 
     }
 }
