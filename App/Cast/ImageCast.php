@@ -11,7 +11,14 @@ class ImageCast implements CastsAttributes
     public function get($model, string $key, $value, array $attributes)
     {
         // Add your "get" logic here
-        return $value;
+      if ($value){
+          if (request()->routeIs('admin.*')){
+              return $value;
+          }else{
+              return  str_starts_with($value , config('app.url')) ? $value : url($value);
+          }
+      }
+      return $value;
     }
 
     public function set($model, string $key, $value, array $attributes)

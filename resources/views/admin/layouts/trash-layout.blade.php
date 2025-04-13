@@ -3,7 +3,7 @@
     @section('title' ,__(':title trash',['title'=>$title]))
     @section('description', __(':title trash contains instances that have not been completely deleted from the database. you can either restore them or permanently remove them' ,['title'=>$title]))
     @section('header.start')
-        <x-lareon::link.btn-outline :href="$index" :title="__('all :title',['title'=>__('annotations')])" color="index"/>
+        <x-lareon::link.btn-outline :href="$index" :title="__('all :title',['title'=>$title])" color="index"/>
         <x-lareon::search/>
     @endsection
     @section('header.end')

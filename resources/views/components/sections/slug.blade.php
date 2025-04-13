@@ -10,7 +10,10 @@
         <x-lareon::input.text type="text" :name="$name" id="{{$random}}" placeholder="{{$placeholder}}" :value="$value" :required="$required" {{$attributes}}/>
     </div>
     @if($link)
-        <a href="{{$link}}" target="_blank" class="text-sm font-semibold text-blue-600">{{$link}}</a>
+       <div class="flex items-start justify-start gap-3 mt-6">
+           <i class="tkicon fill-none stroke-blue-900" stroke-width="2" data-icon="link"></i>
+           <a href="{{$link}}" target="_blank" class="text-sm font-semibold text-blue-600" dir="ltr">{{$link}}</a>
+       </div>
     @endif
     <x-lareon::input.error :messages="$errors->get($stringifiedName)"/>
 </div>
