@@ -165,10 +165,12 @@ class CmsServiceProvider extends ServiceProvider
     private function setDefault(): void
     {
         Config::set('auth.providers.users.model', \Lareon\CMS\App\Models\User::class);
-        Config::set('filesystems.disks.storage', [
-            'driver' => 'local',
+        Config::set('filesystems.disks.storage', [  'driver' => 'local',
             'root' => storage_path('/'),
             'throw' => false,
+        ]);
+        Config::set('filesystems.link',[
+            public_path('uploads') => storage_path('app/public/uploads'),
         ]);
     }
 

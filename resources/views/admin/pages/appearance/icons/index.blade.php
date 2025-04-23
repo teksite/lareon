@@ -20,6 +20,6 @@
 &lt;<span>style</span>&gt;</code>
 </pre>
     </dev>
-    <ul id="iconList" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6" ></ul>
+    <ul id="iconList" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-6 text-sm" ></ul>
 
 </x-lareon::admin-layout>

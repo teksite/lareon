@@ -20,7 +20,7 @@ class SendEmailJob implements ShouldQueue
     public $backoff = [30, 60, 120, 300, 600];
     public $timeout = 120;
 
-    protected $recipient; // تغییر به protected برای سریالایز بهتر
+    protected $recipient;
     protected $mailable;
 
     public function __construct(User $recipient, Mailable $mailable)
@@ -30,7 +30,7 @@ class SendEmailJob implements ShouldQueue
         $this->queue = 'emails';
     }
 
-    public function handle()
+    public function handle(): void
     {
         try {
             Mail::to($this->recipient->email)->send($this->mailable);
@@ -52,11 +52,10 @@ class SendEmailJob implements ShouldQueue
         }
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Exception $exception): void
     {
         Log::critical("ارسال ایمیل برای {$this->recipient->email} بعد از {$this->tries} تلاش شکست خورد.", [
             'error' => $exception->getMessage(),
         ]);
-        // اینجا می‌تونی اعلان به ادمین بفرستی یا توی دیتابیس ثبت کنی
     }
 }

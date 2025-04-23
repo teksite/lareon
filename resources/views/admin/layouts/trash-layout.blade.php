@@ -7,10 +7,10 @@
         <x-lareon::search/>
     @endsection
     @section('header.end')
-        <form action="{{$trash}}" method="POST">
+        <form action="{{$trash}}" method="POST" class="deltfrmItms">
             @csrf
             @method('DELETE')
-            <x-lareon::button.outline type="submit" role="button" title="{{__('wipe all item in the trash')}}" :value="__('wipe all')" color="danger"/>
+            <x-lareon::button.outline type="submit" role="button" title="{{__('wipe all item in the trash')}}" :value="__('wipe all')" color="danger" />
         </form>
         <form action="{{$trash}}" method="POST">
             @csrf

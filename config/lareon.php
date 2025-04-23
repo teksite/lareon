@@ -154,7 +154,7 @@ return [
                'path' => 'ajax.php',
                'middleware' => ['api','web'],
                'prefix' => 'ajax',
-               'name' => 'ajax',
+               'name' => 'ajax.',
            ],
            'admin.web' => [
                'path' => 'admin/web.php',
@@ -210,6 +210,24 @@ return [
          ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Comment
+    |--------------------------------------------------------------------------
+    | This part only works with the comment branch of the teksite/lareon-modules package
+    | If the package is not installed or has been modified, it may not function correctly.
+    |
+    */
+    'comment'=>[
+        'allow'=>env('COMMENT_ALLOW','any'), //auth (only registered and login users) and any (for anyone)
+        'confirmation'=>true, // true -> comments should be confirmed first , false -> all comments confirmed
+        'unconfirmed_visibility'=>true,
+        'limit'=>5,
+        'notifyEmail'=>[
+            'sina.zangiband@gmail.com'
+        ]
+
+    ]
 
 
 

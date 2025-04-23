@@ -8,16 +8,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Route;
 use Lareon\CMS\App\Cast\AvatarCast;
 use Lareon\CMS\App\Traits\UserHasMeta;
 use Lareon\CMS\Database\Factories\UserFactory;
+use Lareon\Modules\Comment\App\Traits\HasComment;
 use Teksite\Authorize\Models\Role;
 use Teksite\Authorize\Traits\HasAuthorization;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable , HasAuthorization ,UserHasMeta;
+    use HasFactory, Notifiable , HasAuthorization ,UserHasMeta ,HasComment;
 
     protected static function newFactory(): UserFactory|Factory
     {
@@ -90,6 +92,11 @@ class User extends Authenticatable
     public function parent(): ? BelongsTo
     {
        return $this->parent_id ? $this->belongsTo(self::class, 'parent_id') : null;
+    }
+
+    public function path()
+    {
+        return Route::has('users.show') ?  route('users.show' , $this) : null;
     }
 
 

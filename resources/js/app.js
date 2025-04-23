@@ -4,6 +4,8 @@ import Alpine from 'alpinejs'
 import {copyToClipboard, loader} from './utilities.js'
 import TomSelect from "tom-select";
 import 'tom-select/dist/css/tom-select.css';
+import Swal from 'sweetalert2'
+
 // import "@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css";
 // import "@majidh1/jalalidatepicker";
 
@@ -13,6 +15,38 @@ window.Alpine = Alpine
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 Alpine.start();
 
+function confirmationAlert(title="are you sure to proceed?"){
+   return Swal.fire({
+        icon: 'warning',
+        title: title,
+        showCancelButton: true,
+        confirmButtonText: "yes",
+        cancelButtonText: `no`,
+       timer: 5000
+
+   }).then((result) => {
+        if (result.isConfirmed) {
+            return true;
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: "noting happened",
+                showConfirmButton: false,
+                timer: 1500
+            });
+            return false
+        }
+    });
+}
+const deleteForms =document.querySelectorAll('.deltfrmItms');
+deleteForms.forEach(form=>{
+    form.addEventListener('submit',e=>{
+        e.preventDefault();
+        confirmationAlert().then(res=>{
+            if (res) form.submit();
+        })
+    })
+});
 
 (async () => {
     const iconListEl = document.getElementById('iconList');
@@ -81,7 +115,6 @@ function initSelectBox() {
     });
 }
 
-
 //     Seo meta Detector     //
 class MetaDetector {
     constructor(selector, min, max) {
@@ -132,7 +165,6 @@ class MetaDetector {
 //        Seo Section        //
 let SeoTypeSelector = document.getElementById('seo_type');
 const SchemaDetailsSec = document.getElementById('schemaDetails');
-
 if (!!SeoTypeSelector) {
 
     let seoType = SeoTypeSelector.value;
@@ -173,10 +205,29 @@ function getSchema(seoType = 'WebPage', instance = null, id = null, schemaUrl) {
     }
 }
 
+const initializeDeleteManyForm = () => {
+    const form = document.querySelector('#deleteManyForm');
+    const checkboxes = document.querySelectorAll('.selectToDelete');
+    const selectedInput = form?.querySelector('#deleteManyForm_selected');
+
+    if (!form || !checkboxes.length || !selectedInput) return;
+
+    const updateSelectedIds = () => {
+        const selectedIds = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+        selectedInput.value = selectedIds.join(',');
+    };
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectedIds, { passive: true });
+    });
+};
 
 document.addEventListener("DOMContentLoaded", function (event) {
     new MetaDetector('#metaTitleIndicator', 50, 60);
     new MetaDetector('#metaDescriptionIndicator', 150, 165);
-    initSelectBox()
+    initSelectBox();
+    initializeDeleteManyForm()
     iconSetter();
 });
