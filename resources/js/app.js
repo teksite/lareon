@@ -1,7 +1,7 @@
 import axios from 'axios';
 import iconSetter from "./icon.js";
 import Alpine from 'alpinejs'
-import {copyToClipboard, loader} from './utilities.js'
+import {copyToClipboard,debounce, loader} from './utilities.js'
 import TomSelect from "tom-select";
 import 'tom-select/dist/css/tom-select.css';
 import Swal from 'sweetalert2'
@@ -15,16 +15,29 @@ window.Alpine = Alpine
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 Alpine.start();
 
-function confirmationAlert(title="are you sure to proceed?"){
-   return Swal.fire({
+function logoutHandler(selector='.logoutBtn'  ,formId='logoutForm'){
+   const btnEls= document.querySelectorAll(selector);
+   const form= document.getElementById(formId);
+   if(form && btnEls.length){
+       btnEls.forEach(btn=>{
+           btn.addEventListener('click', e=>{
+               e.preventDefault();
+               form.submit();
+           });
+       });
+   }
+
+}
+function confirmationAlert(title = "are you sure to proceed?") {
+    return Swal.fire({
         icon: 'warning',
         title: title,
         showCancelButton: true,
         confirmButtonText: "yes",
         cancelButtonText: `no`,
-       timer: 5000
+        timer: 5000
 
-   }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
             return true;
         } else {
@@ -38,11 +51,12 @@ function confirmationAlert(title="are you sure to proceed?"){
         }
     });
 }
-const deleteForms =document.querySelectorAll('.deltfrmItms');
-deleteForms.forEach(form=>{
-    form.addEventListener('submit',e=>{
+
+const deleteForms = document.querySelectorAll('.deltfrmItms');
+deleteForms.forEach(form => {
+    form.addEventListener('submit', e => {
         e.preventDefault();
-        confirmationAlert().then(res=>{
+        confirmationAlert().then(res => {
             if (res) form.submit();
         })
     })
@@ -134,7 +148,6 @@ class MetaDetector {
         }
     }
 
-    // Function to update the metaDetector text and background color
     updateMetaDetector() {
         const valueLength = this.inputEl.value.length;
         this.metaDetector.innerText = `${valueLength} / (${this.min} - ${this.max})`;
@@ -220,14 +233,103 @@ const initializeDeleteManyForm = () => {
     };
 
     checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateSelectedIds, { passive: true });
+        checkbox.addEventListener('change', updateSelectedIds, {passive: true});
     });
+};
+
+
+// Cache for storing API responses
+const responseCache = new Map();
+
+// Initialize Ajax Select boxes with TomSelect
+const initializeAjaxSelects = () => {
+    const ajaxSelectEls = document.querySelectorAll('select.ajax_select');
+    if (!ajaxSelectEls.length) return;
+
+    const tomSelectInstances = new Map();
+
+    ajaxSelectEls.forEach(el => {
+        const config = {
+            id: el.id,
+            valueField: el.getAttribute('data-value-field') ?? 'id',
+            labelField: el.getAttribute('data-label-field') ?? 'title',
+            searchField: el.getAttribute('data-search-field') ?? 'title',
+            url: el.getAttribute('data-url'),
+            isMultiple: el.hasAttribute('multiple')
+        };
+
+        if (!config.url) {
+            console.error(`URL is not provided for select: ${config.id}`);
+            return;
+        }
+
+        // Initialize TomSelect
+        tomSelectInstances.set(config.id, new TomSelect(`#${config.id}`, {
+            valueField: config.valueField,
+            labelField: config.labelField,
+            searchField: config.searchField,
+            maxItems: config.isMultiple ? null : 1,
+            load: debounce(async (query, callback) => {
+                if (query.length < 3) {
+                    callback([]);
+                    return;
+                }
+
+                const cacheKey = `${config.url}:${query}`;
+                if (responseCache.has(cacheKey)) {
+                    callback(responseCache.get(cacheKey));
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${config.url}?title=${encodeURIComponent(query)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+
+                    const json = await response.json();
+                    const data = Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : [];
+                    responseCache.set(cacheKey, data);
+                    callback(data);
+                } catch (error) {
+                    console.error(`Fetch error for ${config.id}:`, error);
+                    callback([]);
+                }
+            }, 200),
+            render: {
+                option: (item, escape) => {
+                    const text = item?.[config.labelField] ?? item?.name ?? 'No title';
+                    return `<div class="py-2 flex mb-1"><span class="font-bold text-sm">${escape(text)}</span></div>`;
+                }
+            }
+        }));
+    });
+
+    // Cleanup function to destroy instances
+    const cleanup = () => {
+        tomSelectInstances.forEach(instance => instance.destroy());
+        tomSelectInstances.clear();
+        responseCache.clear();
+    };
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', cleanup);
+
+    return { instances: tomSelectInstances, cleanup };
 };
 
 document.addEventListener("DOMContentLoaded", function (event) {
     new MetaDetector('#metaTitleIndicator', 50, 60);
     new MetaDetector('#metaDescriptionIndicator', 150, 165);
     initSelectBox();
-    initializeDeleteManyForm()
+    initializeDeleteManyForm();
+    logoutHandler();
+    initializeAjaxSelects();
     iconSetter();
 });

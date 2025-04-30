@@ -15,11 +15,11 @@
         <a href="/">
             <i class="tkicon" data-icon="world"></i>
         </a>
-{{--        @if(\Illuminate\Support\Facades\Route::has('panel'))--}}
-        <a href="/">
-            <i class="tkicon" data-icon="user" ></i>
-        </a>
-{{--        @endif--}}
+        @if(\Illuminate\Support\Facades\Route::has('panel.dashboard'))
+            <a href="{{route('panel.dashboard')}}">
+                <i class="tkicon" data-icon="user" ></i>
+            </a>
+        @endif
         <button class="hover:cursor-pointer" type="button" role="switch" @click="togglesSidebar()">
             <i class="tkicon" data-icon="bar-3" ></i>
         </button>

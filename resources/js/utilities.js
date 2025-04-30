@@ -23,3 +23,59 @@ export async function copyToClipboard(content) {
         throw error; // Re-throw for caller handling if needed
     }
 }
+
+/**
+ * Creates a debounced version of a function that delays its execution.
+ * @param {Function} func - The function to debounce.
+ * @param {number} [delay=750] - The debounce delay in milliseconds.
+ * @param {boolean} [immediate=false] - Whether to execute the function immediately on the leading edge.
+ * @returns {Object} An object containing the debounced function, cancel, and flush methods.
+ */
+export function debounce(func, delay = 750, immediate = false) {
+    let timeoutId = null;
+    let lastResult = null;
+
+    // Debounced function
+    const debounced = function (...args) {
+        const context = this;
+
+        // Clear existing timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        if (immediate && !timeoutId) {
+            // Execute immediately if immediate is true and no active timeout
+            lastResult = func.apply(context, args);
+        } else {
+            // Set new timeout
+            timeoutId = setTimeout(() => {
+                if (!immediate) {
+                    lastResult = func.apply(context, args);
+                }
+                timeoutId = null;
+            }, delay);
+        }
+
+        return lastResult;
+    };
+
+    // Cancel any pending execution
+    debounced.cancel = function () {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+    };
+
+    // Immediately execute the function and clear timeout
+    debounced.flush = function (...args) {
+        if (timeoutId) {
+            debounced.cancel();
+            lastResult = func.apply(this, args);
+        }
+        return lastResult;
+    };
+
+    return debounced;
+}

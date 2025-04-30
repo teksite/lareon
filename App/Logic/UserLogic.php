@@ -20,7 +20,7 @@ class UserLogic
     public function get(mixed $fetchData = []): ServiceResult
     {
         return app(ServiceWrapper::class)(function () use ($fetchData) {
-            return app(FetchDataService::class)(User::class, ['name' ,'phone' , 'email'], ...$fetchData);
+            return app(FetchDataService::class)(User::class, ['name', 'phone', 'email'], ...$fetchData);
         });
     }
 
@@ -71,6 +71,24 @@ class UserLogic
     {
         return app(ServiceWrapper::class)(function () use ($user) {
             $user->delete();
+        });
+    }
+
+    /**
+     * @param string $word
+     * @param array $columns
+     * @return ServiceResult
+     */
+    public function find(string $word, array $columns = ['name']): ServiceResult
+    {
+        return app(ServiceWrapper::class)(function () use ($columns, $word) {
+            $users = User::query();
+            $i = 1;
+            foreach ($columns as $column) {
+                $users = $i === 1 ? $users->where($column, 'LIKE',`%$word%`) : $users->orWhere($column, 'LIKE',`%$word%`);
+                $i++;
+            }
+            return $users->select(['id','name','email'])->get();
         });
     }
 

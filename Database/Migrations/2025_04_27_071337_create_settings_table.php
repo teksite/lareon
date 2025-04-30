@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_meta', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('key','30');
+            $table->string('key')->unique();
             $table->json('value')->nullable();
             $table->string('state')->nullable();
             $table->timestamps();
-
-            $table->unique(['user_id', 'key']);
         });
     }
 
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_meta');
+        Schema::dropIfExists('settings');
     }
 };

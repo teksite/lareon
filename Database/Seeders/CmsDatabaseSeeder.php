@@ -48,5 +48,7 @@ class CmsDatabaseSeeder extends Seeder
 
         if ($user = User::find(1)) $user->assignRole('administrator');
 
+        User::factory()->count(10)->create();
+
     }
 }

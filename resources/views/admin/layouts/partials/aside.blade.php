@@ -51,7 +51,7 @@
             </nav>
         </div>
         <div class="px-3 pt-6 min-h-fit h-fit">
-            <button class="logoutBtn flex w-full items-center justify-between min-h-fit text-red-600">
+            <button class="logoutBtn flex w-full items-center justify-between min-h-fit text-red-600 cursor-pointer">
                 <i class='tkicon stroke-red-600 stroke-2' data-icon='turn-off'></i>
                 <span>
                     {{__('logout')}}

@@ -3,7 +3,6 @@
 namespace Lareon\CMS\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Teksite\Extralaravel\Casts\JsonCast;
 
 class UserMeta extends Model
 {
@@ -19,7 +18,7 @@ class UserMeta extends Model
     protected function casts(): array
     {
         return [
-            'value' => JsonCast::class,
+            'value' => 'json',
         ];
     }
     /**

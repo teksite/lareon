@@ -67,6 +67,23 @@ class RoleLogic
 
     }
 
+    /**
+     * @param string $word
+     * @param array $columns
+     * @return ServiceResult
+     */
+    public function find(string $word, array $columns = ['title']): ServiceResult
+    {
+        return app(ServiceWrapper::class)(function () use ($columns, $word) {
+            $roles = Role::query();
+            $i = 1;
+            foreach ($columns as $column) {
+                $roles = $i === 1 ? $roles->where($column, 'LIKE',`%$word%`) : $roles->orWhere($column, 'LIKE',`%$word%`);
+                $i++;
+            }
+            return $roles->select(['id','title'])->get();
+        });
+    }
 
     /**
      * @return void

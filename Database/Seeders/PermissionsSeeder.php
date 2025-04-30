@@ -57,6 +57,10 @@ class PermissionsSeeder extends Seeder
                'title'=>'admin.setting.read',
                'description'=>'have access to setting parts and read them (in the admin panel)',
            ],
+           [
+               'title'=>'admin.setting.edit',
+               'description'=>'have access to edit settings (in the admin panel)',
+           ],
            /* Settings */
            [
                'title'=>'admin.setting.info.read',

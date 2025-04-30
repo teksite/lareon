@@ -11,6 +11,7 @@
     "in this window you can edit the :title": "در این پنجره شما می‌توانید :title را ویرایش کنید",
     ":title trash contains instances that have not been completely deleted from the database. you can either restore them or permanently remove them": "سطل زباله :title شامل مواردی است که کامل از پایگاه اطلاعات‌داده پاک نشده‌اند. شما می‌توانید انها را برگردانید یا کامل حذف کنید",
     "enter a new :title": "یک :title وارد کنید",
+    "enter a :title": "یک :title وارد کنید",
     "write a :title": "یک :title بنویسید",
     "write :title": ":title را بنویسید",
     "separate with ,": "با , جدا کنید",
@@ -39,6 +40,10 @@
     "questions": "سوال‌ها",
     "answer": "جواب",
     "answers": "جواب‌ها",
+    "is enabled": "آیا فعال است",
+    "yes": "بله",
+    ":title settings": "تنظیمات :title",
+    "no": "نه",
     "event": "رخداد",
     "author": "نویسنده",
     "publisher": "ناشر",
@@ -92,8 +97,10 @@
     "information": "اطلاعات",
     "email": "ایمیل",
     "phone": "تلفن",
-    "emails": "ایمیل‌ها",
     "phones":"تلفن‌ها",
+    "item": "آیتم",
+    "items":"آیتم‌ها",
+    "emails": "ایمیل‌ها",
     "urls": "آدرس‌های اینترنتی",
     "telegram ids":"Idهای تلگرام",
     "mobile": "موبایل",
@@ -194,5 +201,6 @@
     "icon": "آیکون",
     "by these svg icons, you can have light and flexible icon": "با این svg آیکون‌ها، شما یک آیکون سبک و انعطاف پذیر دارید",
     "users list": "لیست کاربران",
-    "create a new user": "ساخت کاربر جدید"
+    "create a new user": "ساخت کاربر جدید",
+    "something go wrong, please try again our or call support team of the website":"مشکلی پیش آمده‌است، لطفا دوباره تلاش کنید یا با تیسم پیشتیبانی وب‌سایت تماس بگیرید"
 }
