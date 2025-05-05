@@ -14,7 +14,6 @@
             "email": "teksite.design@gmail.com"
         }
     ],
-    "version": "0.0.2",
     "minimum-stability": "dev",
     "license": "MIT",
     "prefer-stable": true,
