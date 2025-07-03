@@ -1,22 +1,21 @@
 <?php
 
-namespace Teksite\Module\Console\Make;
+namespace Teksite\Lareon\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Traits\CmsCommandsTrait;
 
 class SeederMakeCommand extends GeneratorCommand
 {
-    use ModuleNameValidator, ModuleCommandsTrait;
+    use CmsCommandsTrait;
 
-    protected $signature = 'module:make-seeder {name} {module}
+    protected $signature = 'lareon:make-seeder {name}
     ';
 
 
-    protected $description = 'Create a new seeder in the specific module';
+    protected $description = 'Create a new seeder in the cms';
 
     protected $type = 'Seeder';
 
@@ -40,8 +39,7 @@ class SeederMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        $module = $this->argument('module');
-        return $this->setPath($name,'php');
+        return $this->setPath($name, 'php');
     }
 
     /**
@@ -52,26 +50,14 @@ class SeederMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        $module = $this->argument('module');
-
-        return $this->setNamespace($module,$name , '\\Database\\Seeders');
+        return $this->setNamespace($name, '\\Database\\Seeders');
     }
 
     public function handle(): bool|int|null
     {
-        $module = $this->argument('module');
+        return parent::handle();
 
-        [$isValid, $suggestedName] = $this->validateModuleName($module);
-        if ($isValid) return parent::handle();
-
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            $this->input->setArgument('module', $suggestedName);
-            return parent::handle();
-        }
-        $this->error("The module '" . $module . "' does not exist.");
-        return 1;
     }
-
 
 
 }

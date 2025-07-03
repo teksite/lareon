@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Module\Console;
+namespace Teksite\Lareon\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -8,66 +8,23 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
-use Symfony\Component\Console\Output\OutputInterface;
+use Teksite\Lareon\Traits\Migration\LareonMigrationTrait;
 use Teksite\Module\Facade\Module;
 use Teksite\Module\Traits\Migration\ModuleMigrationTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+
 
 class BasicMigrator extends Command
 {
-    use ModuleNameValidator , ModuleMigrationTrait;
+    use LareonMigrationTrait;
 
     /**
-     * @return array
+     * @return void
      */
-    public function getModules(): array
-    {
-        $module = $this->argument('module');
-        return $module ? [$module] : Module::all();
-    }
-
-
-    /**
-     * @param $moules
-     * @return false|string
-     */
-    protected function checkModule($moules): false|string
-    {
-        [$isValid, $suggestedName] = $this->validateModuleName($moules);
-        if ($isValid) {
-            return $moules;
-        }
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            return $suggestedName;
-        }
-        return false;
-    }
-
-
-    public function handle()
+    public function handle(): void
     {
         $this->installMigrateTable();
-
-        $modules = $this->getModules();
-        if (count($modules)) {
-            $mdls = [];
-            foreach ($modules as $module) {
-                $correctedModule = $this->checkModule($module);
-                if (!$correctedModule) {
-                    $this->error("The module '" . $module . "' does not exist.");
-                    return 0;
-                } else {
-                    $mdls[] = $correctedModule;
-                }
-            }
-            $this->runTheCommand();
-        } else {
-            $this->error("no module exist.");
-            return 0;
-        }
-        $this->newLine();
+        $this->runTheCommand();
     }
-
 
     /**
      * @param $file
@@ -79,12 +36,12 @@ class BasicMigrator extends Command
     }
 
     /**
-     * @param string|array $module
      * @return void
      */
     public function down(): void
     {
-        $this->downModules();
+        if ($this->option('module')) $this->downModules();
+        $this->downLareon();
     }
 
     /**
@@ -92,31 +49,48 @@ class BasicMigrator extends Command
      */
     public function up(): void
     {
-        $batch = DB::table('migrations')->max('batch') + 1;
-        $this->upModules($batch);
+        $batch = $batch ?? DB::table('migrations')->max('batch') + 1;
+
+        $this->upLareon($batch);
+        if ($this->option('module')) $this->upModules($batch);
 
     }
 
+    /**
+     * @param int $step
+     * @return void
+     */
     public function rollback(int $step = 1): void
     {
-        $migrationTables = collect($this->moduleMigrationFiles())->select(['path', 'name', 'path']);
+        $lareonMigrations = collect($this->lareonMigrationFiles())->select(['path', 'name', 'path']);
+        $modulesMigration = $this->option('module') ? collect($this->moduleMigrationFiles())->select(['path', 'name', 'path']) : null;
+        $migrationTables = $lareonMigrations->merge($modulesMigration);
+
         $this->rollingBackMigration($migrationTables, $step);
     }
 
+    /**
+     * @param string $migrateFileName
+     * @return void
+     */
     public function removeFromMigrationTable(string $migrateFileName): void
     {
         DB::table('migrations')->where('migration', $migrateFileName)->delete();
+
     }
 
+    /**
+     * @param string $migrateFileName
+     * @param $batch
+     * @return void
+     */
     public function addToMigrationTable(string $migrateFileName, $batch = 1): void
     {
         DB::table('migrations')->insert([
             'migration' => $migrateFileName,
             'batch' => $batch,
         ]);
-
     }
-
 
     /**
      * @return void
@@ -126,13 +100,21 @@ class BasicMigrator extends Command
         Schema::hasTable('migrations') ?: $this->call('migrate:install');
     }
 
-
     /**
      * @return void
      */
     public function seeding(): void
     {
-       $this->seedingModules();
+        $this->seedingLareon();
+       if ($this->option('module')) $this->seedingModules();
+    }
+
+    /**
+     * @return array
+     */
+    public function getModules(): array
+    {
+        return Module::enables();
     }
 
 }

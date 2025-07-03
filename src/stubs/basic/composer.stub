@@ -1,7 +1,7 @@
 {
-    "name": "teksite/{{ moduleLowerName }}",
+    "name": "teksite/cms",
     "description": "This package is made for lareon (laravel)",
-    "keywords": ["laravel", "laravel" , "{{ moduleName }}"],
+    "keywords": ["laravel", "lareon" , "cms"],
 
     "authors": [
         {
@@ -18,7 +18,6 @@
         }
     ],
     "require": {
-
     },
     "extra": {
         "laravel": {

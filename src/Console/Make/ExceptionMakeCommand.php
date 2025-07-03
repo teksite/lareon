@@ -1,26 +1,25 @@
 <?php
 
-namespace Teksite\Module\Console\Make;
+namespace Teksite\Lareon\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Traits\CmsCommandsTrait;
 use function Laravel\Prompts\confirm;
 
 class ExceptionMakeCommand extends GeneratorCommand
 {
-    use ModuleNameValidator, ModuleCommandsTrait;
+    use CmsCommandsTrait;
 
-    protected $signature = 'module:make-exception {name} {module}
+    protected $signature = 'lareon:make-exception {name}
         {--f|force : Create the class even if the event already exists }
         {--render : Create the exception with an empty render method}
         {--report : Create the exception with an empty report method}
     ';
 
-    protected $description = 'Create a new exception in the specific module';
+    protected $description = 'Create a new exception in the cms';
 
     protected $type = 'Exception';
 
@@ -50,8 +49,7 @@ class ExceptionMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        $module = $this->argument('module');
-        return $this->setPath($name,'php');
+        return $this->setPath($name, 'php');
     }
 
 
@@ -63,16 +61,15 @@ class ExceptionMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        $module = $this->argument('module');
-        return $this->setNamespace($module,$name , '\\App\\Exceptions');
+        return $this->setNamespace($name, '\\App\\Exceptions');
 
     }
 
     /**
      * Interact further with the user if they were prompted for missing arguments.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface  $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return void
      */
     protected function afterPromptingForMissingArguments(InputInterface $input, OutputInterface $output)
@@ -88,15 +85,7 @@ class ExceptionMakeCommand extends GeneratorCommand
 
     public function handle(): bool|int|null
     {
-        $module = $this->argument('module');
-        [$isValid, $suggestedName] = $this->validateModuleName($module);
-        if ($isValid) return parent::handle();
+        return parent::handle();
 
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            $this->input->setArgument('module', $suggestedName);
-            return parent::handle();
-        }
-        $this->error("The module '" . $module . "' does not exist.");
-        return 1;
     }
 }

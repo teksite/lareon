@@ -1,23 +1,22 @@
 <?php
 
-namespace Teksite\Module\Console\Make;
+namespace Teksite\Lareon\Console\Make;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Traits\CmsCommandsTrait;
 
 class ClassMakeCommand extends GeneratorCommand
 {
-    use ModuleCommandsTrait, ModuleNameValidator;
+    use CmsCommandsTrait;
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'module:make-class {name} {module}
+    protected $signature = 'lareon:make-class {name}
         {--f|force : Create the class even if the cast already exists }
         {--i|invokable : Generate a single method, invokable class }
         ';
@@ -27,7 +26,7 @@ class ClassMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $description = 'Create a new class in a specific module';
+    protected $description = 'Create a new class in the cms';
 
     protected $type = 'Class';
 
@@ -43,6 +42,7 @@ class ClassMakeCommand extends GeneratorCommand
             ? $this->resolveStubPath('/class.invokable.stub')
             : $this->resolveStubPath('/class.stub');
     }
+
     /**
      * Get the destination class path.
      *
@@ -51,8 +51,7 @@ class ClassMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        $module = $this->argument('module');
-        return $this->setPath($name,'php');
+        return $this->setPath($name, 'php');
     }
 
     /**
@@ -63,24 +62,13 @@ class ClassMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        $module = $this->argument('module');
-
-        return $this->setNamespace($module,$name , '\\App');
+        return $this->setNamespace($name, '\\App');
     }
+
     public function handle(): bool|int|null
     {
-        $module = $this->argument('module');
+        return parent::handle();
 
-        [$isValid, $suggestedName] = $this->validateModuleName($module);
-
-        if ($isValid) return parent::handle();
-
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            $this->input->setArgument('module', $suggestedName);
-            return parent::handle();
-        }
-        $this->error("The module '".$module."' does not exist.");
-        return 1;
     }
 
 

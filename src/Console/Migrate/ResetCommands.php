@@ -1,18 +1,19 @@
 <?php
 
-namespace Teksite\Module\Console\Migrate;
+namespace Teksite\Lareon\Console\Migrate;
 
-use Teksite\Module\Console\BasicMigrator;
-use Teksite\Module\Contract\MigrationContract;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Console\BasicMigrator;
+use Teksite\Lareon\Contract\MigrationContract;
+
 
 class ResetCommands extends BasicMigrator implements MigrationContract
 {
-    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'module:migrate-reset {module?}
-        ';
+    protected $signature = 'lareon:migrate-reset
+    {--module : fresh migrations of all modules }
+    {--seed }
+    {--only=false : only migration manged by lareon}
+';
 
     protected $description = 'Rollback migrations for a specific module or all modules';
 

@@ -1,30 +1,31 @@
 <?php
 
-namespace Teksite\Module\Console\Migrate;
+namespace Teksite\Lareon\Console\Migrate;
 
-use Teksite\Module\Console\BasicMigrator;
-use Teksite\Module\Contract\MigrationContract;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Console\BasicMigrator;
+use Teksite\Lareon\Contract\MigrationContract;
 
 class FreshCommands extends BasicMigrator implements MigrationContract
 {
 
-    protected $signature = 'module:migrate-fresh
-    {--module=}
-    {--seed}';
+    protected $signature = 'lareon:migrate-fresh
+    {--module : fresh migrations of all modules }
+    {--seed }
+    {--only=false : only migration manged by lareon}
+    ';
 
-    protected $description = 'Drop all tables and re-run migrations for a specific module or all modules';
+    protected $description = 'Drop all tables and re-run migrations of lareon';
 
     public function handle(): void
     {
         parent::handle();
-        if ($this->option('seed')) $this->seeding();
     }
 
     public function runTheCommand(): void
     {
         $this->down();
         $this->up();
+        if ($this->option('seed')) $this->seeding();
+
     }
 }

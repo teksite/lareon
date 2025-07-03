@@ -1,18 +1,18 @@
 <?php
 
-namespace Teksite\Module\Console\Migrate;
+namespace Teksite\Lareon\Console\Migrate;
 
-use Teksite\Module\Console\BasicMigrator;
-use Teksite\Module\Contract\MigrationContract;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Console\BasicMigrator;
+use Teksite\Lareon\Contract\MigrationContract;
+
 
 class RollbackCommands extends BasicMigrator implements MigrationContract
 {
-    use ModuleCommandsTrait;
 
-    protected $signature = 'module:migrate-rollback {module?}
-        {--step=1}
+    protected $signature = 'lareon:migrate-rollback
+    {--module : rollback all modules }
+    {--only=false : only migration manged by lareon}
+    {--step=1}
     ';
 
     protected $description = 'Rollback the migrations for a specific module or all modules';

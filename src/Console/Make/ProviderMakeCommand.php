@@ -1,22 +1,21 @@
 <?php
 
-namespace Teksite\Module\Console\Make;
+namespace Teksite\Lareon\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Traits\CmsCommandsTrait;
 
 class ProviderMakeCommand extends GeneratorCommand
 {
-    use ModuleNameValidator, ModuleCommandsTrait;
+    use CmsCommandsTrait;
 
-    protected $signature = 'module:make-provider {name} {module}
+    protected $signature = 'lareon:make-provider {name}
         {--f|force : Create the class even if the cast already exists }
     ';
 
-    protected $description = 'Create a new provider in the specific module';
+    protected $description = 'Create a new provider in the cms';
 
     protected $type = 'Provider';
 
@@ -38,8 +37,7 @@ class ProviderMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        $module = $this->argument('module');
-        return $this->setPath($name,'php');
+        return $this->setPath($name, 'php');
     }
 
     /**
@@ -50,25 +48,12 @@ class ProviderMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        $module = $this->argument('module');
-
-        return $this->setNamespace($module,$name , '\\App\\Providers');
+        return $this->setNamespace($name, '\\App\\Providers');
     }
 
     public function handle(): bool|int|null
     {
-        $module = $this->argument('module');
-
-        [$isValid, $suggestedName] = $this->validateModuleName($module);
-
-        if ($isValid) return parent::handle();
-
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            $this->input->setArgument('module', $suggestedName);
-            return parent::handle();
-        }
-        $this->error("The module '".$module."' does not exist.");
-        return 1;
+        return parent::handle();
     }
 
 

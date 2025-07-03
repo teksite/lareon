@@ -2,9 +2,7 @@
 
 namespace {{ namespace }};
 
-use {{ defaultController }};
-use Illuminate\Http\RedirectResponse;
-use Teksite\Lareon\Facade\WebResponse;
+use App\Http\Controllers\Controller;
 
 class {{ class }} extends Controller
 {
@@ -28,7 +26,7 @@ class {{ class }} extends Controller
     /**
      * delete one instance from DB forever
      */
-    public function prune($id): RedirectResponse
+    public function remove($id): RedirectResponse
     {
       //;
     }
@@ -44,7 +42,7 @@ class {{ class }} extends Controller
     /**
      * delete all instances forever.
      */
-    public function flush(): RedirectResponse
+    public function purge(): RedirectResponse
     {
         //
     }

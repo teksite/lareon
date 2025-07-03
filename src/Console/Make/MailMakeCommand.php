@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Module\Console\Make;
+namespace Teksite\Lareon\Console\Make;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
@@ -10,22 +10,21 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Traits\CmsCommandsTrait;
 use function Laravel\Prompts\select;
 
 class MailMakeCommand extends GeneratorCommand
 {
-    use ModuleNameValidator, ModuleCommandsTrait, CreatesMatchingTest;
+    use CmsCommandsTrait, CreatesMatchingTest;
 
-    // protected $name = 'module:make-mail';
-    protected $signature = 'module:make-mail {name} {module}
+    // protected $name = 'lareon:make-mail';
+    protected $signature = 'lareon:make-mail {name}
     {--force= : Create a new Blade template for the mailable (true false) }
     {--m|markdown= : Create a new Markdown template for the mailable }
     {--view= : Create a new Blade template for the mailable }
     ';
 
-    protected $description = 'Create a new email in the specific module';
+    protected $description = 'Create a new email in the cms';
 
     protected $type = 'Mailable';
 
@@ -56,8 +55,7 @@ class MailMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        $module = $this->argument('module');
-        return $this->setPath($name,'php');
+        return $this->setPath($name, 'php');
     }
 
     /**
@@ -68,26 +66,13 @@ class MailMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        $module = $this->argument('module');
-
-        return $this->setNamespace($module,$name , '\\App\\Mail');
+        return $this->setNamespace($name, '\\App\\Mail');
     }
 
 
     public function handle()
     {
-        $module = $this->argument('module');
-
-        [$isValid, $suggestedName] = $this->validateModuleName($module);
-
-        if ($isValid) return $this->generateViews();
-
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            $this->input->setArgument('module', $suggestedName);
-            return $this->generateViews();
-        }
-        $this->error("The module '".$module."' does not exist.");
-        return 1;
+        return $this->generateViews();
     }
 
     protected function generateViews()
@@ -97,11 +82,11 @@ class MailMakeCommand extends GeneratorCommand
         }
 
         if (!!$this->option('markdown') !== false) {
-           return  $this->writeMarkdownTemplate();
+            return $this->writeMarkdownTemplate();
         }
 
         if (!!$this->option('view') !== false) {
-           return  $this->writeView();
+            return $this->writeView();
         }
     }
 
@@ -112,7 +97,7 @@ class MailMakeCommand extends GeneratorCommand
      */
     protected function writeMarkdownTemplate()
     {
-        $path = $this->viewPath('mail/'.
+        $path = $this->viewPath(
             str_replace('.', '/', $this->getView()) . '.blade.php'
         );
 
@@ -134,9 +119,8 @@ class MailMakeCommand extends GeneratorCommand
      */
     protected function writeView()
     {
-
         $path = $this->viewPath(
-            str_replace('.', '/', 'mails.'.$this->getView()) . '.blade.php'
+            str_replace('.', '/', $this->getView()) . '.blade.php'
         );
 
         if ($this->files->exists($path)) {
@@ -164,7 +148,6 @@ class MailMakeCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        $module = $this->getLowerNameModule();
 
         $class = str_replace(
             '{{ subject }}',
@@ -173,7 +156,7 @@ class MailMakeCommand extends GeneratorCommand
         );
 
         if (!!$this->option('markdown') !== false || !!$this->option('view') !== false) {
-            $class = str_replace(['DummyView', '{{ view }}'], $module . '::mails.' . $this->getView(), $class);
+            $class = str_replace(['DummyView', '{{ view }}'], 'cms' . '::' . $this->getView(), $class);
         }
 
         if (!!!$this->option('markdown') || !!!$this->option('view')) {
@@ -189,13 +172,12 @@ class MailMakeCommand extends GeneratorCommand
      */
     protected function getView()
     {
-        $module = $this->getLowerNameModule();
         $view = $this->option('markdown') ?: $this->option('view');
 
         if (!$view) {
             $name = str_replace('\\', '/', $this->argument('name'));
 
-            $view = $module . '::mail.' . (new Collection(explode('/', $name)))
+            $view = 'cms::mail.' . (new Collection(explode('/', $name)))
                     ->map(fn($part) => Str::kebab($part))
                     ->implode('.');
         }

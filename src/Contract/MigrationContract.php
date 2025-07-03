@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Module\Contract;
+namespace Teksite\Lareon\Contract;
 
 interface MigrationContract
 {

@@ -1,22 +1,21 @@
 <?php
 
-namespace Teksite\Module\Console\Make;
+namespace Teksite\Lareon\Console\Make;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Traits\CmsCommandsTrait;
 
 class JobMiddlewareMakeCommand extends GeneratorCommand
 {
-    use ModuleNameValidator, ModuleCommandsTrait, CreatesMatchingTest;
+    use CmsCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'module:make-job-middleware {name} {module}
+    protected $signature = 'lareon:make-job-middleware {name}
     ';
 
-    protected $description = 'Create a new middleware for jobs in the specific module';
+    protected $description = 'Create a new middleware for jobs in the cms';
 
     protected $type = 'Middleware';
 
@@ -39,7 +38,7 @@ class JobMiddlewareMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        $module = $this->argument('module');
+
         return $this->setPath($name, 'php');
     }
 
@@ -51,24 +50,14 @@ class JobMiddlewareMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        $module = $this->argument('module');
-
-        return $this->setNamespace($module, $name, '\\App\\Jobs\\Middleware');
+        return $this->setNamespace($name, '\\App\\Jobs\\Middleware');
     }
 
 
     public function handle(): bool|int|null
     {
-        $module = $this->argument('module');
-        [$isValid, $suggestedName] = $this->validateModuleName($module);
-        if ($isValid) return parent::handle();
+        return parent::handle();
 
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            $this->input->setArgument('module', $suggestedName);
-            return parent::handle();
-        }
-        $this->error("The module '" . $module . "' does not exist.");
-        return 1;
     }
 
 }

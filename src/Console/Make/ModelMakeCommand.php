@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Module\Console\Make;
+namespace Teksite\Lareon\Console\Make;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
@@ -9,15 +9,14 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Module\Traits\ModuleCommandsTrait;
-use Teksite\Module\Traits\ModuleNameValidator;
+use Teksite\Lareon\Traits\CmsCommandsTrait;
 use function Laravel\Prompts\multiselect;
 
 class ModelMakeCommand extends GeneratorCommand
 {
-    use ModuleNameValidator, ModuleCommandsTrait, CreatesMatchingTest;
+    use CmsCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'module:make-model {name} {module}
+    protected $signature = 'lareon:make-model {name}
             {--a|all : Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model }
             {--c|controller : Create a new controller for the model }
             {--f|factory : Create a new factory for the model }
@@ -32,25 +31,16 @@ class ModelMakeCommand extends GeneratorCommand
             {--R|requests : Create new form request classes and use them in the resource controller }
 ';
 
-    protected $description = 'Create a new model class in the module';
+    protected $description = 'Create a new model class in the cms';
 
 
     public function handle()
     {
-        $module = $this->argument('module');
-
-        [$isValid, $suggestedName] = $this->validateModuleName($module);
-
-        if ($isValid) return $this->generatingModel();
-
-        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
-            $this->input->setArgument('module', $suggestedName);
-            return $this->generatingModel();
-        }
-        $this->error("The module '".$module."' does not exist.");
-        return 1;
+        return $this->generatingModel();
     }
-    protected function generatingModel(){
+
+    protected function generatingModel()
+    {
         if (parent::handle() === false && !$this->option('force')) {
             return false;
         }
@@ -95,11 +85,10 @@ class ModelMakeCommand extends GeneratorCommand
     protected function createFactory()
     {
         $factory = Str::studly($this->argument('name'));
-        $module = $this->argument('module');
 
-        $this->call('module:make-factory', [
+
+        $this->call('lareon:make-factory', [
             'name' => "{$factory}Factory",
-            'module' => $module,
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
     }
@@ -112,14 +101,13 @@ class ModelMakeCommand extends GeneratorCommand
     protected function createMigration()
     {
         $table = Str::snake(Str::pluralStudly(class_basename($this->argument('name'))));
-        $module = $this->argument('module');
+
         if ($this->option('pivot')) {
             $table = Str::singular($table);
         }
 
-        $this->call('module:make-migration', [
+        $this->call('lareon:make-migration', [
             'name' => "create_{$table}_table",
-            'module' => $module,
             '--create' => $table,
         ]);
     }
@@ -132,11 +120,10 @@ class ModelMakeCommand extends GeneratorCommand
     protected function createSeeder()
     {
         $seeder = Str::studly(class_basename($this->argument('name')));
-        $module = $this->argument('module');
 
-        $this->call('module:make-seeder', [
+
+        $this->call('lareon:make-seeder', [
             'name' => "{$seeder}Seeder",
-            'module' => "$module",
         ]);
     }
 
@@ -150,10 +137,8 @@ class ModelMakeCommand extends GeneratorCommand
         $controller = Str::studly(class_basename($this->argument('name')));
 
         $modelName = $this->qualifyClass($this->getNameInput());
-        $moduleName = $this->argument('module');
-        $this->call('module:make-controller', array_filter([
+        $this->call('lareon:make-controller', array_filter([
             'name' => "{$controller}Controller",
-            'module' => "$moduleName",
             '--model' => $this->option('resource') || $this->option('api') ? $modelName : null,
             '--api' => $this->option('api'),
             '--requests' => $this->option('requests') || $this->option('all'),
@@ -170,15 +155,13 @@ class ModelMakeCommand extends GeneratorCommand
     protected function createFormRequests()
     {
         $request = Str::studly(class_basename($this->argument('name')));
-        $module = $this->argument('module');
-        $this->call('module:make-request', [
+
+        $this->call('lareon:make-request', [
             'name' => "Store{$request}Request",
-            'module' => "$module",
         ]);
 
-        $this->call('module:make-request', [
+        $this->call('lareon:make-request', [
             'name' => "Update{$request}Request",
-            'module' => "$module",
         ]);
     }
 
@@ -190,12 +173,10 @@ class ModelMakeCommand extends GeneratorCommand
     protected function createPolicy()
     {
         $policy = Str::studly(class_basename($this->argument('name')));
-        $module = $this->argument('module');
 
-        $this->call('module:make-policy', [
+
+        $this->call('lareon:make-policy', [
             'name' => "{$policy}Policy",
-            'module' => "$module",
-
             '--model' => $this->qualifyClass($this->getNameInput()),
         ]);
     }
@@ -222,8 +203,7 @@ class ModelMakeCommand extends GeneratorCommand
 
     protected function getPath($name): string
     {
-        $module = $this->argument('module');
-        return $this->setPath($name,'php');
+        return $this->setPath($name, 'php');
     }
 
     /**
@@ -234,9 +214,7 @@ class ModelMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        $module = $this->argument('module');
-
-        return $this->setNamespace($module,$name , '\\App\\Models');
+        return $this->setNamespace( $name, '\\App\\Models');
     }
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Module\Console\Migrate;
+namespace Teksite\Lareon\Console\Migrate;
 
 use Illuminate\Console\Command;
 use Illuminate\Console\GeneratorCommand;
@@ -21,8 +21,10 @@ class RefreshCommands extends Command
         {--seed}
         {--seeder=}
         {--force}
-        {--step=1}'
-    ;
+        {--step=1}
+        {--only=false : only migration manged by lareon}
+        ';
+
 
     protected $description = 'Rollback and re-run migrations for a specific module or all modules';
 
