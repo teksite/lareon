@@ -1,20 +1,21 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 use function Laravel\Prompts\select;
 
 class TestMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-test {name}
+    protected $signature = 'module:make-test {name} {module}
          {--f|force : Create the test even if the test already exists }
          {--u|unit : Create a unit test }
          {--pest : Create a Pest test }
@@ -22,7 +23,7 @@ class TestMakeCommand extends GeneratorCommand
     ';
 
 
-    protected $description = 'Create a new seeder in the cms';
+    protected $description = 'Create a new seeder in the specific module';
 
     protected $type = 'Tests';
 
@@ -31,25 +32,28 @@ class TestMakeCommand extends GeneratorCommand
         $suffix = $this->option('unit') ? '.unit.stub' : '.stub';
 
         return $this->usingPest()
-            ? $this->resolveStubPath('/pest' . $suffix)
-            : $this->resolveStubPath('/test' . $suffix);
+            ? $this->resolveStubPath('/pest'.$suffix)
+            : $this->resolveStubPath('/test'.$suffix)
+            ;
     }
 
 
     protected function getPath($name)
     {
-        return $this->setPath($name, 'php');
+        $module = $this->argument('module');
+        return $this->setPath($name,'php');
 
     }
 
 
     protected function qualifyClass($name)
     {
+        $module = $this->argument('module');
 
         if ($this->option('unit')) {
-            return $this->setNamespace($name, '\\Tests\\Unit');
+            return $this->setNamespace($module , $name, '\\Tests\\Unit');
         } else {
-            return $this->setNamespace($name, '\\Tests\\Feature');
+            return $this->setNamespace($module , $name, '\\Tests\\Feature');
         }
     }
 
@@ -64,8 +68,17 @@ class TestMakeCommand extends GeneratorCommand
 
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
 
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) return parent::handle();
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
 

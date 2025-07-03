@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Foundation\Inspiring;
@@ -11,21 +11,22 @@ use Illuminate\Support\Stringable;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 use function Laravel\Prompts\select;
 
 class ViewMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-view {name}
+    protected $signature = 'module:make-view {name} {module}
          {--f|force : Create the test even if the view already exists }
          {--extension=blade.php : The extension of the generated view }
 
     ';
 
 
-    protected $description = 'Create a new view in the cms';
+    protected $description = 'Create a new view in the specific module';
 
     protected $type = 'View';
 
@@ -49,32 +50,45 @@ class ViewMakeCommand extends GeneratorCommand
      */
     protected function getPath($name)
     {
-
-        return $this->setPath($name, $this->option('extension') ?? 'blade.php');
+        $module = $this->argument('module');
+        return $this->setPath($name,$this->option('extension') ?? 'blade.php');
     }
 
     protected function rootNamespace()
     {
-
-        return config('lareon.namespace');
+        $module = $this->argument('module');
+        return config('lareon.module.namespace') . $module;
     }
 
     public function handle(): bool|int|null
     {
-        return $this->writeView();
+        $module = $this->argument('module');
+
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) {
+            return $this->writeView();
+        }
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return $this->writeView();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
     protected function writeView()
     {
+
         $path = $this->viewPath(
-            str_replace('.', '/', $this->getView()) . '.' . $this->option('extension') ?? 'blade.php'
+            str_replace('.', '/', $this->getView()). '.'. $this->option('extension') ??'blade.php'
         );
 
-        if (!$this->files->isDirectory(dirname($path))) {
+        if (! $this->files->isDirectory(dirname($path))) {
             $this->files->makeDirectory(dirname($path), 0755, true, true);
         }
 
-        if ($this->files->exists($path) && !$this->option('force')) {
+        if ($this->files->exists($path) && ! $this->option('force')) {
             $this->components->error('View already exists.');
 
             return;
@@ -83,28 +97,29 @@ class ViewMakeCommand extends GeneratorCommand
         file_put_contents(
             $path,
             '<div>
-    <!-- ' . Inspiring::quotes()->random() . ' -->
+    <!-- '.Inspiring::quotes()->random().' -->
 </div>'
         );
         $this->components->info(sprintf('%s [%s] created successfully.', 'View', $path));
     }
-
     protected function getView()
     {
         $segments = explode('/', str_replace('\\', '/', $this->argument('name')));
 
         $name = array_pop($segments);
 
-        $path = [
-            'components',
-            ...$segments,
-        ];
+        $path =  [
+                'components',
+                ...$segments,
+            ];
 
         $path[] = $name;
         return (new Collection($path))
-            ->map(fn($segment) => Str::kebab($segment))
+            ->map(fn ($segment) => Str::kebab($segment))
             ->implode('.');
     }
+
+
 
 
     protected function buildClass($name)
@@ -137,11 +152,11 @@ class ViewMakeCommand extends GeneratorCommand
     /**
      * Create the matching test case if requested.
      *
-     * @param string $path
+     * @param  string  $path
      */
     protected function handleTestCreation($path): bool
     {
-        if (!$this->option('test') && !$this->option('pest') && !$this->option('phpunit')) {
+        if (! $this->option('test') && ! $this->option('pest') && ! $this->option('phpunit')) {
             return false;
         }
 
@@ -192,21 +207,21 @@ class ViewMakeCommand extends GeneratorCommand
      */
     protected function testClassFullyQualifiedName()
     {
-        $name = Str::of(Str::lower($this->getNameInput()))->replace('.' . $this->option('extension'), '');
+        $name = Str::of(Str::lower($this->getNameInput()))->replace('.'.$this->option('extension'), '');
 
         $namespacedName = Str::of(
             (new Stringable($name))
                 ->replace('/', ' ')
                 ->explode(' ')
-                ->map(fn($part) => (new Stringable($part))->ucfirst())
+                ->map(fn ($part) => (new Stringable($part))->ucfirst())
                 ->implode('\\')
         )
             ->replace(['-', '_'], ' ')
             ->explode(' ')
-            ->map(fn($part) => (new Stringable($part))->ucfirst())
+            ->map(fn ($part) => (new Stringable($part))->ucfirst())
             ->implode('');
 
-        return 'Tests\\Feature\\View\\' . $namespacedName;
+        return 'Tests\\Feature\\View\\'.$namespacedName;
     }
 
     /**
@@ -216,11 +231,11 @@ class ViewMakeCommand extends GeneratorCommand
      */
     protected function getTestStub()
     {
-        $stubName = 'view.' . ($this->usingPest() ? 'pest' : 'test') . '.stub';
+        $stubName = 'view.'.($this->usingPest() ? 'pest' : 'test').'.stub';
 
         return file_exists($customPath = $this->laravel->basePath("stubs/$stubName"))
             ? $customPath
-            : __DIR__ . '/stubs/' . $stubName;
+            : __DIR__.'/stubs/'.$stubName;
     }
 
     /**
@@ -249,7 +264,7 @@ class ViewMakeCommand extends GeneratorCommand
 
         return $this->option('pest') ||
             (function_exists('\Pest\\version') &&
-                file_exists(base_path('tests') . '/Pest.php'));
+                file_exists(base_path('tests').'/Pest.php'));
     }
 
 }

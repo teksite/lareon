@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
@@ -11,21 +11,21 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Lareon\Facade\Lareon;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 use function Laravel\Prompts\select;
 
 
 class EnumMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
     /**
      * The console command signature.
      *
      * @var string
      */
-    protected $signature = 'lareon:make-enum {name}
+    protected $signature = 'module:make-enum {name} {module}
          {--f|force : Create the class even if the cast already exists }
          {--s|string : Generate a string backed enum. }
          {--i|int : Generate an integer backed enum. }
@@ -36,7 +36,7 @@ class EnumMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $description = 'Create a new view enum in the cms';
+    protected $description = 'Create a new view enum in the specific module';
 
     /**
      * The type of class being generated.
@@ -69,9 +69,9 @@ class EnumMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        return $this->setPath($name, 'php');
+        $module = $this->argument('module');
+        return $this->setPath($name,'php');
     }
-
     /**
      * Get the default namespace for the class.
      *
@@ -80,10 +80,12 @@ class EnumMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
+        $module = $this->argument('module');
+
         return match (true) {
-            !!Lareon::cmsPath('App\Enums') => $this->setNamespace($name, '\\App\\Enums'),
-            !!Lareon::cmsPath('App\Enumerations') => $this->setNamespace($name, '\\App\\Enumerations'),
-            default => $this->setNamespace($name, '\\App\\Enums'),
+            !!module_path($module ,'App\Enums') => $this->setNamespace($module,$name , '\\App\\Enums'),
+            !!module_path($module ,'App\Enumerations') => $this->setNamespace($module,$name , '\\App\\Enumerations'),
+            default => $this->setNamespace($module,$name , '\\App\\Enums'),
         };
     }
 
@@ -91,7 +93,7 @@ class EnumMakeCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
@@ -112,8 +114,8 @@ class EnumMakeCommand extends GeneratorCommand
     /**
      * Interact further with the user if they were prompted for missing arguments.
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      * @return void
      */
     protected function afterPromptingForMissingArguments(InputInterface $input, OutputInterface $output)
@@ -135,7 +137,15 @@ class EnumMakeCommand extends GeneratorCommand
 
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) return parent::handle();
 
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 }

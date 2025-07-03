@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
@@ -9,19 +9,20 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 
 
 class ComponentMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator , ModuleCommandsTrait;
 
     /**
      * The console command signature.
      *
      * @var string
      */
-    protected $signature = 'lareon:make-component {name}
+    protected $signature = 'module:make-component {name} {module}
      {--f|force : Create the class even if the cast already exists }
      {--inline : Create a component that renders an inline view }
      {--view : Create an anonymous component with only a view }
@@ -33,7 +34,7 @@ class ComponentMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $description = 'Create a new view component class in the cms';
+    protected $description = 'Create a new view component class in the specific module';
 
     /**
      * The type of class being generated.
@@ -62,6 +63,7 @@ class ComponentMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
+        $module = $this->argument('module');
         return $this->setPath($name,'php');
     }
 
@@ -73,7 +75,9 @@ class ComponentMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        return $this->setNamespace($name , '\\App\\View\\Components');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\View');
     }
 
 
@@ -122,9 +126,10 @@ class ComponentMakeCommand extends GeneratorCommand
                 parent::buildClass($name)
             );
         }
+        $moduleLowerName=$this->getLowerNameModule();
         return str_replace(
             ['DummyView', '{{ view }}'],
-            'view(\'lareon::'.$this->getView().'\')',
+            'view(\''.$moduleLowerName.'::'.$this->getView().'\')',
             parent::buildClass($name)
         );
     }
@@ -156,7 +161,19 @@ class ComponentMakeCommand extends GeneratorCommand
 
     public function handle()
     {
-       return $this->generateViews();
+
+        $module = $this->argument('module');
+
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+
+        if ($isValid) return $this->generateViews();
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return $this->generateViews();
+        }
+        $this->error("The module '".$module."' does not exist.");
+        return 1;
     }
 
     protected function generateViews(){

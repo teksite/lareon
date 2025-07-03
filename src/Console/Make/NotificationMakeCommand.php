@@ -1,26 +1,27 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\text;
 
 class NotificationMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-notification {name}
+    protected $signature = 'module:make-notification {name} {module}
         {--f|force : Create the class even if the cast already exists }
         {--m|markdown= : Create a new Markdown template for the mailable}
     ';
 
-    protected $description = 'Create a new notification in the cms';
+    protected $description = 'Create a new notification in the specific module';
 
     protected $type = 'Notification';
 
@@ -44,7 +45,8 @@ class NotificationMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        return $this->setPath($name, 'php');
+        $module = $this->argument('module');
+        return $this->setPath($name,'php');
     }
 
     /**
@@ -55,12 +57,26 @@ class NotificationMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        return $this->setNamespace($name, '\\App\\Notifications');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\Notifications');
     }
 
     public function handle(): bool|int|null
     {
-        return $this->generateViews();
+        $module = $this->argument('module');
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+
+        if ($isValid) {
+          return $this->generateViews();
+        }
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+          return $this->generateViews();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
     protected function generateViews()
@@ -74,14 +90,14 @@ class NotificationMakeCommand extends GeneratorCommand
     protected function writeMarkdownTemplate()
     {
         $path = $this->viewPath(
-            str_replace('.', '/', $this->option('markdown')) . '.blade.php'
+            str_replace('.', '/', $this->option('markdown')).'.blade.php'
         );
 
-        if (!$this->files->isDirectory(dirname($path))) {
+        if (! $this->files->isDirectory(dirname($path))) {
             $this->files->makeDirectory(dirname($path), 0755, true);
         }
 
-        $this->files->put($path, file_get_contents(__DIR__ . '/../../stubs/markdown.stub'));
+        $this->files->put($path, file_get_contents(__DIR__.'/../../stubs/markdown.stub'));
 
         $this->components->info(sprintf('%s [%s] created successfully.', 'Markdown', $path));
     }
@@ -90,8 +106,10 @@ class NotificationMakeCommand extends GeneratorCommand
     {
         $class = parent::buildClass($name);
 
+        $module = $this->getLowerNameModule();
+
         if ($this->option('markdown')) {
-            $class = str_replace(['DummyView', '{{ view }}'],  "::" . $this->option('markdown'), $class);
+            $class = str_replace(['DummyView', '{{ view }}'], $module . "::".$this->option('markdown'), $class);
         }
 
         return $class;
@@ -107,7 +125,7 @@ class NotificationMakeCommand extends GeneratorCommand
 
         if ($wantsMarkdownView) {
             $defaultMarkdownView = (new Collection(explode('/', str_replace('\\', '/', $this->argument('name')))))
-                ->map(fn($path) => Str::kebab($path))
+                ->map(fn ($path) => Str::kebab($path))
                 ->prepend('mail')
                 ->implode('.');
 

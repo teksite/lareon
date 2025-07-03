@@ -2,59 +2,34 @@
 
 namespace Teksite\Module\Console\Make;
 
-use Illuminate\Console\Command;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Teksite\Module\Traits\ModuleCommandsTrait;
 use Teksite\Module\Traits\ModuleNameValidator;
 
-class ChannelMakeCommand extends GeneratorCommand
+class TrashControllerMakeCommand extends GeneratorCommand
 {
-    use ModuleCommandsTrait, ModuleNameValidator;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'module:make-channel {name} {module}
-        --f|force : Create the class even if the cast already exists }
-        ';
+    protected $signature = 'module:make-trash-controller {name} {module}
+    ';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Create a new migration file in a specific module';
+    protected $description = 'Create a new Trash controller in the specific module';
 
-    protected $type = 'Migration';
-
-    /**
-     * Build the class with the given name.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    protected function buildClass($name)
-    {
-        return str_replace(
-            ['DummyUser', '{{ userModel }}'],
-            class_basename($this->userProviderModel()),
-            parent::buildClass($name)
-        );
-    }
+    protected $type = 'Controller';
 
     /**
      * Get the stub file for the generator.
      *
      * @return string
-     * @throws \Exception
      */
     protected function getStub()
     {
-        return $this->resolveStubPath('/channel.stub');
+        return $this->resolveStubPath('/trash-resource-controller.stub');
     }
+
+
     /**
      * Get the destination class path.
      *
@@ -66,7 +41,6 @@ class ChannelMakeCommand extends GeneratorCommand
         $module = $this->argument('module');
         return $this->setPath($name,'php');
     }
-
     /**
      * Get the default namespace for the class.
      *
@@ -77,23 +51,36 @@ class ChannelMakeCommand extends GeneratorCommand
     {
         $module = $this->argument('module');
 
-        return $this->setNamespace($module,$name , '\\App\\Broadcasting');
+        return $this->setNamespace($module,$name , 'App\\Http\\Controllers');
     }
+
     public function handle(): bool|int|null
     {
         $module = $this->argument('module');
-
         [$isValid, $suggestedName] = $this->validateModuleName($module);
-
         if ($isValid) return parent::handle();
 
         if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
             $this->input->setArgument('module', $suggestedName);
             return parent::handle();
         }
-        $this->error("The module '".$module."' does not exist.");
+        $this->error("The module '" . $module . "' does not exist.");
         return 1;
     }
 
+    /**
+     * Build the class with the given name.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    protected function buildClass($name){
+    $defController= module_namespace($this->argument('module') ,'App\\Http\\Controllers\\Controller'); ;
+        return str_replace(
+            ['{{ defaultController }}'],
+            $defController,
+            parent::buildClass($name)
+        );
+    }
 
 }

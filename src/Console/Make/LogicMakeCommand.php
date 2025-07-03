@@ -1,20 +1,21 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 
 class LogicMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait, CreatesMatchingTest;
+    use ModuleNameValidator, ModuleCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'lareon:make-logic {name} ';
+    protected $signature = 'module:make-logic {name} {module}';
 
 
-    protected $description = 'Create a new logic class (repository and logic layer) in the cms';
+    protected $description = 'Create a new logic class (repository and logic layer) in the specific module';
 
     protected $type = 'Logic';
 
@@ -36,7 +37,7 @@ class LogicMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-
+        $module = $this->argument('module');
         return $this->setPath($name, 'php');
     }
 
@@ -48,11 +49,22 @@ class LogicMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        return $this->setNamespace($name, '\\App\\Logic');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module, $name, '\\App\\Logic');
     }
 
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) return parent::handle();
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 }

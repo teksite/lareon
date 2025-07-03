@@ -1,19 +1,13 @@
 <?php
 
-namespace Teksite\Lareon\Traits;
+namespace Teksite\Module\Traits;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
-trait GeneratorCommandTrait
+trait ModuleGeneratorCommandTrait
 {
-    /**
-     * @param string $stub
-     * @param array $replace
-     * @param string $destination
-     * @return void
-     */
-    public function replaceStub(string $stub, array $replace, string $destination): void
+    public function replaceStub(string $stub, array $replace, string $destination)
     {
         $stubPath = $this->getStubFile($stub);
         $replacedContent = $this->getStubContent($stubPath, $replace);
@@ -30,20 +24,11 @@ trait GeneratorCommandTrait
 
     }
 
-    /**
-     * @param $path
-     * @return string
-     */
-    protected function getStubFile($path): string
+    protected function getStubFile($path)
     {
-        return app('cms.stubs') . trim($path, '\/');
+        return app('module.stubs') . trim($path, '\/');
     }
 
-    /**
-     * @param string $stubPath
-     * @param array $replacements
-     * @return string
-     */
     private function getStubContent(string $stubPath, array $replacements = []): string
     {
         if (!File::exists($stubPath)) {

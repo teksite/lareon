@@ -1,20 +1,21 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 
 class InterfaceMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-interface {name}
+    protected $signature = 'module:make-interface {name} {module}
          {--f|force : Create the class even if the cast already exists }
     ';
 
-    protected $description = 'Create a new interface in the cms';
+    protected $description = 'Create a new interface in the specific module';
 
     protected $type = 'Interface';
 
@@ -25,7 +26,7 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return $this->resolveStubPath('/interface.stub');
+        return  $this->resolveStubPath('/interface.stub');
     }
 
 
@@ -37,7 +38,8 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        return $this->setPath($name, 'php');
+        $module = $this->argument('module');
+        return $this->setPath($name,'php');
     }
 
 
@@ -49,14 +51,24 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        return $this->setNamespace($name, '\\App\\Interfaces');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\Interfaces');
     }
 
 
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) return parent::handle();
 
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
 }

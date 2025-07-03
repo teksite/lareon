@@ -1,23 +1,24 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 
 class RuleMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-rule {name}
+    protected $signature = 'module:make-rule {name} {module}
      {--f|force : Create the class even if the resource already exists },
      {--i|implicit : Generate an implicit rule },
     ';
 
 
-    protected $description = 'Create a new rule in the cms';
+    protected $description = 'Create a new rule in the specific module';
 
     protected $type = 'Rule';
 
@@ -31,7 +32,8 @@ class RuleMakeCommand extends GeneratorCommand
 
     protected function getPath($name)
     {
-        return $this->setPath($name, 'php');
+        $module = $this->argument('module');
+        return $this->setPath($name,'php');
     }
 
     /**
@@ -42,7 +44,9 @@ class RuleMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name)
     {
-        return $this->setNamespace($name, '\\App\\Rules');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\Rules');
     }
 
     protected function buildClass($name)
@@ -57,8 +61,17 @@ class RuleMakeCommand extends GeneratorCommand
 
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
 
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) return parent::handle();
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
 }

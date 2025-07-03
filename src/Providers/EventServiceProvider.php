@@ -1,10 +1,9 @@
 <?php
 
-namespace {{ namespace }};
-
+namespace Teksite\Module\Providers;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-class {{ class }}  extends ServiceProvider
+class EventServiceProvider  extends ServiceProvider
 {
     /**
      * The event handler mappings for the application.

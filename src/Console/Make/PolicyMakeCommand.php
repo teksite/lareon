@@ -1,23 +1,24 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 
 class PolicyMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-policy {name}
+    protected $signature = 'module:make-policy {name} {module}
         {--f|force= : Create the class even if the policy already exists }
         {--m|model= : The model that the policy applies to }
         {--g|guard= : The guard that the policy relies on }
     ';
 
-    protected $description = 'Create a new policy in the cms';
+    protected $description = 'Create a new policy in the specific module';
 
     protected $type = 'Policy';
 
@@ -42,9 +43,9 @@ class PolicyMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-        return $this->setPath($name, 'php');
+        $module = $this->argument('module');
+        return $this->setPath($name,'php');
     }
-
     /**
      * Get the default namespace for the class.
      *
@@ -53,13 +54,23 @@ class PolicyMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        return $this->setNamespace($name, '\\App\\Policies');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\Policies');
     }
 
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) return parent::handle();
 
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
     protected function buildClass($name)

@@ -1,14 +1,15 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Lareon\Facade\Lareon;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Facade\Module;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\suggest;
@@ -16,29 +17,26 @@ use function Laravel\Prompts\suggest;
 
 class ControllerMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-controller {name}
+    protected $signature = 'module:make-controller {name} {module}
      {--A|api : Exclude the create and edit methods from the controller,}
      {--type= : Manually specify the controller stub file to use}
      {--i|invokable : Generate a single method, invokable controller class}
      {--m|model= : Generate a resource controller for the given model}
-     {--p|parent : Generate a nested resource controller class}
+     {--p|parent= : Generate a nested resource controller class}
      {--r|resource : Generate a resource controller class}
      {--s|singleton : Generate a singleton resource controller class}
      {--creatable : Indicate that a singleton resource should be creatable}
      {--R|requests : Generate FormRequest classes for store and update}
+     {--m|model= : Generate a resource controller for the given model}
     ';
 
-    protected $description = 'Create a new controller class in the cms';
+    protected $description = 'Create a new controller class in the specific module';
 
     protected $type = 'Controller';
 
-    /**
-     * Get the stub file for the generator.
-     *
-     * @return string
-     */
+
     /**
      * Get the stub file for the generator.
      *
@@ -53,7 +51,7 @@ class ControllerMakeCommand extends GeneratorCommand
         } elseif ($this->option('parent')) {
             $stub = $this->option('singleton')
                 ? $this->resolveStubPath("/controller/controller.nested.singleton.stub")
-                : $this->resolveStubPath("/controller/ontroller.nested.stub");
+                : $this->resolveStubPath("/controller/controller.nested.stub");
         } elseif ($this->option('model')) {
             $stub = $this->resolveStubPath("/controller/controller.model.stub");
         } elseif ($this->option('invokable')) {
@@ -79,7 +77,9 @@ class ControllerMakeCommand extends GeneratorCommand
 
     protected function getPath($name): string
     {
+        $module = $this->argument('module');
         return $this->setPath($name,'php');
+
     }
 
     /**
@@ -90,7 +90,9 @@ class ControllerMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name)
     {
-        return $this->setNamespace($name , '\\App\\Http\\Controllers');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\Http\\Controllers');
     }
 
     /**
@@ -141,10 +143,13 @@ class ControllerMakeCommand extends GeneratorCommand
      */
     protected function buildParentReplacements()
     {
+
         $parentModelClass = $this->parseModel($this->option('parent'));
         if (!class_exists($parentModelClass) &&
             confirm("A {$parentModelClass} model does not exist. Do you want to generate it?", default: true)) {
-            $this->call('lareon:make-model', ['name' => $parentModelClass]);
+            $module = $this->argument('module');
+            $model = $this->option('parent');
+            $this->call('module:make-model', ['name' =>$model ,'module'=>$module]);
         }
 
         return [
@@ -171,7 +176,7 @@ class ControllerMakeCommand extends GeneratorCommand
         $modelClass = $this->parseModel($this->option('model'));
 
         if (!class_exists($modelClass) && confirm("A {$modelClass} model does not exist. Do you want to generate it?", default: true)) {
-            $this->call('lareon:make-model', ['name' => $modelClass]);
+            $this->call('module:make-model', ['name' => $modelClass]);
         }
 
         $replace = $this->buildFormRequestReplacements($replace, $modelClass);
@@ -215,11 +220,13 @@ class ControllerMakeCommand extends GeneratorCommand
      */
     protected function buildFormRequestReplacements(array $replace, $modelClass)
     {
+        $module = $this->argument('module');
         [$namespace, $storeRequestClass, $updateRequestClass,] = [
             'Illuminate\\Http', 'Request', 'Request',
         ];
+
         if ($this->option('requests')) {
-            $namespace =Lareon::cmsNamespace('App\\Http\\Requests');
+            $namespace =Module::moduleNamespace($module ,'App\\Http\\Requests');
 
             [$storeRequestClass, $updateRequestClass] = $this->generateFormRequests(
                 $modelClass, $storeRequestClass, $updateRequestClass
@@ -257,14 +264,17 @@ class ControllerMakeCommand extends GeneratorCommand
     protected function generateFormRequests($modelClass, $storeRequestClass, $updateRequestClass)
     {
         $storeRequestClass = 'Store' . class_basename($modelClass) . 'Request';
-        $this->call('lareon:make-request', [
+        $module = $this->argument('module');
+        $this->call('module:make-request', [
             'name' => $storeRequestClass,
+            'module' => $module,
         ]);
 
         $updateRequestClass = 'Update' . class_basename($modelClass) . 'Request';
 
-        $this->call('lareon:make-request', [
+        $this->call('module:make-request', [
             'name' => $updateRequestClass,
+            'module' => $module,
         ]);
 
         return [$storeRequestClass, $updateRequestClass];
@@ -311,6 +321,17 @@ class ControllerMakeCommand extends GeneratorCommand
 
     public function handle(): bool|int|null
     {
-         return parent::handle();
+        $module = $this->argument('module');
+
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+
+        if ($isValid) return parent::handle();
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '".$module."' does not exist.");
+        return 1;
     }
 }

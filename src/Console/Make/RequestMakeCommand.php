@@ -1,21 +1,22 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 
 class RequestMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-request {name}
+    protected $signature = 'module:make-request {name} {module}
          {--f|force : Create the class even if the cast already exists }
          {--api : return json } ';
 
 
-    protected $description = 'Create a new request class in the cms';
+    protected $description = 'Create a new request class in the specific module';
 
     protected $type = 'Request';
 
@@ -29,7 +30,8 @@ class RequestMakeCommand extends GeneratorCommand
 
     protected function getPath($name)
     {
-        return $this->setPath($name, 'php');
+        $module = $this->argument('module');
+        return $this->setPath($name,'php');
 
     }
 
@@ -41,14 +43,26 @@ class RequestMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name)
     {
-        return $this->setNamespace($name, '\\App\\Http\\Requests');
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\Http\\Requests');
 
     }
 
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
 
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+
+        if ($isValid) return parent::handle();
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '".$module."' does not exist.");
+        return 1;
     }
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\Concerns\CreatesMatchingTest;
 use Illuminate\Console\GeneratorCommand;
@@ -8,20 +8,21 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 use function Laravel\Prompts\suggest;
 
 class ListenerMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait, CreatesMatchingTest;
+    use ModuleNameValidator, ModuleCommandsTrait, CreatesMatchingTest;
 
-    protected $signature = 'lareon:make-listener {name}
+    protected $signature = 'module:make-listener {name} {module}
         {--e|event= : The event class being listened  for}
         {--f|force : Create the class even if the listener already exists }
         {--queued : Indicates the event listener should be queued }
     ';
 
-    protected $description = 'Create a new listener in the cms';
+    protected $description = 'Create a new listener in the specific module';
 
     protected $type = 'Listener';
 
@@ -30,7 +31,7 @@ class ListenerMakeCommand extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): string
     {
         if ($this->option('queued')) {
             return $this->option('event')
@@ -52,7 +53,7 @@ class ListenerMakeCommand extends GeneratorCommand
      */
     protected function getPath($name): string
     {
-
+        $module = $this->argument('module');
         return $this->setPath($name, 'php');
     }
 
@@ -64,19 +65,20 @@ class ListenerMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name): string
     {
-        return $this->setNamespace($name, '\\App\\Listeners');
+        $module = $this->argument('module');
+        return $this->setNamespace($module, $name, '\\App\\Listeners');
     }
 
     protected function buildClass($name)
     {
+        $module=$this->argument('module');
         $event = $this->option('event') ?? '';
-
         if (!Str::startsWith($event, [
-            $this->cmsNamespace(),
-            $this->cmsNamespace(),
-            $this->cmsNamespace('App\\Events\\'),
+            $this->moduleNamespace(),
+            $this->moduleNamespace($module),
+            $this->moduleNamespace($module ,'App\\Events\\'),
         ])) {
-            $event = $this->cmsNamespace('App\\Events\\') . '\\' . str_replace('/', '\\', $event);
+            $event = $this->moduleNamespace($module , 'App\\Events\\')  . str_replace('/', '\\', $event);
         }
 
         $stub = str_replace(
@@ -87,10 +89,18 @@ class ListenerMakeCommand extends GeneratorCommand
             ['DummyFullEvent', '{{ eventNamespace }}'], trim($event, '\\'), $stub
         );
     }
-
     public function handle(): bool|int|null
     {
-        return parent::handle();
+        $module = $this->argument('module');
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
+        if ($isValid) return parent::handle();
+
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
     protected function afterPromptingForMissingArguments(InputInterface $input, OutputInterface $output)
@@ -108,6 +118,8 @@ class ListenerMakeCommand extends GeneratorCommand
             $input->setOption('event', $event);
         }
     }
+
+
 
 
 }

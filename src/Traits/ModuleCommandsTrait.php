@@ -1,13 +1,13 @@
 <?php
 
-namespace Teksite\Lareon\Traits;
+namespace Teksite\Module\Traits;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Teksite\Lareon\Facade\Lareon;
-use Teksite\Lareon\Services\LareonServices;
+use Teksite\Module\Facade\Module;
+use Teksite\Module\Services\ModuleServices;
 
-trait CmsCommandsTrait
+trait ModuleCommandsTrait
 {
 
     /**
@@ -15,7 +15,7 @@ trait CmsCommandsTrait
      */
     protected function resolveStubPath($stub)
     {
-        $path = app('cms.stubs') . $stub;
+        $path = app('module.stubs') . $stub;
 
         return file_exists($path) ? $path : throw new \Exception ($stub . 'isn not exist in the path: ', $path);
     }
@@ -29,9 +29,9 @@ trait CmsCommandsTrait
         return str_replace('\\', '/', $relativePath) . '.' . $format;
     }
 
-    protected function setNamespace($name, $relative): string
+    protected function setNamespace($module, $name, $relative): string
     {
-        $namespace = Lareon::cmsNamespace($relative);
+        $namespace = Module::moduleNamespace($module, ltrim($relative, '\\'));
         return $namespace . '\\' . str_replace('/', '\\', $name);
     }
 
@@ -42,10 +42,15 @@ trait CmsCommandsTrait
         }
     }
 
+    protected function getLowerNameModule(?string $module = null): string
+    {
+        return Str::lower($module ?? $this->argument('module'));
+    }
 
     protected function viewPath($path= '')
     {
-        return Lareon::cmsViewPath($path);
+        $module = $this->argument('module');
+        return Module::modulePath($module , "resources/views/$path");
 
     }
 
@@ -57,7 +62,7 @@ trait CmsCommandsTrait
 
         $thisNamespace = Str::finish($this->rootNamespace() ,'\\');
         $appNamespace = app()->getNamespace();
-        $cmsNamespace = Lareon::cmsNamespace();
+        $moduleNamespace = Module::moduleNamespace();
 
         if (Str::startsWith($model, $thisNamespace)) {
             return $model;
@@ -65,19 +70,27 @@ trait CmsCommandsTrait
         if (Str::startsWith($model, $appNamespace)) {
             return $model;
         }
-        if (Str::startsWith($model, $cmsNamespace)) {
+        if (Str::startsWith($model, $moduleNamespace)) {
             return $model;
         }
-        return Lareon::cmsNamespace('App\\Models\\'.$model);
+        return Module::moduleNamespace($this->argument('module') , 'App\\Models\\'.$model);
+
+
+
     }
 
     protected function rootNamespace()
     {
-        return Lareon::cmsNamespace('App');
+        $module = $this->argument('module');
+
+        return Module::moduleNamespace($module , 'App');
     }
 
-    public function cmsNamespace(string $path=null)
+    public function moduleNamespace(?string $module =null, string $path=null)
     {
-       return Lareon::cmsNamespace($path);
+       return Module::moduleNamespace($module , $path);
+
     }
+
+
 }

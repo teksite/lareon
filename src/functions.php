@@ -1,115 +1,78 @@
 <?php
 
-use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Morilog\Jalali\Jalalian;
 
-
-if (!function_exists('cms_path')) {
-    function cms_path(?string $path = null, bool $absolute = true): ?string
+if (!function_exists('module_path')) {
+    /**
+     * @param string|null $moduleName
+     * @param string|null $path
+     * @param bool $absolute
+     * @return string|null
+     */
+    function module_path(?string $moduleName = null, ?string $path = null, bool $absolute = true ): ?string
     {
-        $mainPath = config('cms-setting.main_path', 'Lareon') . DIRECTORY_SEPARATOR . config('cms-setting.cms.directory', 'CMS');
+        $moduleName= Str::ucfirst($moduleName);
+        $mainPath = config('module.main_path' ,'Lareon') . DIRECTORY_SEPARATOR .  config('module.module.path', 'Modules');
 
-        $relativePath = normalizePath($mainPath . ($path ? '/' . $path : ''));
-
+        $relativePath = $moduleName ? normalizePath($mainPath . '/' . $moduleName . ($path ? '/' . $path : '')) : $mainPath;
         return $absolute ? base_path($relativePath) : $relativePath;
     }
 
 }
 
 
-if (!function_exists('cms_namespace')) {
+if (!function_exists('module_namespace')) {
 
-    function cms_namespace(?string $path = null): string
+    /**
+     * @param string|null $moduleName
+     * @param string|null $path
+     * @return string
+     */
+    function module_namespace(?string $moduleName, ?string $path = null): string
     {
-        $moduleBaseNamespace = config('cms-setting.cms.namespace', 'Lareon\CMS');
+        $moduleBaseNamespace = config('module.module.namespace' ,'Lareon\Modules') . '\\'. ($moduleName ? Str::ucfirst($moduleName): '');
 
-        $path = $path ? str_replace('/', '\\', $path) : null;
-        $path = trim($path, '\\');
+        $path=$path ? str_replace('/', '\\', $path) :null;
+
         return $path
-            ? $moduleBaseNamespace . '\\' . $path
+            ? $moduleBaseNamespace .'\\'. $path
             : $moduleBaseNamespace;
     }
 }
 
 
-if (!function_exists('lareonModules')) {
+
+if (!function_exists('module_bootstrap_path')) {
     /**
-     * @param bool $active
+     * @return string
+     */
+    function module_bootstrap_path(): string
+    {
+        return config('module.registration_file' , base_path('bootstrap').'/modules.php');
+    }
+}
+
+if (!function_exists('get_module_bootstrap')) {
+
+    /**
+     * @param string|array $modules
      * @return array
      */
-    function lareonModules(bool $active = true): array
+    function get_module_bootstrap(string|array $modules = ['*']): array
     {
-        $modulesArray = [];
-        foreach (get_module_bootstrap() ?? [] as $name => $data) {
-            $type = $data['type'] ?? 'self';
-            if ($type !== 'lareon') continue;
+        $bootstrapContent = File::exists(module_bootstrap_path()) ? require module_bootstrap_path() : [];
 
-            if ($active) {
-                if ($data['active']) $modulesArray[$name] = $data;
-            } else {
-                $modulesArray[$name] = $data;
+        $modules = is_array($modules) ? $modules : [$modules];
+
+        if(in_array('*', $modules)) return $bootstrapContent;
+        $moduleArray=[];
+        foreach ($modules as $module) {
+            if(in_array($module, array_keys($bootstrapContent))) {
+                $moduleArray[$module] = $bootstrapContent[$module];
             }
         }
-        return $modulesArray;
-    }
-}
-
-
-if (!function_exists('dateAdapter')) {
-    function dateAdapter($time, $format = "Y-m-d H:i"): ?string
-    {
-        if (is_null($time)) return null;
-        return config('app.locale') == 'fa' ? Jalalian::forge(Carbon::parse($time))->format($format) : Carbon::parse($time)->format($format);
-    }
-}
-
-
-if (!function_exists('dateToJalali')) {
-    /**
-     * To convert Gregorian date-time to Jalali
-     *
-     * @param $gregorianDateTime
-     * @param string|null $format
-     * @return string|null
-     */
-    function dateToJalali($gregorianDateTime, ?string $format = "Y/m/d H:i:s"): ?string
-    {
-        try {
-            $carbonDate = Carbon::parse($gregorianDateTime);
-            return Jalalian::fromCarbon($carbonDate)->format($format);
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
-}
-
-if (!function_exists('dateToGregorian')) {
-    /**
-     * To convert Jalali date-time to Gregorian
-     *
-     * @param $jalaliDate
-     * @param string|null $format
-     * @return string|null
-     */
-    function dateToGregorian($jalaliDate, ?string $format = "Y-m-d H:i:s"): ?string
-    {
-
-        try {
-            $jalaliDateTime = str_replace('/', '-', $jalaliDate);
-
-            $hasTime = preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?/', $jalaliDateTime);
-
-            if ($hasTime) {
-                $carbonDate = Jalalian::fromFormat('Y-m-d H:i:s', $jalaliDateTime)->toCarbon();
-            } else {
-                $carbonDate = Jalalian::fromFormat('Y-m-d', $jalaliDateTime)->toCarbon();
-            }
-            return !is_null($format) ? $carbonDate->format($format) : $carbonDate;
-        } catch (\Exception $e) {
-            return null;
-        }
+        return $moduleArray;
 
     }
 }
-

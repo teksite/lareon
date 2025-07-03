@@ -1,23 +1,24 @@
 <?php
 
-namespace Teksite\Lareon\Console\Make;
+namespace Teksite\Module\Console\Make;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
-use Teksite\Lareon\Traits\CmsCommandsTrait;
+use Teksite\Module\Traits\ModuleCommandsTrait;
+use Teksite\Module\Traits\ModuleNameValidator;
 
 class ResourceMakeCommand extends GeneratorCommand
 {
-    use CmsCommandsTrait;
+    use ModuleNameValidator, ModuleCommandsTrait;
 
-    protected $signature = 'lareon:make-resource {name}
+    protected $signature = 'module:make-resource {name} {module}
      {--f|force : Create the class even if the resource already exists },
      {--c|collection : Create a resource collection },
     ';
 
 
-    protected $description = 'Create a new resource in the cms';
+    protected $description = 'Create a new resource in the specific module';
 
     protected $type = 'Resource';
 
@@ -31,6 +32,7 @@ class ResourceMakeCommand extends GeneratorCommand
 
     protected function getPath($name)
     {
+        $module = $this->argument('module');
         return $this->setPath($name,'php');
     }
 
@@ -42,17 +44,28 @@ class ResourceMakeCommand extends GeneratorCommand
      */
     protected function qualifyClass($name)
     {
-        return $this->setNamespace($name , '\\App\\Http\\Resources');
+
+        $module = $this->argument('module');
+
+        return $this->setNamespace($module,$name , '\\App\\Http\\Resources');
     }
 
     public function handle(): bool|int|null
     {
+        $module = $this->argument('module');
+
+        [$isValid, $suggestedName] = $this->validateModuleName($module);
         if ($this->collection()) {
             $this->type = 'Resource collection';
         }
-       return parent::handle();
+        if ($isValid) return parent::handle();
 
-
+        if ($suggestedName && $this->confirm("Did you mean '{$suggestedName}'?")) {
+            $this->input->setArgument('module', $suggestedName);
+            return parent::handle();
+        }
+        $this->error("The module '" . $module . "' does not exist.");
+        return 1;
     }
 
     protected function collection()

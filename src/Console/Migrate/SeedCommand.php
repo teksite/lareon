@@ -1,31 +1,27 @@
 <?php
 
-namespace Teksite\Lareon\Console\Migrate;
+namespace Teksite\Module\Console\Migrate;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Teksite\Lareon\Console\BasicMigrator;
-use Teksite\Lareon\Contract\MigrationContract;
-use Teksite\Lareon\Traits\Migration\LareonMigrationTrait;
+use Teksite\Module\Console\BasicMigrator;
+use Teksite\Module\Contract\MigrationContract;
 use Teksite\Module\Facade\Module;
 use Teksite\Module\Traits\ModuleNameValidator;
 
 class SeedCommand extends BasicMigrator implements MigrationContract
 {
-    use LareonMigrationTrait;
+    use ModuleNameValidator;
 
-    protected $signature = 'lareon:seed
-        {--module : The module to seed.}
-        {--only=false : only migration manged by lareon}
-
+    protected $signature = 'module:seed
+        {module? : The module to seed.}
     ';
 
     protected $description = 'Seed the module';
 
-    protected string $type = 'Seed';
+    protected $type = 'Seed';
 
-
-    public function runTheCommand(): void
+    public function runTheCommand()
     {
         $this->seeding();
     }
