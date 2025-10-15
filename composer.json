@@ -32,6 +32,7 @@
         "teksite/handler": "*",
         "teksite/extralaravel": "*",
         "teksite/module": "*",
+		"teksite/authorize": "*",
         "wikimedia/composer-merge-plugin": "^2.1",
         "ext-dom": "*",
         "ext-json": "*",
