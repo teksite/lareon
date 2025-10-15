@@ -114,7 +114,7 @@ class BasicMigrator extends Command
      */
     public function getModules(): array
     {
-        return Module::enables();
+        return Module::all();
     }
 
 }
